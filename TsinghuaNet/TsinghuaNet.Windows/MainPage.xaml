@@ -1,0 +1,49 @@
+﻿<Page x:Class="TsinghuaNet.MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Language="zh-cn" Background="{ThemeResource  ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBox x:Name="textboxUserName" PlaceholderText="用户名" Height="32" Width="200" Margin="10"/>
+            <PasswordBox x:Name="passwordboxPassword" PlaceholderText="密码" Height="32" Width="200" Margin="10" IsPasswordRevealButtonEnabled="True" PasswordChanged="passwordboxPassword_PasswordChanged" GotFocus="passwordboxPassword_GotFocus"/>
+            <Button Click="Button_Click" HorizontalAlignment="Center" Width="200" Height="40" Margin="10">登陆</Button>
+        </StackPanel>
+        <ListView x:Name="listviewDevices" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate d:DataContext="local">
+                    <StackPanel Margin="10" Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding IPAddress}" />
+                            <TextBlock Text="{Binding WebTraffic}" />
+                        </StackPanel>
+                        <Button x:Name="buttonLogOff" Tag="{Binding}">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <StackPanel>
+                                        <TextBlock>确定？</TextBlock>
+                                        <Button Click="MenuFlyoutItem_Click" Tag="{Binding ElementName=buttonLogOff}">是</Button>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                            下线
+                        </Button>
+                        <Button x:Name="buttonRename" Tag="{Binding}">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <StackPanel>
+                                        <TextBox x:Name="textboxRename" PlaceholderText="新名称" />
+                                        <Button Click="Button_Click_1" Tag="{Binding ElementName=buttonRename}">确定</Button>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                            重命名
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Click="Button_Click_2"  Margin="50" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="100">刷新</Button>
+    </Grid>
+</Page>
