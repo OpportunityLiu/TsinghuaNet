@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="ea419d84-d4f3-4381-93c5-7caea7ced3d3" Publisher="CN=正元" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="ea419d84-d4f3-4381-93c5-7caea7ced3d3" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="2289Opportunity.TsinghuaNet" Publisher="CN=22AA5D8B-590F-4C7F-807B-5166B66DDBE0" Version="1.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="9595360b-3e9d-4bff-85c6-e8203e23e425" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>TsinghuaNet.WindowsPhone</DisplayName>
+    <DisplayName>Tsinghua Net</DisplayName>
     <PublisherDisplayName>Opportunity</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

@@ -8,13 +8,16 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Data.Html;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace TsinghuaNet
 {
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
     /// </summary>
-    public sealed class WebConnect : IDisposable
+    public sealed class WebConnect : IDisposable, INotifyPropertyChanged
     {
         /// <summary>
         /// 使用用户名和加密后的密码创建新实例。
@@ -30,15 +33,16 @@ namespace TsinghuaNet
                 throw new ArgumentNullException("passwordMD5");
             this.userName = userName;
             this.passwordMd5 = passwordMD5;
+            this.http = new HttpClient();
             this.http.BaseAddress = new Uri("https://usereg.tsinghua.edu.cn");
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
-            this.Refresh();
+            this.RefreshAsync();
         }
 
         private string userName, passwordMd5;
 
-        private HttpClient http = new HttpClient();
+        private HttpClient http;
 
         /// <summary>
         /// 异步登陆网络。
@@ -61,11 +65,11 @@ namespace TsinghuaNet
                 if(Regex.IsMatch(res, @"^\d+,"))
                 {
                     var a = res.Split(',');
-                    webTraffic.Value = ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture);
-                    IsOnline = true;
+                    this.webTraffic.Value = ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture);
+                    this.IsOnline = true;
                     return;
                 }
-                IsOnline = false;
+                this.IsOnline = false;
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
                     throw new LogOnException("密码错误或会话失效");
                 else if(logOnErrorDict.ContainsKey(res))
@@ -166,10 +170,10 @@ namespace TsinghuaNet
         /// <summary>
         /// 异步请求更新状态。
         /// </summary>
-        public void Refresh()
+        public Task RefreshAsync()
         {
-            //return Task.Run(() =>
-            //    {
+            return Task.Run(() =>
+                {
                     try
                     {
                         try
@@ -197,17 +201,21 @@ namespace TsinghuaNet
                             var details = Regex.Matches(item.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
                             devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.Parse(details[14].Value, CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
                         }
-                        deviceList.Clear();
-                        foreach(var item in devices)
-                            deviceList.Add(item);
+                        App.CurrentDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                        {
+                            deviceList.Clear();
+                            foreach(var item in devices)
+                                deviceList.Add(item);
+                        }).AsTask().Wait();
                         //全部成功
                         UpdateTime = DateTime.Now;
+                        propertyChanging();
                     }
                     catch(Exception)
                     {
                         throw;
                     }
-               // });
+                });
         }
 
         private ObservableCollection<WebDevice> deviceList;
@@ -224,7 +232,7 @@ namespace TsinghuaNet
         /// <summary>
         /// 当前连接的状态。
         /// </summary>
-        public bool? IsOnline
+        public bool IsOnline
         {
             get;
             private set;
@@ -233,7 +241,7 @@ namespace TsinghuaNet
         /// <summary>
         /// 当前账户余额。
         /// </summary>
-        public decimal? Balance
+        public decimal Balance
         {
             get;
             private set;
@@ -271,7 +279,7 @@ namespace TsinghuaNet
         /// <summary>
         /// 信息更新的时间。
         /// </summary>
-        public DateTime? UpdateTime
+        public DateTime UpdateTime
         {
             get;
             private set;
@@ -285,6 +293,18 @@ namespace TsinghuaNet
         public void Dispose()
         {
             this.http.Dispose();
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged 成员
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void propertyChanging([CallerMemberName] string propertyName = "")
+        {
+            if(PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

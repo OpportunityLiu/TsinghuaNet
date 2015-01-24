@@ -5,7 +5,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBox x:Name="textboxUserName" PlaceholderText="用户名" Height="32" Width="200" Margin="10"/>
+            <TextBox x:Name="textboxUserName" PlaceholderText="用户名" Height="32" Width="200" Margin="10" InputScope="AlphanumericHalfWidth" />
             <PasswordBox x:Name="passwordboxPassword" PlaceholderText="密码" Height="32" Width="200" Margin="10" IsPasswordRevealButtonEnabled="True" PasswordChanged="passwordboxPassword_PasswordChanged" GotFocus="passwordboxPassword_GotFocus"/>
             <Button Click="Button_Click" HorizontalAlignment="Center" Width="200" Height="40" Margin="10">登陆</Button>
         </StackPanel>

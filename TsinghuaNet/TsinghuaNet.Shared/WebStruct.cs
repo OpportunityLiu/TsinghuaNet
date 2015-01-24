@@ -22,12 +22,6 @@ namespace TsinghuaNet
         /// </summary>
         public static readonly Size MaxValue = new Size(ulong.MaxValue);
 
-        /// <summary>
-        /// 表示 <see cref="TsinghuaNet.Size"/> 的不是数字 (NaN) 的值。
-        /// 此字段为只读。
-        /// </summary>
-        public static readonly Size NaN = new Size(null);
-
         private const double kb = 1e3;
         private const double mb = 1e6;
         private const double gb = 1e9;
@@ -68,63 +62,44 @@ namespace TsinghuaNet
 
         public static bool operator <=(Size size1, Size size2)
         {
-            if(size1.Value.HasValue && size2.Value.HasValue)
-                return size1.Value <= size2.Value;
-            else
-                return !(size1.Value.HasValue || size2.Value.HasValue);
+            return size1.Value <= size2.Value;
         }
 
         public static bool operator >=(Size size1, Size size2)
         {
-            if(size1.Value.HasValue && size2.Value.HasValue)
-                return size1.Value >= size2.Value;
-            else
-                return !(size1.Value.HasValue || size2.Value.HasValue);
+            return size1.Value >= size2.Value;
         }
 
         public static bool operator <(Size size1, Size size2)
         {
-            if(size1.Value.HasValue && size2.Value.HasValue)
-                return size1.Value < size2.Value;
-            else
-                return false;
+            return size1.Value < size2.Value;
         }
 
         public static bool operator >(Size size1, Size size2)
         {
-            if(size1.Value.HasValue && size2.Value.HasValue)
-                return size1.Value > size2.Value;
-            else
-                return false;
+            return size1.Value > size2.Value;
         }
 
         public static Size operator +(Size size1, Size size2)
         {
-            if(!(size1.Value.HasValue || size2.Value.HasValue))
-                return Size.NaN;
-            else
-                return new Size((size1.Value ?? 0) + (size2.Value ?? 0));
+            return new Size(size1.Value + size2.Value);
         }
 
         public static Size operator -(Size size1, Size size2)
         {
-            if(!(size1.Value.HasValue || size2.Value.HasValue))
-                return Size.NaN;
-            else
-                return new Size((size1.Value ?? 0) - (size2.Value ?? 0));
+            if(size1 < size2)
+                throw new OverflowException("size1 < size2");
+            return new Size(size1.Value - size2.Value);
         }
 
         public static bool operator ==(Size size1, Size size2)
         {
-            if(size1.Value.HasValue && size2.Value.HasValue)
-                return size1.Value == size2.Value;
-            else
-                return !(size1.Value.HasValue || size2.Value.HasValue);
+            return size1.Value == size2.Value;
         }
 
         public static bool operator !=(Size size1, Size size2)
         {
-            return !(size1 == size2);
+            return size1.Value != size2.Value;
         }
 
         /// <summary>
@@ -148,7 +123,7 @@ namespace TsinghuaNet
         /// <returns>一个 32 位有符号整数，它是该实例的哈希代码。</returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return this.Value.GetHashCode();
         }
 
         /// <summary>
@@ -157,7 +132,7 @@ namespace TsinghuaNet
         /// <param name="size1">要相加的第一个值。</param>
         /// <param name="size2">要相加的第二个值。</param>
         /// <returns><paramref name="size1"/> 与 <paramref name="size2"/> 之和。</returns>
-        public static Size Add(Size size1,Size size2)
+        public static Size Add(Size size1, Size size2)
         {
             return size1 + size2;
         }
@@ -168,6 +143,7 @@ namespace TsinghuaNet
         /// <param name="size1">被减数。</param>
         /// <param name="size2">减数。</param>
         /// <returns><paramref name="size1"/> 减去 <paramref name="size2"/> 所得的结果。</returns>
+        /// <exception cref="Systm.OverFlowException"><paramref name="size1"/> 小于 <paramref name="size2"/>。</exception>
         public static Size Subtract(Size size1, Size size2)
         {
             return size1 - size2;
@@ -197,22 +173,18 @@ namespace TsinghuaNet
         /// <term>大于零</term>
         /// <description><paramref name="size1"/> 大于 <paramref name="size2"/>。</description>
         /// </item>
-        /// <item>
-        /// <term> <see cref="TsinghuaNet.Size.NaN"/> </term>
-        /// <description><paramref name="size1"/> 和 <paramref name="size2"/> 无法比较。</description>
-        /// </item>
         /// </list>
         /// </returns>
-        public static Size Compare(Size size1, Size size2)
+        public static double Compare(Size size1, Size size2)
         {
-            return size1 - size2;
+            return size1.Value - size2.Value;
         }
 
         /// <summary>
         /// 创建 <see cref="TsinghuaNet.Size"/> 的新实例。
         /// </summary>
         /// <param name="value">要存储的字节数。</param>
-        public Size(ulong? value)
+        public Size(ulong value)
             : this()
         {
             this.Value = value;
@@ -221,7 +193,7 @@ namespace TsinghuaNet
         /// <summary>
         /// 存储的值。
         /// </summary>
-        public ulong? Value
+        public ulong Value
         {
             get;
             set;
@@ -233,35 +205,20 @@ namespace TsinghuaNet
         /// <returns>当前对象的字符串形式。</returns>
         public override string ToString()
         {
-            string re = "0 B";
-            if(Value.HasValue)
-            {
-                var va = Value.Value;
-                if(Value < kb)
-                {
-                    re = va + " B";
-                }
-                else if(va < mb)
-                {
-                    re = (va / kb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " KB";
-                }
-                else if(va < gb)
-                {
-                    re = (va / mb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " MB";
-                }
-                else if(va < tb)
-                {
-                    re = (va / gb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " GB";
-                }
-                else if(va < pb)
-                {
-                    re = (va / tb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " TB";
-                }
-                else
-                {
-                    re = (va / pb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " PB";
-                }
-            }
+            var re = "";
+            var va = Value;
+            if(va < kb)
+                re = va + " B";
+            else if(va < mb)
+                re = (va / kb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " KB";
+            else if(va < gb)
+                re = (va / mb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " MB";
+            else if(va < tb)
+                re = (va / gb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " GB";
+            else if(va < pb)
+                re = (va / tb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " TB";
+            else
+                re = (va / pb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " PB";
             return re;
         }
     }
@@ -606,7 +563,7 @@ namespace TsinghuaNet
                 var flag = true;
                 for(int i = 0; i < 4; i++)
                 {
-                    if(this[i]!=value[i])
+                    if(this[i] != value[i])
                     {
                         flag = false;
                         break;

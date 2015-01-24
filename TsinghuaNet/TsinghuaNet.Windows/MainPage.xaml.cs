@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
+using System.Threading.Tasks;
 
 namespace TsinghuaNet
 {
@@ -43,31 +44,34 @@ namespace TsinghuaNet
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            try
+            Task.Run(() =>
             {
-                if(sharedUI.Connect == null)
+                try
                 {
-                    ApplicationData.Current.LocalSettings.Values["UserName"] = textboxUserName.Text;
-                    ApplicationData.Current.LocalSettings.Values["PasswordLength"] = passwordboxPassword.Password.Length;
-                    ApplicationData.Current.LocalSettings.Values["PasswordMD5"] = MD5.MDString(passwordboxPassword.Password);
-                    sharedUI.Connect = new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]);
-                    listviewDevices.ItemsSource = sharedUI.Connect.DeviceList;
+                    if(sharedUI.Connect == null)
+                    {
+                        this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                        {
+                            ApplicationData.Current.LocalSettings.Values["UserName"] = textboxUserName.Text;
+                            ApplicationData.Current.LocalSettings.Values["PasswordLength"] = passwordboxPassword.Password.Length;
+                            ApplicationData.Current.LocalSettings.Values["PasswordMD5"] = MD5.MDString(passwordboxPassword.Password);
+                            sharedUI.Connect = new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]);
+                            listviewDevices.ItemsSource = sharedUI.Connect.DeviceList;
+                        }).AsTask().Wait();
+                    }
+                    sharedUI.Connect.LogOnAsync().Wait();
+                    sharedUI.Connect.RefreshAsync().Wait();
+                    sharedUI.SendToastNotification("登陆成功", "已用流量：", sharedUI.Connect.WebTrafficExact.ToString());
                 }
-                sharedUI.Connect.LogOnAsync().Wait();
-                sharedUI.SendToastNotification("登陆成功", "已用流量：", sharedUI.Connect.WebTrafficExact.ToString());
-            sharedUI.Connect.Refresh();
-            }
-            catch(AggregateException ex)
-            {
-                var msg = new Windows.UI.Popups.MessageDialog(ex.InnerException.Message, "登陆错误");
-                msg.ShowAsync();
-            }
-            catch(ArgumentException ex)
-            {
-                var msg = new Windows.UI.Popups.MessageDialog(ex.Message, "登陆错误");
-                msg.ShowAsync();
-            }
+                catch(AggregateException ex)
+                {
+                    this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => new Windows.UI.Popups.MessageDialog(ex.InnerException.Message, "登陆错误").ShowAsync());
+                }
+                catch(ArgumentException ex)
+                {
+                    this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => new Windows.UI.Popups.MessageDialog(ex.Message, "登陆错误").ShowAsync());
+                }
+            });
         }
 
         private void passwordboxPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -104,13 +108,13 @@ namespace TsinghuaNet
             var btn = (sender as Button).Tag as Button;
             btn.Flyout.Hide();
             (btn.Tag as WebDevice).DropAsync();
-            sharedUI.Connect.Refresh();
+            sharedUI.Connect.RefreshAsync();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if(sharedUI.Connect != null)
-                sharedUI.Connect.Refresh();
+                sharedUI.Connect.RefreshAsync();
         }
     }
 }

@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
+using Windows.UI.Core;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -42,6 +43,12 @@ namespace TsinghuaNet
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             this.SharedUI = new SharedUI();
+        }
+
+        public static CoreDispatcher CurrentDispatcher
+        {
+            get;
+            private set;
         }
 
         public SharedUI SharedUI
@@ -73,9 +80,7 @@ namespace TsinghuaNet
             {
                 // 创建要充当导航上下文的框架，并导航到第一页
                 rootFrame = new Frame();
-
-                // TODO: 将此值更改为适合您的应用程序的缓存大小
-                rootFrame.CacheSize = 1;
+                rootFrame.CacheSize = 2;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -111,7 +116,7 @@ namespace TsinghuaNet
                     throw new Exception("Failed to create initial page");
                 }
             }
-
+            CurrentDispatcher = Window.Current.Dispatcher;
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
         }
