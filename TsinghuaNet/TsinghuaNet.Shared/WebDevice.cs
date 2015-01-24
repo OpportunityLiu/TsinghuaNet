@@ -157,7 +157,7 @@ namespace TsinghuaNet
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void propertyChanging([CallerMemberName] string propertyName = "")
+        protected virtual void propertyChanging([CallerMemberName] string propertyName = "")
         {
             if(PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
