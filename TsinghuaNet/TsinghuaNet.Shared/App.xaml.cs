@@ -73,6 +73,7 @@ namespace TsinghuaNet
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
+            CurrentDispatcher = Window.Current.Dispatcher;
 
             // 不要在窗口已包含内容时重复应用程序初始化，
             // 只需确保窗口处于活动状态
@@ -116,7 +117,6 @@ namespace TsinghuaNet
                     throw new Exception("Failed to create initial page");
                 }
             }
-            CurrentDispatcher = Window.Current.Dispatcher;
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
         }

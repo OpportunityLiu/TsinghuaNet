@@ -42,8 +42,8 @@ namespace TsinghuaNet
             }
         }
 
-        private Dictionary<DateTime, Size> traffic;
-        private Dictionary<int, Size> trafficM;
+        public Dictionary<DateTime, Size> traffic;
+        public Dictionary<int, Size> trafficM;
 
         private class webDetailQuery
         {

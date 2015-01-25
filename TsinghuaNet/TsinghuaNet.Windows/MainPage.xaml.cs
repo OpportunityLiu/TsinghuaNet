@@ -16,6 +16,7 @@ using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using System.Threading.Tasks;
+using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 
 namespace TsinghuaNet
 {
@@ -36,6 +37,7 @@ namespace TsinghuaNet
             this.sharedUI = (App.Current as App).SharedUI;
             if(sharedUI.Connect != null)
                 listviewDevices.ItemsSource = sharedUI.Connect.DeviceList;
+            ((ColumnSeries)this.MixedChart.Series[0]).ItemsSource = sharedUI.Connect.GetDetailListAnsyc().Result.trafficM;
         }
 
         private SharedUI sharedUI;
