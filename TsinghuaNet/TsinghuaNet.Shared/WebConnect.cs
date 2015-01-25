@@ -148,23 +148,35 @@ namespace TsinghuaNet
 
         private void logOnUsereg()
         {
-            //获取登陆页以获得 cookie
-            using(var get = http.GetAsync("https://usereg.tsinghua.edu.cn/login.php").Result)
+            Action logOn = () =>
             {
-                try
+                //获取登陆页以获得 cookie
+                using(var get = http.GetAsync("https://usereg.tsinghua.edu.cn/login.php").Result)
                 {
-                    cookie = get.Headers.GetValues("Set-Cookie").First().Split(";".ToCharArray())[0];
+                    try
+                    {
+                        cookie = get.Headers.GetValues("Set-Cookie").First().Split(";".ToCharArray())[0];
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        //cookie 尚未过期。
+                    }
                 }
-                catch(InvalidOperationException)
-                {
-                    //cookie 尚未过期。
-                }
+                http.DefaultRequestHeaders.Remove("Cookie");
+                http.DefaultRequestHeaders.Add("Cookie", cookie);
+                //登陆
+                if(httpPost("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5) != "ok")
+                    throw new InvalidOperationException("返回异常。");
+            };
+            try
+            {
+                logOn();
             }
-            http.DefaultRequestHeaders.Remove("Cookie");
-            http.DefaultRequestHeaders.Add("Cookie", cookie);
-            //登陆
-            if(httpPost("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5) != "ok")
-                throw new InvalidOperationException("返回异常。");
+            catch(InvalidOperationException)
+            {
+                Task.Delay(100).Wait();
+                logOn();//重试一次
+            }
         }
 
         /// <summary>
@@ -176,15 +188,7 @@ namespace TsinghuaNet
                 {
                     try
                     {
-                        try
-                        {
-                            logOnUsereg();
-                        }
-                        catch(Exception)
-                        {
-                            Task.Delay(500).Wait();
-                            logOnUsereg();//重试一次
-                        }
+                        logOnUsereg();
                         //获取用户信息
                         var res1 = HtmlUtilities.ConvertToText(http.GetStringAsync("https://usereg.tsinghua.edu.cn/user_info.php").Result);
                         var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
@@ -199,7 +203,7 @@ namespace TsinghuaNet
                         foreach(Match item in info2)
                         {
                             var details = Regex.Matches(item.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
-                            devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.Parse(details[14].Value, CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
+                            devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
                         }
                         App.CurrentDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
@@ -217,6 +221,17 @@ namespace TsinghuaNet
                     }
                 });
         }
+
+        public Task<WebDetailList> GetDetailListAnsyc()
+        {
+            return Task<WebDetailList>.Run(() =>
+            {
+                logOnUsereg();
+                var res = http.GetStringAsync("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000").Result;
+                return new WebDetailList(res, DeviceList);
+            });
+        }
+
 
         private ObservableCollection<WebDevice> deviceList;
 
@@ -254,7 +269,7 @@ namespace TsinghuaNet
         /// </summary>
         public Size WebTraffic
         {
-            get
+            get      
             {
                 return webTraffic;
             }

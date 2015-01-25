@@ -96,7 +96,14 @@ namespace TsinghuaNet
                 return new DeviceNameDictionary();
             }
             else
-                return new DeviceNameDictionary((string)ApplicationData.Current.LocalSettings.Values["DeviceDict"]);
+                try
+                {
+                    return new DeviceNameDictionary((string)ApplicationData.Current.LocalSettings.Values["DeviceDict"]);
+                }
+                catch(ArgumentException)
+                {
+                    return new DeviceNameDictionary();
+                }
         }
 
         /// <summary>
@@ -128,7 +135,7 @@ namespace TsinghuaNet
                     else
                         deviceDict.Add(this.MacAddress, value);
                 }
-                this.propertyChanging();
+                this.PropertyChanging();
             }
         }
 
@@ -157,7 +164,7 @@ namespace TsinghuaNet
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void propertyChanging([CallerMemberName] string propertyName = "")
+        protected virtual void PropertyChanging([CallerMemberName] string propertyName = "")
         {
             if(PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

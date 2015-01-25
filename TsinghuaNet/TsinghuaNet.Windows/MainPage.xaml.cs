@@ -116,5 +116,11 @@ namespace TsinghuaNet
             if(sharedUI.Connect != null)
                 sharedUI.Connect.RefreshAsync();
         }
+
+        private void test(object sender, RoutedEventArgs e)
+        {
+            var l = sharedUI.Connect.GetDetailListAnsyc().Result;
+            
+        }
     }
 }

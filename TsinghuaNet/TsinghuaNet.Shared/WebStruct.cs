@@ -85,6 +85,11 @@ namespace TsinghuaNet
             return new Size(size1.Value + size2.Value);
         }
 
+        public static Size operator *(Size size1, double d2)
+        {
+            return new Size((ulong)(size1.Value * d2));
+        }
+
         public static Size operator -(Size size1, Size size2)
         {
             if(size1 < size2)
