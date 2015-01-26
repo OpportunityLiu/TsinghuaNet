@@ -222,13 +222,13 @@ namespace TsinghuaNet
                 });
         }
 
-        public Task<WebDetailList> GetDetailListAnsyc()
+        public Task<WebUsageData> GetUsageAnsyc()
         {
-            return Task<WebDetailList>.Run(() =>
+            return Task<WebUsageData>.Run(() =>
             {
                 logOnUsereg();
                 var res = http.GetStringAsync("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000").Result;
-                return new WebDetailList(res, DeviceList);
+                return new WebUsageData(res, DeviceList);
             });
         }
 
