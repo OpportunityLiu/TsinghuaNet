@@ -9,9 +9,9 @@ using Windows.Data.Html;
 
 namespace TsinghuaNet
 {
-    public class WebDetailList
+    public class WebUsageData
     {
-        public WebDetailList(string detailHtml, IList<WebDevice> devices)
+        public WebUsageData(string detailHtml, IList<WebDevice> devices)
         {
             if(string.IsNullOrEmpty(detailHtml))
                 throw new ArgumentNullException("detailHtml");
@@ -73,4 +73,6 @@ namespace TsinghuaNet
             //public readonly MacAddress Mac;
         }
     }
+
+
 }

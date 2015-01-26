@@ -47,7 +47,7 @@
         </ListView>
         <Button Click="Button_Click_2" Margin="50" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="100" Content="刷新" />
         <charting:Chart x:Name="MixedChart" Title="Mixed Chart" Margin="300,0,20,0">
-            <charting:ColumnSeries x:Name="aa" Title="aaa" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.Value}" >
+            <charting:ColumnSeries x:Name="aa" Title="aaa" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.TotalGB}" >
                 <Series:ColumnSeries.Transitions>
                     <TransitionCollection>
                         <EntranceThemeTransition />

@@ -26,7 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SharedUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebConnect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebDetailList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebUsageData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebStruct.cs" />
   </ItemGroup>

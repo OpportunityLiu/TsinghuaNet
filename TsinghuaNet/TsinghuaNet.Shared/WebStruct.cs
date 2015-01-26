@@ -204,6 +204,14 @@ namespace TsinghuaNet
             set;
         }
 
+        public double TotalGB
+        {
+            get
+            {
+                return Value / gb;
+            }
+        }
+
         /// <summary>
         /// 返回当前对象的字符串形式。
         /// </summary>
