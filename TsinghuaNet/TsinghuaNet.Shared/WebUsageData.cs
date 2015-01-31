@@ -18,29 +18,27 @@ namespace TsinghuaNet
                 throw new ArgumentNullException("detailHtml");
             traffic = new Dictionary<DateTime, Size>();
             trafficM = new Dictionary<int, Size>();
-            var detailList = new List<webDetailQuery>();
-            foreach(var item in devices)
-                detailList.Add(new webDetailQuery(item));
             foreach(Match item in Regex.Matches(detailHtml, "\\<tr align=\"center\" style=.+?/tr\\>", RegexOptions.Singleline))
-                detailList.Add(new webDetailQuery(item.Value));
-            var queryOfDay = from item in detailList
-                    group item.WebTraffic by item.LogOnTime.Date;
-            foreach(var item in queryOfDay)
             {
-                var sum = new Size();
-                foreach(var item2 in item)
-                    sum += item2;
-                traffic[item.Key] = sum;
+                var lines = Regex.Matches(item.Value, "(?<=\\<td.+?\\>)(.+?)(?=\\</td\\>)");
+                var date = DateTime.ParseExact(lines[3].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).Date;
+                if(traffic.ContainsKey(date))
+                    traffic[date] += Size.Parse(lines[9].Value);
+                else
+                    traffic[date] = Size.Parse(lines[9].Value);
             }
-            var queryOfMonth = from item in traffic
-                               group item.Value by item.Key.Year * 100 + item.Key.Month;
-            foreach(var item in queryOfMonth)
+            foreach(var item in devices)
             {
-                var sum = new Size();
-                foreach(var item2 in item)
-                    sum += item2;
-                trafficM[item.Key] = sum;
+                var date = item.LogOnDateTime.Date;
+                if(traffic.ContainsKey(date))
+                    traffic[date] += item.WebTraffic;
+                else
+                    traffic[date] = item.WebTraffic;
             }
+            var monthList = from item in traffic
+                            group item.Value by item.Key.Month + item.Key.Year * 100;
+            foreach(var item in monthList)
+                trafficM[item.Key] = item.Aggregate((size1, size2) => size1 + size2);
             System.Diagnostics.Debug.WriteLine(DateTime.Now.Ticks - t);
         }
 
