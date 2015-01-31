@@ -37,7 +37,7 @@ namespace TsinghuaNet
             this.sharedUI = (App.Current as App).SharedUI;
             if(sharedUI.Connect != null)
                 listviewDevices.ItemsSource = sharedUI.Connect.DeviceList;
-            ((ColumnSeries)this.MixedChart.Series[0]).ItemsSource = sharedUI.Connect.GetUsageAnsyc().Result.traffic;
+            //((ColumnSeries)this.MixedChart.Series[0]).ItemsSource = sharedUI.Connect.GetUsageAnsyc().Result.traffic;
         }
 
         private SharedUI sharedUI;
