@@ -13,6 +13,7 @@ namespace TsinghuaNet
     {
         public WebUsageData(string detailHtml, IList<WebDevice> devices)
         {
+            var t = DateTime.Now.Ticks;
             if(string.IsNullOrEmpty(detailHtml))
                 throw new ArgumentNullException("detailHtml");
             traffic = new Dictionary<DateTime, Size>();
@@ -40,6 +41,7 @@ namespace TsinghuaNet
                     sum += item2;
                 trafficM[item.Key] = sum;
             }
+            System.Diagnostics.Debug.WriteLine(DateTime.Now.Ticks - t);
         }
 
         public Dictionary<DateTime, Size> traffic;

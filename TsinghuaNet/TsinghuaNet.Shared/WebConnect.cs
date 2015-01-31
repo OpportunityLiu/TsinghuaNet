@@ -58,7 +58,7 @@ namespace TsinghuaNet
                 {
                     res = httpPost("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
                 }
-                catch(WebException ex)
+                catch(AggregateException ex)
                 {
                     throw new LogOnException("连接错误。", ex);
                 }
