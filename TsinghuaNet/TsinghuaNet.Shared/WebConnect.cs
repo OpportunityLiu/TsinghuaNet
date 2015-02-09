@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Data.Html;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Reflection;
 
 namespace TsinghuaNet
 {
@@ -65,7 +63,7 @@ namespace TsinghuaNet
                 if(Regex.IsMatch(res, @"^\d+,"))
                 {
                     var a = res.Split(',');
-                    this.webTraffic.Value = ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture);
+                    this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
                     this.IsOnline = true;
                     return;
                 }
@@ -194,7 +192,7 @@ namespace TsinghuaNet
                         var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
                         if(info1.Count != 3)
                             throw new InvalidOperationException("获取到的数据格式错误。");
-                        webTraffic.Value = ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+                        WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
                         Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
                         //获取登录信息
                         var res2 = http.GetStringAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php").Result;
@@ -213,7 +211,6 @@ namespace TsinghuaNet
                         }).AsTask().Wait();
                         //全部成功
                         UpdateTime = DateTime.Now;
-                        propertyChanging();
                     }
                     catch(Exception)
                     {
@@ -249,20 +246,36 @@ namespace TsinghuaNet
         /// </summary>
         public bool IsOnline
         {
-            get;
-            private set;
+            get
+            {
+                return isOnline;
+            }
+            private set
+            {
+                isOnline = value;
+                propertyChanging();
+            }
         }
+
+        private bool isOnline;
 
         /// <summary>
         /// 当前账户余额。
         /// </summary>
         public decimal Balance
         {
-            get;
-            private set;
+            get
+            {
+                return balance;
+            }
+            private set
+            {
+                balance = value;
+                propertyChanging();
+            }
         }
 
-        private Size webTraffic;
+        private decimal balance;
 
         /// <summary>
         /// 之前累积的的网络流量（不包括当前在线设备产生的流量）。
@@ -273,7 +286,14 @@ namespace TsinghuaNet
             {
                 return webTraffic;
             }
+            private set
+            {
+                webTraffic = value;
+                propertyChanging();
+            }
         }
+
+        private Size webTraffic;
 
         /// <summary>
         /// 精确的网络流量（包括当前在线设备产生的流量）。
@@ -314,6 +334,9 @@ namespace TsinghuaNet
 
         #region INotifyPropertyChanged 成员
 
+        /// <summary>
+        /// 属性更改时引发。
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void propertyChanging([CallerMemberName] string propertyName = "")
