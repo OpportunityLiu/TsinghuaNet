@@ -4,46 +4,74 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Windows.Data.Html;
 
 namespace TsinghuaNet
 {
+    /// <summary>
+    /// 表示历史流量的类。
+    /// </summary>
     public class WebUsageData
     {
-        public WebUsageData(string detailHtml, IList<WebDevice> devices)
+        /// <summary>
+        /// 通过流量数据及当前设备信息统计流量以建立 <see cref="TsinghuaNet.WebUsageData"/> 的新实例。
+        /// </summary>
+        /// <param name="detailHtml">包含流量数据的 html 页。</param>
+        /// <param name="devices">当前设备列表。</param>
+        /// <exception cref="System.ArgumentNullException">参数为 <c>null</c>。</exception>
+        public WebUsageData(string detailHtml, IEnumerable<WebDevice> devices)
         {
-            var t = DateTime.Now.Ticks;
             if(string.IsNullOrEmpty(detailHtml))
                 throw new ArgumentNullException("detailHtml");
-            traffic = new Dictionary<DateTime, Size>();
-            trafficM = new Dictionary<int, Size>();
+            if(devices == null)
+                throw new ArgumentNullException("devices");
+            trafficD = new Dictionary<DateTime, Size>();
+            trafficM = new Dictionary<DateTime, Size>();
             foreach(Match item in Regex.Matches(detailHtml, "\\<tr align=\"center\" style=.+?/tr\\>", RegexOptions.Singleline))
             {
                 var lines = Regex.Matches(item.Value, "(?<=\\<td.+?\\>)(.+?)(?=\\</td\\>)");
                 var date = DateTime.ParseExact(lines[3].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).Date;
-                if(traffic.ContainsKey(date))
-                    traffic[date] += Size.Parse(lines[9].Value);
+                if(trafficD.ContainsKey(date))
+                    trafficD[date] += Size.Parse(lines[9].Value);
                 else
-                    traffic[date] = Size.Parse(lines[9].Value);
+                    trafficD[date] = Size.Parse(lines[9].Value);
             }
             foreach(var item in devices)
             {
                 var date = item.LogOnDateTime.Date;
-                if(traffic.ContainsKey(date))
-                    traffic[date] += item.WebTraffic;
+                if(trafficD.ContainsKey(date))
+                    trafficD[date] += item.WebTraffic;
                 else
-                    traffic[date] = item.WebTraffic;
+                    trafficD[date] = item.WebTraffic;
             }
-            var monthList = from item in traffic
-                            group item.Value by item.Key.Month + item.Key.Year * 100;
+            var monthList = from item in trafficD
+                            let date = item.Key
+                            group item.Value by new DateTime(date.Year, date.Month, 1);
             foreach(var item in monthList)
                 trafficM[item.Key] = item.Aggregate((size1, size2) => size1 + size2);
-            System.Diagnostics.Debug.WriteLine(DateTime.Now.Ticks - t);
+            DailyTraffic = new ReadOnlyDictionary<DateTime, Size>(trafficD);
+            MonthlyTraffic = new ReadOnlyDictionary<DateTime, Size>(trafficM);
         }
 
-        public Dictionary<DateTime, Size> traffic;
-        public Dictionary<int, Size> trafficM;
+        private Dictionary<DateTime, Size> trafficD;
+        private Dictionary<DateTime, Size> trafficM;
+
+        /// <summary>
+        /// 表示以日为单位统计的流量数据。
+        /// </summary>
+        public ReadOnlyDictionary<DateTime, Size> DailyTraffic
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 表示以月为单位统计的流量数据。
+        /// </summary>
+        public ReadOnlyDictionary<DateTime, Size> MonthlyTraffic
+        {
+            get;
+            private set;
+        }
 
         private class webDetailQuery
         {
