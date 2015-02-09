@@ -45,7 +45,6 @@ namespace TsinghuaNet
             //初始化信息存储区
             try
             {
-                ApplicationData.Current.LocalSettings.Values.Add("PasswordLength", 0);
                 ApplicationData.Current.LocalSettings.Values.Add("UserName", "");
                 ApplicationData.Current.LocalSettings.Values.Add("PasswordMD5", "");
             }
@@ -72,8 +71,6 @@ namespace TsinghuaNet
             get;
             set;
         }
-
-        private bool useSavedPassword;
 
         /// <summary>
         /// 发送 Toast 通知。
