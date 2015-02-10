@@ -36,13 +36,6 @@ namespace TsinghuaNet
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
             this.RefreshAsync();
-            WebConnect.Current = this;
-        }
-
-        public static WebConnect Current
-        {
-            private set;
-            get;
         }
 
         private string userName, passwordMd5;

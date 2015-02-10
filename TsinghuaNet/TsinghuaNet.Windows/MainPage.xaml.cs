@@ -28,9 +28,25 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            this.sharedUI = (App.Current as App).SharedUI;
+            hub.Sections.Remove(hubSectionStart);
+            hub.Sections.Remove(hubSectionState);
+            hubSectionState.DataContext = new WebDevice[] { new WebDevice(new Ipv4Address(), new Size(111), new MacAddress(), DateTime.Now, "ss", new System.Net.Http.HttpClient()) };
+            Task.Run(async() =>
+            {
+                await Task.Delay(1000);
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => hub.Sections.Add(hubSectionStart));
+            });
         }
 
-        private SharedUI sharedUI;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            hub.Sections.Remove(hubSectionStart);
+            hub.Sections.Add(hubSectionState);
+        }
+
+        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            hubSectionPic.Width = e.NewSize.Width - 200;
+        }
     }
 }
