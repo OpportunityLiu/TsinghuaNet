@@ -6,6 +6,7 @@
     <SharedProjectFile_SccAuxPath>SAK</SharedProjectFile_SccAuxPath>
     <SharedProjectFile_SccLocalPath>SAK</SharedProjectFile_SccLocalPath>
     <SharedProjectFile_SccProvider>SAK</SharedProjectFile_SccProvider>
+    <ExpressionBlendVersion>12.0.51020.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -23,11 +24,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DeviceNameDictionary.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SharedUI.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebConnect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebUsageData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebConnect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebStruct.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebUsageData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Images\Header.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

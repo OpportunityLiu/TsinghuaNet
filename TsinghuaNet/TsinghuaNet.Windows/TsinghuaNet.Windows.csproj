@@ -23,6 +23,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <PackageCertificateThumbprint>ACC42E76EB1F35D587286EC4FDCADE29E21F0DD3</PackageCertificateThumbprint>
+    <ExpressionBlendVersion>12.0.51020.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -160,6 +161,12 @@
     <Reference Include="WinRTXamlToolkit.Controls.DataVisualization">
       <HintPath>..\..\packages\WinRTXamlToolkit.Controls.DataVisualization.Windows.1.8.1.0\lib\netcore451\WinRTXamlToolkit.Controls.DataVisualization.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tasks\Tasks.csproj">
+      <Project>{325c93ef-3a24-4be4-90b4-528c1197d2ce}</Project>
+      <Name>Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

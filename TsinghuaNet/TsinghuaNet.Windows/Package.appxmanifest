@@ -25,10 +25,10 @@
           <m2:Rotation Preference="portraitFlipped" />
           <m2:Rotation Preference="landscapeFlipped" />
         </m2:InitialRotationPreference>
-        <m2:ApplicationView MinWidth="width320" />
+        <m2:ApplicationView MinWidth="width500" />
       </m2:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="TsinghuaNet.RefreshBackgroundTask">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Tasks.RefreshBackgroundTask">
           <BackgroundTasks>
             <Task Type="systemEvent" />
           </BackgroundTasks>

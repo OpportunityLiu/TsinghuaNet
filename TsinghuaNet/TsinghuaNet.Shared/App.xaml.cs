@@ -1,24 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.ApplicationModel.Background;
+using Windows.Data.Xml.Dom;
+using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
-using Windows.Storage;
-using Windows.UI.Notifications;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Core;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -27,7 +16,7 @@ namespace TsinghuaNet
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
-    public sealed partial class App : Application, IDisposable
+    public sealed partial class App : Application
     {
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
@@ -42,7 +31,56 @@ namespace TsinghuaNet
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
-            this.SharedUI = new SharedUI();
+            App.Current = this;
+
+            //注册后台任务
+             IBackgroundTaskRegistration task = null;
+            foreach(var cur in BackgroundTaskRegistration.AllTasks)
+            {
+                if(cur.Value.Name == "RefreshBackgroundTask")
+                {
+                    task = cur.Value;
+                    break;
+                }
+            }
+            if(task == null)
+            {
+                var builder = new BackgroundTaskBuilder();
+                builder.Name = "RefreshBackgroundTask";
+                builder.TaskEntryPoint = "Tasks.RefreshBackgroundTask";
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
+                task = builder.Register();
+            }
+            task.Completed += refreshOnCompleted;
+
+            //初始化信息存储区
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values.Add("UserName", "");
+                ApplicationData.Current.LocalSettings.Values.Add("PasswordMD5", "");
+            }
+            catch(ArgumentException)
+            {
+                //已经添加字段
+                if(!string.IsNullOrEmpty((string)ApplicationData.Current.LocalSettings.Values["UserName"]))
+                    new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]);
+            }
+
+            // 准备Toast通知
+            toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
+            toastTitle = toastXml.CreateTextNode("");
+            toastText1 = toastXml.CreateTextNode("");
+            toastText2 = toastXml.CreateTextNode("");
+            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastTitle);
+            stringElements[1].AppendChild(toastText1);
+            stringElements[2].AppendChild(toastText2);
+        }
+
+        public static App Current
+        {
+            get;
+            private set;
         }
 
         public static CoreDispatcher CurrentDispatcher
@@ -51,11 +89,28 @@ namespace TsinghuaNet
             private set;
         }
 
-        public SharedUI SharedUI
+        private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
         {
-            get;
-            private set;
+            SendToastNotification("Internet Connected", "", "");
         }
+
+        /// <summary>
+        /// 发送 Toast 通知。
+        /// </summary>
+        /// <param name="title">标题，加粗显示。</param>
+        /// <param name="text1">第一行内容。</param>
+        /// <param name="text2">第二行内容。</param>
+        public void SendToastNotification(string title, string text1, string text2)
+        {
+            toastTitle.NodeValue = title;
+            toastText1.NodeValue = text1;
+            toastText2.NodeValue = text2;
+            notifier.Show(new ToastNotification(toastXml));
+        }
+
+        private XmlDocument toastXml;
+        private XmlText toastTitle, toastText1, toastText2;
+        private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
 
         /// <summary>
         /// 在应用程序由最终用户正常启动时进行调用。
@@ -148,15 +203,6 @@ namespace TsinghuaNet
             // TODO: 保存应用程序状态并停止任何后台活动
             deferral.Complete();
         }
-
-        #region IDisposable 成员
-
-        public void Dispose()
-        {
-            this.SharedUI.Dispose();
-        }
-
-        #endregion
 
         private void OnResuming(object sender, object e)
         {
