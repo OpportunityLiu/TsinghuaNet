@@ -1,1 +1,5 @@
-﻿<Application x:Class="TsinghuaNet.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" RequestedTheme="Dark" />
+﻿<Application x:Class="TsinghuaNet.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" RequestedTheme="Dark" >
+    <Application.Resources>
+        <x:String x:Key="AppName">Tsinghua Net</x:String>
+    </Application.Resources>
+</Application>

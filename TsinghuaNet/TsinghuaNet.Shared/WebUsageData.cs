@@ -24,8 +24,8 @@ namespace TsinghuaNet
                 throw new ArgumentNullException("detailHtml");
             if(devices == null)
                 throw new ArgumentNullException("devices");
-            trafficD = new Dictionary<DateTime, Size>();
-            trafficM = new Dictionary<DateTime, Size>();
+            var trafficD = new Dictionary<DateTime, Size>();
+            traffic = new Dictionary<DateTime, MonthlyData>();
             foreach(Match item in Regex.Matches(detailHtml, "\\<tr align=\"center\" style=.+?/tr\\>", RegexOptions.Singleline))
             {
                 var lines = Regex.Matches(item.Value, "(?<=\\<td.+?\\>)(.+?)(?=\\</td\\>)");
@@ -45,32 +45,34 @@ namespace TsinghuaNet
             }
             var monthList = from item in trafficD
                             let date = item.Key
-                            group item.Value by new DateTime(date.Year, date.Month, 1);
+                            group item by new DateTime(date.Year, date.Month, 1);
             foreach(var item in monthList)
-                trafficM[item.Key] = item.Aggregate((size1, size2) => size1 + size2);
-            DailyTraffic = new ReadOnlyDictionary<DateTime, Size>(trafficD);
-            MonthlyTraffic = new ReadOnlyDictionary<DateTime, Size>(trafficM);
+            {
+                var monthlyData = new Dictionary<DateTime, Size>();
+                foreach(var dailyData in item)
+                    monthlyData.Add(dailyData.Key, dailyData.Value);
+                traffic.Add(item.Key, new MonthlyData(monthlyData));
+            }
+            Traffic = new ReadOnlyDictionary<DateTime, MonthlyData>(traffic);
         }
 
-        private Dictionary<DateTime, Size> trafficD;
-        private Dictionary<DateTime, Size> trafficM;
-
-        /// <summary>
-        /// 表示以日为单位统计的流量数据。
-        /// </summary>
-        public ReadOnlyDictionary<DateTime, Size> DailyTraffic
-        {
-            get;
-            private set;
-        }
+        private Dictionary<DateTime, MonthlyData> traffic;
 
         /// <summary>
         /// 表示以月为单位统计的流量数据。
         /// </summary>
-        public ReadOnlyDictionary<DateTime, Size> MonthlyTraffic
+        public ReadOnlyDictionary<DateTime, MonthlyData> Traffic
         {
             get;
             private set;
+        }
+
+        public double Width
+        {
+            get
+            {
+                return Traffic.Count * 70;
+            }
         }
 
         private class webDetailQuery
@@ -102,5 +104,18 @@ namespace TsinghuaNet
         }
     }
 
+    public class MonthlyData : ReadOnlyDictionary<DateTime, Size>
+    {
+        public MonthlyData(Dictionary<DateTime, Size> dictionary)
+            : base(dictionary)
+        {
+            Sum = dictionary.Values.Aggregate((a, b) => a + b);
+        }
 
+        public Size Sum
+        {
+            get;
+            private set;
+        }
+    }
 }
