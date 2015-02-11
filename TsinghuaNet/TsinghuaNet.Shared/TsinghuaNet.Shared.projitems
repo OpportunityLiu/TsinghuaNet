@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Conventers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DeviceNameDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebConnect.cs" />

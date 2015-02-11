@@ -8,6 +8,8 @@ using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -77,16 +79,17 @@ namespace TsinghuaNet
             stringElements[2].AppendChild(toastText2);
         }
 
-        public static App Current
+        public static new App Current
         {
             get;
             private set;
         }
 
-        public static CoreDispatcher CurrentDispatcher
+        private static CoreDispatcher currentDispatcher;
+
+        public static Windows.Foundation.IAsyncAction DispatcherRunAnsyc(DispatchedHandler agileCallback)
         {
-            get;
-            private set;
+            return App.currentDispatcher.RunAsync(CoreDispatcherPriority.Normal, agileCallback);
         }
 
         private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
@@ -128,7 +131,7 @@ namespace TsinghuaNet
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
-            CurrentDispatcher = Window.Current.Dispatcher;
+            currentDispatcher = Window.Current.Dispatcher;
 
             // 不要在窗口已包含内容时重复应用程序初始化，
             // 只需确保窗口处于活动状态

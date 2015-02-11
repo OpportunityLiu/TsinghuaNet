@@ -31,14 +31,14 @@ namespace TsinghuaNet
         /// <summary>
         /// 将字节数的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.Size"/>。
         /// </summary>
-        /// <param name="value">包含要转换的数字的字符串。</param>
-        /// <returns>与 <paramref name="value"/> 中指定的数值或符号等效的 <see cref="TsinghuaNet.Size"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="value"/> 不表示一个有效格式的数字。</exception>
+        /// <param name="dictionary">包含要转换的数字的字符串。</param>
+        /// <returns>与 <paramref name="dictionary"/> 中指定的数值或符号等效的 <see cref="TsinghuaNet.Size"/>。</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionary"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.FormatException"><paramref name="dictionary"/> 不表示一个有效格式的数字。</exception>
         public static Size Parse(string value)
         {
             if(value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("dictionary");
             if(string.IsNullOrWhiteSpace(value) || value.Length == 1)
                 throw new FormatException("字符串格式错误。");
             switch(value[value.Length - 1])
@@ -188,7 +188,7 @@ namespace TsinghuaNet
         /// <summary>
         /// 创建 <see cref="TsinghuaNet.Size"/> 的新实例。
         /// </summary>
-        /// <param name="value">要存储的字节数。</param>
+        /// <param name="dictionary">要存储的字节数。</param>
         public Size(ulong value)
             : this()
         {
@@ -244,14 +244,14 @@ namespace TsinghuaNet
         /// <summary>
         /// 将 Mac 地址的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.MacAddress"/>。
         /// </summary>
-        /// <param name="value">包含要转换的 Mac 地址的字符串。</param>
-        /// <returns>与 <paramref name="value"/> 中指定的 <see cref="TsinghuaNet.MacAddress"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="value"/> 不表示一个有效格式的 Mac 地址。</exception>
+        /// <param name="dictionary">包含要转换的 Mac 地址的字符串。</param>
+        /// <returns>与 <paramref name="dictionary"/> 中指定的 <see cref="TsinghuaNet.MacAddress"/>。</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionary"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.FormatException"><paramref name="dictionary"/> 不表示一个有效格式的 Mac 地址。</exception>
         public static MacAddress Parse(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("dictionary");
             var mac = value.Split(":. ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             if(mac.Length != 6)
                 throw new FormatException("字符串格式有误。");
@@ -308,15 +308,15 @@ namespace TsinghuaNet
         /// <summary>
         /// 通过字节数组创建 <see cref="TsinghuaNet.MacAddress"/> 的新实例。
         /// </summary>
-        /// <param name="value">长度为 6 的 <see cref="System.Byte[]"/>，表示一个 Mac 地址。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="value"/> 长度不为 6。</exception>
+        /// <param name="dictionary">长度为 6 的 <see cref="System.Byte[]"/>，表示一个 Mac 地址。</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionary"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="dictionary"/> 长度不为 6。</exception>
         public MacAddress(params byte[] value)
         {
             if(value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("dictionary");
             if(value.Length != 6)
-                throw new ArgumentException("数组长度应为 6。", "value");
+                throw new ArgumentException("数组长度应为 6。", "dictionary");
             this.value0 = value[0];
             this.value1 = value[1];
             this.value2 = value[2];
@@ -462,14 +462,14 @@ namespace TsinghuaNet
         /// <summary>
         /// 将 IP 地址的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.Ipv4Address"/>。
         /// </summary>
-        /// <param name="value">包含要转换的 IP 地址的字符串。</param>
-        /// <returns>与 <paramref name="value"/> 中指定的 <see cref="TsinghuaNet.Ipv4Address"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="value"/> 不表示一个有效格式的 IP 地址。</exception>
+        /// <param name="dictionary">包含要转换的 IP 地址的字符串。</param>
+        /// <returns>与 <paramref name="dictionary"/> 中指定的 <see cref="TsinghuaNet.Ipv4Address"/>。</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionary"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.FormatException"><paramref name="dictionary"/> 不表示一个有效格式的 IP 地址。</exception>
         public static Ipv4Address Parse(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("dictionary");
             var ip = value.Split(":. ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             if(ip.Length != 4)
                 throw new FormatException("字符串格式有误。");
@@ -489,15 +489,15 @@ namespace TsinghuaNet
         /// <summary>
         /// 通过字节数组创建 <see cref="TsinghuaNet.Ipv4Address"/> 的新实例。
         /// </summary>
-        /// <param name="value">长度为 4 的 <see cref="System.Byte[]"/>，表示一个 IP 地址。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="value"/> 长度不为 4。</exception>
+        /// <param name="dictionary">长度为 4 的 <see cref="System.Byte[]"/>，表示一个 IP 地址。</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionary"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="dictionary"/> 长度不为 4。</exception>
         public Ipv4Address(params byte[] value)
         {
             if(value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException("dictionary");
             if(value.Length != 4)
-                throw new ArgumentException("数组长度应为 4。", "value");
+                throw new ArgumentException("数组长度应为 4。", "dictionary");
             this.value0 = value[0];
             this.value1 = value[1];
             this.value2 = value[2];
