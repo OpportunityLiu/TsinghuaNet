@@ -77,15 +77,14 @@ namespace TsinghuaNet
                 dayMax = DateTime.DaysInMonth(data.Key.Year, data.Key.Month);
             for(int i = 1; i <= dayMax; i++)
             {
-                day = day.AddDays(1);
                 try
                 {
-                    sum += data.Value[day];
+                    dataContext.Add(new KeyValuePair<int, Size>(i, sum += data.Value[day]));
                 }
                 catch(KeyNotFoundException)
                 {
                 }
-                dataContext.Add(new KeyValuePair<int, Size>(i, sum));
+                day = day.AddDays(1);
             }
             DataContext = dataContext;
         }
