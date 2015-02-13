@@ -79,11 +79,11 @@ namespace TsinghuaNet
             {
                 try
                 {
-                    dataContext.Add(new KeyValuePair<int, Size>(i, sum += data.Value[day]));
+                    sum += data.Value[day];
                 }
                 catch(KeyNotFoundException)
                 {
-                }
+                }dataContext.Add(new KeyValuePair<int, Size>(i, sum));
                 day = day.AddDays(1);
             }
             DataContext = dataContext;

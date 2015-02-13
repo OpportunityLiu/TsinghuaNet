@@ -29,6 +29,10 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
+            Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
+            {
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, "关于", a => new About().Show()));
+            };
             appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
