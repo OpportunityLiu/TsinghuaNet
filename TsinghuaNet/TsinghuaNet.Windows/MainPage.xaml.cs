@@ -29,15 +29,11 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
-            {
-                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, "关于", a => new About().Show()));
-            };
             appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
             hub.Sections.Remove(hubSectionHistory);
-            Task.Run(async() =>
+            Task.Run(async () =>
             {
                 await Task.Delay(1000);
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -60,19 +56,21 @@ namespace TsinghuaNet
 
         PasswordBox passwordBoxPassword;
         TextBox textBoxUserName;
+        MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
+        MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
 
         private async void logOn_Click(object sender, RoutedEventArgs e)
         {
             var userName = textBoxUserName.Text;
             if(string.IsNullOrEmpty(userName))
             {
-                await new MessageDialog("请输入用户名。", "错误").ShowAsync();
+                await emptyUserName.ShowAsync();
                 return;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
-                await new MessageDialog("请输入密码。", "错误").ShowAsync();
+                await emptyPassword.ShowAsync();
                 return;
             }
             var passMD5 = MD5.MDString(password);
@@ -106,10 +104,9 @@ namespace TsinghuaNet
         private void changeUser_Click(object sender, RoutedEventArgs e)
         {
             hub.ScrollToSection(hubSectionPic);
-            hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
             hub.Sections.Remove(hubSectionHistory);
-            if(textBoxUserName!=null)
+            if(textBoxUserName != null)
             {
                 textBoxUserName.Text = "";
                 passwordBoxPassword.Password = "";
@@ -122,7 +119,7 @@ namespace TsinghuaNet
         private void rename_Click(object sender, RoutedEventArgs e)
         {
             appBarButtonRename.Flyout.Hide();
-            commandBar.IsOpen=false;
+            commandBar.IsOpen = false;
             ((WebDevice)listViewOnlineDevices.SelectedItem).Name = textBoxRename.Text;
         }
 

@@ -67,11 +67,16 @@ namespace TsinghuaNet
             private set;
         }
 
-        public double Width
+        public double Length
         {
             get
             {
-                return Traffic.Count * 70;
+#if WINDOWS_APP
+                return Traffic.Count * 100;
+#endif
+#if WINDOWS_PHONE_APP
+                return Traffic.Count*30;
+#endif
             }
         }
 

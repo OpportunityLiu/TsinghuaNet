@@ -1,4 +1,35 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--zh-CN-->
     <x:String x:Key="StringLanguage">zh-CN</x:String>
-    <x:String x:Key="Start">开始使用</x:String>
+
+    <x:String x:Key="StringOk">确定</x:String>
+    <x:String x:Key="StringError">错误</x:String>
+    <x:String x:Key="StringErrorUserName">请输入用户名。</x:String>
+    <x:String x:Key="StringErrorPassword">请输入密码。</x:String>
+    
+    <!--MainPage.xaml-->
+    <x:String x:Key="StringStart">开始使用</x:String>
+    <x:String x:Key="StringStartHint">输入清华大学校园网用户名与密码以开始使用。</x:String>
+    <x:String x:Key="StringUserName">用户名</x:String>
+    <x:String x:Key="StringPassword">密码</x:String>
+
+    <x:String x:Key="StringState">当前状态</x:String>
+    <x:String x:Key="StringTraffic">流量</x:String>
+    <x:String x:Key="StringUpdateTime">更新时间</x:String>
+    <x:String x:Key="StringBalance">余额</x:String>
+    <x:String x:Key="StringYuan">元</x:String>
+
+    <x:String x:Key="StringHistory">历史记录</x:String>
+    <x:String x:Key="StringRefreshList">更新列表</x:String>
+
+    <x:String x:Key="StringRefresh">刷新</x:String>
+    <x:String x:Key="StringChangeUser">更换用户</x:String>
+    <x:String x:Key="StringRename">重命名</x:String>
+    <x:String x:Key="StringNewName">新名称</x:String>
+    <x:String x:Key="StringDrop">下线</x:String>
+    <x:String x:Key="StringDropHint">选定的设备将被强制下线。</x:String>
+
+    <!--About.xaml-->
+    <x:String x:Key="StringAbout">关于</x:String>
+    <x:String x:Key="StringVersion">版本 {0}.{1}.{2}.{3}</x:String>
 </ResourceDictionary>

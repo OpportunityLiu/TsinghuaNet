@@ -1,4 +1,35 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--en-->
     <x:String x:Key="StringLanguage">en</x:String>
-    <x:String x:Key="Start">Quick start</x:String>
+
+    <x:String x:Key="StringOk">Ok</x:String>
+    <x:String x:Key="StringError">Error</x:String>
+    <x:String x:Key="StringErrorUserName">Please enter your user ID.</x:String>
+    <x:String x:Key="StringErrorPassword">Please enter your password.</x:String>
+
+    <!--MainPage.xaml-->
+    <x:String x:Key="StringStart">Quick start</x:String>
+    <x:String x:Key="StringStartHint">Enter your user ID and password for Tsinghua University Network to start.</x:String>
+    <x:String x:Key="StringUserName">User ID</x:String>
+    <x:String x:Key="StringPassword">Password</x:String>
+
+    <x:String x:Key="StringState">State</x:String>
+    <x:String x:Key="StringTraffic">Traffic</x:String>
+    <x:String x:Key="StringUpdateTime">Update time</x:String>
+    <x:String x:Key="StringBalance">Balance</x:String>
+    <x:String x:Key="StringYuan">Yuan</x:String>
+
+    <x:String x:Key="StringHistory">History</x:String>
+    <x:String x:Key="StringRefreshList">Refresh the chart</x:String>
+
+    <x:String x:Key="StringRefresh">Refresh</x:String>
+    <x:String x:Key="StringChangeUser">Change user</x:String>
+    <x:String x:Key="StringRename">Rename</x:String>
+    <x:String x:Key="StringNewName">New name</x:String>
+    <x:String x:Key="StringDrop">Down</x:String>
+    <x:String x:Key="StringDropHint">The selected device will be forced to log off.</x:String>
+
+    <!--About.xaml-->
+    <x:String x:Key="StringAbout">About</x:String>
+    <x:String x:Key="StringVersion">Version {0}.{1}.{2}.{3}</x:String>
 </ResourceDictionary>

@@ -61,11 +61,11 @@ namespace TsinghuaNet
                 string res;
                 try
                 {
-                    res = httpPost("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                    res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
                 }
                 catch(AggregateException ex)
                 {
-                    throw new LogOnException("连接错误。", ex);
+                    throw new LogOnException(LogOnExceptionType.connect_error, ex);
                 }
                 if(Regex.IsMatch(res, @"^\d+,"))
                 {
@@ -76,77 +76,12 @@ namespace TsinghuaNet
                 }
                 this.IsOnline = false;
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
-                    throw new LogOnException("密码错误或会话失效");
-                else if(logOnErrorDict.ContainsKey(res))
-                    throw new LogOnException(logOnErrorDict[res]);
+                    throw new LogOnException(LogOnExceptionType.password_error);
+                else if(LogOnException.LogOnExceptionTypeDict.ContainsKey(res))
+                    throw new LogOnException(LogOnException.LogOnExceptionTypeDict[res]);
                 else
-                    throw new LogOnException("未知错误。");
+                    throw new LogOnException("登陆返回异常，返回：\r\n" + res);
             });
-        }
-
-        private static Dictionary<string, string> logOnErrorDict = initLogOnErrorDict();
-
-        private static Dictionary<string, string> initLogOnErrorDict()
-        {
-            var dict = new Dictionary<string, string>();
-            dict.Add("username_error", "用户名错误");
-            dict.Add("password_error", "密码错误");
-            dict.Add("user_tab_error", "认证程序未启动");
-            dict.Add("user_group_error", "您的计费组信息不正确");
-            dict.Add("non_auth_error", "您无须认证，可直接上网");
-            dict.Add("status_error", "用户已欠费，请尽快充值。");
-            dict.Add("available_error", "您的帐号已停用");
-            dict.Add("delete_error", "您的帐号已删除");
-            dict.Add("ip_exist_error", "IP已存在，请稍后再试。");
-            dict.Add("usernum_error", "用户数已达上限");
-            dict.Add("online_num_error", "该帐号的登录人数已超过限额，请登录https://usereg.tsinghua.edu.cn断开不用的连接。");
-            dict.Add("mode_error", "系统已禁止WEB方式登录，请使用客户端");
-            dict.Add("time_policy_error", "当前时段不允许连接");
-            dict.Add("flux_error", "您的流量已超支");
-            dict.Add("minutes_error", "您的时长已超支");
-            dict.Add("ip_error", "您的 IP 地址不合法");
-            dict.Add("mac_error", "您的 MAC 地址不合法");
-            dict.Add("sync_error", "您的资料已修改，正在等待同步，请 2 分钟后再试。");
-            dict.Add("ip_alloc", "您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。");
-            dict.Add("ip_invaild", "您是区内地址，无法使用。");
-            return dict;
-        }
-
-        /// <summary>
-        /// 异步退出登录。
-        /// </summary>
-        /// <exception cref="System.Net.Http.HttpRequestException">发生连接错误。</exception>
-        public Task LogOffAsync()
-        {
-            return Task.Run(() =>
-            {
-                using(var con = new StringContent(""))
-                {
-                    try
-                    {
-                        var request = http.PostAsync("http://net.tsinghua.edu.cn/cgi-bin/do_login", con);
-                        request.Wait();
-                        var response = request.Result.Content.ReadAsStringAsync();
-                        response.Wait();
-                    }
-                    catch(AggregateException ex)
-                    {
-                        throw new HttpRequestException("无法连接。", ex);
-                    }
-                }
-            });
-        }
-
-        private string httpPost(string uri, string request)
-        {
-            using(var re = new StringContent(request))
-            {
-                re.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                using(var get = http.PostAsync(uri, re).Result)
-                {
-                    return get.Content.ReadAsStringAsync().Result;
-                }
-            }
         }
 
         private string cookie;
@@ -170,24 +105,41 @@ namespace TsinghuaNet
                 http.DefaultRequestHeaders.Remove("Cookie");
                 http.DefaultRequestHeaders.Add("Cookie", cookie);
                 //登陆
-                if(httpPost("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5) != "ok")
-                    throw new InvalidOperationException("返回异常。\r\nlogOnUsereg() 在登陆时返回了异常的结果。");
+                var logOnRes=http.Post("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
+                switch(logOnRes)
+                {
+                    case "ok":
+                        break;
+                    case "用户不存在":
+                        throw new LogOnException(LogOnExceptionType.username_error);
+                    case "密码错误":
+                        throw new LogOnException(LogOnExceptionType.password_error);
+                    default:
+                        throw new LogOnException("返回异常。\r\nHttp请求返回：\r\n" + logOnRes);
+                }
             };
             try
             {
                 logOn();
             }
-            catch(InvalidOperationException)
+            catch(LogOnException ex)
             {
-                Task.Delay(100).Wait();
-                try
+                if(ex.ExceptionType == LogOnExceptionType.unknown)
                 {
-                    logOn();//重试第一次
+                    Task.Delay(100).Wait();
+                    try
+                    {
+                        logOn();//重试第一次
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        Task.Delay(1000).Wait();
+                        logOn();//重试第二次
+                    }
                 }
-                catch(InvalidOperationException)
+                else
                 {
-                    Task.Delay(1000).Wait();
-                    logOn();//重试第二次
+                    throw;
                 }
             }
         }
@@ -203,7 +155,7 @@ namespace TsinghuaNet
                     {
                         logOnUsereg();
                         //获取用户信息
-                        var res1 = HtmlUtilities.ConvertToText(http.GetStringAsync("https://usereg.tsinghua.edu.cn/user_info.php").Result);
+                        var res1 = HtmlUtilities.ConvertToText(http.Get("https://usereg.tsinghua.edu.cn/user_info.php"));
                         var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
                         if(info1.Count != 3)
                             throw new InvalidOperationException("获取到的数据格式错误。");
@@ -213,7 +165,7 @@ namespace TsinghuaNet
                             Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
                         }).AsTask();
                         //获取登录信息
-                        var res2 = http.GetStringAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php").Result;
+                        var res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
                         var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
                         var devices = new List<WebDevice>();
                         foreach(Match item in info2)
@@ -244,7 +196,7 @@ namespace TsinghuaNet
             {
                 await App.DispatcherRunAnsyc(() => UsageData = null);
                 logOnUsereg();
-                var res = http.GetStringAsync("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000").Result;
+                var res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
                 await App.DispatcherRunAnsyc(() => UsageData = new WebUsageData(res, DeviceList));
                 return;
             });
@@ -399,40 +351,5 @@ namespace TsinghuaNet
         }
 
         #endregion
-    }
-
-
-    /// <summary>
-    /// 表示在登陆过程中发生的错误。
-    /// </summary>
-    public class LogOnException : Exception
-    {
-        /// <summary>
-        /// 初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
-        /// </summary>
-        public LogOnException()
-        {
-        }
-
-        /// <summary>
-        /// 使用指定的错误信息初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
-        /// </summary>
-        /// <param name="message">描述错误的消息。</param>
-        public LogOnException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// 使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
-        /// </summary>
-        /// <param name="message">解释异常原因的错误信息。</param>
-        /// <param name="inner">
-        /// 导致当前异常的异常；如果未指定内部异常，则是一个 <c>null</c> 引用（在 Visual Basic 中为 <c>Nothing</c>）。
-        /// </param>
-        public LogOnException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
     }
 }

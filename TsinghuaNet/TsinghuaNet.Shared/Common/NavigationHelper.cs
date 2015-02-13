@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace TsinghuaNet_Windows.Common
+namespace TsinghuaNet.Common
 {
     /// <summary>
     /// NavigationHelper 协助在页面间进行导航。 它提供一些命令，用于
@@ -59,8 +59,18 @@ namespace TsinghuaNet_Windows.Common
     [Windows.Foundation.Metadata.WebHostHidden]
     public class NavigationHelper : DependencyObject
     {
-        private Page Page { get; set; }
-        private Frame Frame { get { return this.Page.Frame; } }
+        private Page Page
+        {
+            get;
+            set;
+        }
+        private Frame Frame
+        {
+            get
+            {
+                return this.Page.Frame;
+            }
+        }
 
         /// <summary>
         /// 初始化 <see cref="NavigationHelper"/> 类的新实例。
@@ -81,7 +91,7 @@ namespace TsinghuaNet_Windows.Common
                 Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 #else
                 // 仅当占用整个窗口时，键盘和鼠标导航才适用
-                if (this.Page.ActualHeight == Window.Current.Bounds.Height &&
+                if(this.Page.ActualHeight == Window.Current.Bounds.Height &&
                     this.Page.ActualWidth == Window.Current.Bounds.Width)
                 {
                     // 直接侦听窗口，因此无需焦点
@@ -124,7 +134,7 @@ namespace TsinghuaNet_Windows.Common
         {
             get
             {
-                if (_goBackCommand == null)
+                if(_goBackCommand == null)
                 {
                     _goBackCommand = new RelayCommand(
                         () => this.GoBack(),
@@ -148,7 +158,7 @@ namespace TsinghuaNet_Windows.Common
         {
             get
             {
-                if (_goForwardCommand == null)
+                if(_goForwardCommand == null)
                 {
                     _goForwardCommand = new RelayCommand(
                         () => this.GoForward(),
@@ -189,7 +199,8 @@ namespace TsinghuaNet_Windows.Common
         /// </summary>
         public virtual void GoBack()
         {
-            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
+            if(this.Frame != null && this.Frame.CanGoBack)
+                this.Frame.GoBack();
         }
         /// <summary>
         /// <see cref="GoForwardCommand"/> 属性使用的虚拟方法，用于
@@ -197,7 +208,8 @@ namespace TsinghuaNet_Windows.Common
         /// </summary>
         public virtual void GoForward()
         {
-            if (this.Frame != null && this.Frame.CanGoForward) this.Frame.GoForward();
+            if(this.Frame != null && this.Frame.CanGoForward)
+                this.Frame.GoForward();
         }
 
 #if WINDOWS_PHONE_APP
@@ -229,7 +241,7 @@ namespace TsinghuaNet_Windows.Common
 
             // 仅当按向左、向右或专用上一页或下一页键时才进一步
             // 调查
-            if ((e.EventType == CoreAcceleratorKeyEventType.SystemKeyDown ||
+            if((e.EventType == CoreAcceleratorKeyEventType.SystemKeyDown ||
                 e.EventType == CoreAcceleratorKeyEventType.KeyDown) &&
                 (virtualKey == VirtualKey.Left || virtualKey == VirtualKey.Right ||
                 (int)virtualKey == 166 || (int)virtualKey == 167))
@@ -242,14 +254,14 @@ namespace TsinghuaNet_Windows.Common
                 bool noModifiers = !menuKey && !controlKey && !shiftKey;
                 bool onlyAlt = menuKey && !controlKey && !shiftKey;
 
-                if (((int)virtualKey == 166 && noModifiers) ||
+                if(((int)virtualKey == 166 && noModifiers) ||
                     (virtualKey == VirtualKey.Left && onlyAlt))
                 {
                     // 在按上一页键或 Alt+向左键时向后导航
                     e.Handled = true;
                     this.GoBackCommand.Execute(null);
                 }
-                else if (((int)virtualKey == 167 && noModifiers) ||
+                else if(((int)virtualKey == 167 && noModifiers) ||
                     (virtualKey == VirtualKey.Right && onlyAlt))
                 {
                     // 在按下一页键或 Alt+向右键时向前导航
@@ -272,17 +284,20 @@ namespace TsinghuaNet_Windows.Common
             var properties = e.CurrentPoint.Properties;
 
             // 忽略与鼠标左键、右键和中键的键关联
-            if (properties.IsLeftButtonPressed || properties.IsRightButtonPressed ||
-                properties.IsMiddleButtonPressed) return;
+            if(properties.IsLeftButtonPressed || properties.IsRightButtonPressed ||
+                properties.IsMiddleButtonPressed)
+                return;
 
             // 如果按下后退或前进(但不是同时)，则进行相应导航
             bool backPressed = properties.IsXButton1Pressed;
             bool forwardPressed = properties.IsXButton2Pressed;
-            if (backPressed ^ forwardPressed)
+            if(backPressed ^ forwardPressed)
             {
                 e.Handled = true;
-                if (backPressed) this.GoBackCommand.Execute(null);
-                if (forwardPressed) this.GoForwardCommand.Execute(null);
+                if(backPressed)
+                    this.GoBackCommand.Execute(null);
+                if(forwardPressed)
+                    this.GoForwardCommand.Execute(null);
             }
         }
 #endif
@@ -319,20 +334,20 @@ namespace TsinghuaNet_Windows.Common
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
             this._pageKey = "Page-" + this.Frame.BackStackDepth;
 
-            if (e.NavigationMode == NavigationMode.New)
+            if(e.NavigationMode == NavigationMode.New)
             {
                 // 在向导航堆栈添加新页时清除向前导航的
                 // 现有状态
                 var nextPageKey = this._pageKey;
                 int nextPageIndex = this.Frame.BackStackDepth;
-                while (frameState.Remove(nextPageKey))
+                while(frameState.Remove(nextPageKey))
                 {
                     nextPageIndex++;
                     nextPageKey = "Page-" + nextPageIndex;
                 }
 
                 // 将导航参数传递给新页
-                if (this.LoadState != null)
+                if(this.LoadState != null)
                 {
                     this.LoadState(this, new LoadStateEventArgs(e.Parameter, null));
                 }
@@ -342,7 +357,7 @@ namespace TsinghuaNet_Windows.Common
                 // 通过将相同策略用于加载挂起状态并从缓存重新创建
                 // 放弃的页，将导航参数和保留页状态传递
                 // 给页
-                if (this.LoadState != null)
+                if(this.LoadState != null)
                 {
                     this.LoadState(this, new LoadStateEventArgs(e.Parameter, (Dictionary<String, Object>)frameState[this._pageKey]));
                 }
@@ -360,7 +375,7 @@ namespace TsinghuaNet_Windows.Common
         {
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
             var pageState = new Dictionary<String, Object>();
-            if (this.SaveState != null)
+            if(this.SaveState != null)
             {
                 this.SaveState(this, new SaveStateEventArgs(pageState));
             }
@@ -388,12 +403,20 @@ namespace TsinghuaNet_Windows.Common
         /// 最初请求此页时传递给 <see cref="Frame.Navigate(Type, Object)"/> 
         /// 的参数值。
         /// </summary>
-        public Object NavigationParameter { get; private set; }
+        public Object NavigationParameter
+        {
+            get;
+            private set;
+        }
         /// <summary>
         /// 此页在以前会话期间保留的状态
         /// 的字典。 首次访问某页时，此项将为 null。
         /// </summary>
-        public Dictionary<string, Object> PageState { get; private set; }
+        public Dictionary<string, Object> PageState
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// 初始化 <see cref="LoadStateEventArgs"/> 类的新实例。
@@ -421,7 +444,11 @@ namespace TsinghuaNet_Windows.Common
         /// <summary>
         /// 要填入可序列化状态的空字典。
         /// </summary>
-        public Dictionary<string, Object> PageState { get; private set; }
+        public Dictionary<string, Object> PageState
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// 初始化 <see cref="SaveStateEventArgs"/> 类的新实例。

@@ -26,26 +26,26 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="commandBar" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}">
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="appBarButtonChangeUser" Icon="Sync" Label="更换用户" Click="changeUser_Click" />
+                <AppBarButton x:Name="appBarButtonChangeUser" Icon="Sync" Label="{StaticResource StringChangeUser}" Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="appBarButtonRefresh" Icon="Refresh" Label="刷新" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
+            <AppBarButton x:Name="appBarButtonRefresh" Icon="Refresh" Label="{StaticResource StringRefresh}" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
             <AppBarSeparator Visibility="{Binding Visibility, ElementName=appBarButtonRename}" />
-            <AppBarButton x:Name="appBarButtonRename" Icon="Rename" Label="重命名">
+            <AppBarButton x:Name="appBarButtonRename" Icon="Rename" Label="{StaticResource StringRename}">
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBox x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" PlaceholderText="新名称" Width="175" Margin="0,0,0,10" />
-                            <Button Content="重命名" HorizontalAlignment="Right" Click="rename_Click" />
+                            <TextBox x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" PlaceholderText="{StaticResource StringNewName}" Width="175" Margin="0,0,0,10" />
+                            <Button Content="{StaticResource StringRename}" HorizontalAlignment="Right" Click="rename_Click" />
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop" Label="下线">
+            <AppBarButton x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop" Label="{StaticResource StringDrop}">
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBlock Text="选定的设备将被强制下线。" TextWrapping="WrapWholeWords" FontSize="16" Margin="0,0,30,10" />
-                            <Button Content="确定" HorizontalAlignment="Right" Click="drop_Click" />
+                            <TextBlock Text="{StaticResource StringDropHint}" TextWrapping="WrapWholeWords" FontSize="16" Margin="0,0,30,10" />
+                            <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="drop_Click" />
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
@@ -59,33 +59,41 @@
             </HubSection.Background>
             <DataTemplate />
         </HubSection>
-        <HubSection x:Name="hubSectionStart" Header="{StaticResource Start}" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionStart" Header="{StaticResource StringStart}" Style="{StaticResource HubSectionStyle}">
             <DataTemplate>
                 <StackPanel Width="400" Loaded="StackPanel_Loaded">
-                    <TextBlock Text="输入清华大学校园网用户名与密码以开始使用。" VerticalAlignment="Top" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,10" />
+                    <TextBlock Text="{StaticResource StringStartHint}" VerticalAlignment="Top" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,10" />
                     <Grid Height="75" Margin="0,10">
-                        <TextBox x:Name="textBoxUserName" PlaceholderText="用户名" InputScope="AlphanumericHalfWidth" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" KeyUp="textBox_KeyUp" />
-                        <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="密码" IsPasswordRevealButtonEnabled="True" Width="320" VerticalAlignment="Bottom" HorizontalAlignment="Left" KeyUp="textBox_KeyUp" />
-                        <Button Content="确定" HorizontalAlignment="Right" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="0,0,15,0" VerticalAlignment="Center">
+                        <TextBox x:Name="textBoxUserName" PlaceholderText="{StaticResource StringUserName}" InputScope="AlphanumericHalfWidth" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" KeyUp="textBox_KeyUp" />
+                        <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" Width="320" VerticalAlignment="Bottom" HorizontalAlignment="Left" KeyUp="textBox_KeyUp" />
+                        <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="0,0,15,0" VerticalAlignment="Center">
                             <Button.RenderTransform>
-                                <CompositeTransform Rotation="180" ScaleX="1.45" ScaleY="1.5" />
+                                <CompositeTransform Rotation="180" ScaleX="1.5" ScaleY="1.5" />
                             </Button.RenderTransform>
                         </Button>
                     </Grid>
                 </StackPanel>
             </DataTemplate>
         </HubSection>
-        <HubSection x:Name="hubSectionState" Header="当前状态" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionState" Header="{StaticResource StringState}" Style="{StaticResource HubSectionStyle}">
             <DataTemplate>
-                <StackPanel Margin="0,5" Width="400">
-                    <TextBlock Text="{Binding UserName}" FontSize="20" Margin="0,5,0,10" />
-                    <TextBlock FontSize="16" Margin="0,10,0,5">
-						<Run Text="流量    " />
-						<Bold>
-							<Run Text="{Binding WebTrafficExact}" />
-						</Bold>
-                    </TextBlock>
-                    <Grid Margin="0,5,0,15">
+                <Grid Width="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding UserName}" FontSize="20" Margin="0,5" Grid.ColumnSpan="2" />
+                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="1" Text="{StaticResource StringTraffic}" />
+                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="1" Grid.Column="1" Text="{Binding WebTrafficExact}" FontWeight="SemiBold" />
+                    <Grid Margin="0,5" Grid.Row="2" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -131,18 +139,18 @@
                         <TextBlock Text="40" Grid.Row="1" Grid.Column="3" />
                         <TextBlock Text="50" Grid.Row="1" Grid.Column="4" />
                     </Grid>
-                    <TextBlock FontSize="16" Margin="0,5">
-						<Run Text="余额    " />
-						<Bold>
-							<Run Text="{Binding Balance}" />
-							<Run Text="元" />
-						</Bold>
+                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="3" Text="{StaticResource StringBalance}" />
+                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="3" Grid.Column="1" FontWeight="SemiBold">
+            				<Run Text="{Binding Balance}" />
+            				<Run Text="{StaticResource StringYuan}" />
                     </TextBlock>
-                    <ListView Margin="0,30,0,10" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged" />
-                </StackPanel>
+                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="4" Text="{StaticResource StringUpdateTime}" />
+                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
+                    <ListView Margin="0,10" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged" Grid.Row="5" Grid.ColumnSpan="2" />
+                </Grid>
             </DataTemplate>
         </HubSection>
-        <HubSection x:Name="hubSectionHistory" Header="历史记录" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionHistory" Header="{StaticResource StringHistory}" Style="{StaticResource HubSectionStyle}">
             <DataTemplate>
                 <Viewbox MinWidth="500">
                     <Grid>
@@ -150,8 +158,8 @@
                             <RowDefinition />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ProgressRing x:Name="progressRing" Width="100" Height="100" IsActive="{Binding UsageData, FallbackValue=False, TargetNullValue=True}" Margin="200,430,200,366.121" />
-                        <Series:Chart MinWidth="500" Width="{Binding UsageData.Width}" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}">
+                        <ProgressRing x:Name="progressRing" Width="100" Height="100" IsActive="{Binding UsageData, FallbackValue=False, TargetNullValue=True}" Margin="200,430,200,366.121" Grid.RowSpan="2" />
+                        <Series:Chart MinWidth="500" Width="{Binding UsageData.Length}" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}">
                             <Series:Chart.LegendStyle>
                                 <Style TargetType="FrameworkElement">
                                     <Setter Property="Width" Value="0" />
@@ -172,25 +180,25 @@
                                                             <VisualStateGroup x:Name="CommonStates">
                                                                 <VisualStateGroup.Transitions>
                                                                     <VisualTransition GeneratedDuration="0:0:0.1" />
-                                                                    <VisualTransition GeneratedDuration="0" To="MouseOver"/>
+                                                                    <VisualTransition GeneratedDuration="0" To="MouseOver" />
                                                                 </VisualStateGroup.Transitions>
                                                                 <VisualState x:Name="Normal" />
-                                                                <VisualState x:Name="MouseOver" >
-                                                                	<Storyboard>
-                                                                		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="MouseOverHighlight">
-                                                                			<SplineDoubleKeyFrame KeyTime="0" Value="0"/>
-                                                                			<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.3">
-                                                                				<EasingDoubleKeyFrame.EasingFunction>
-                                                                					<PowerEase EasingMode="EaseIn"/>
-                                                                				</EasingDoubleKeyFrame.EasingFunction>
-                                                                			</EasingDoubleKeyFrame>
-                                                                			<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0">
-                                                                				<EasingDoubleKeyFrame.EasingFunction>
-                                                                					<CircleEase EasingMode="EaseOut"/>
-                                                                				</EasingDoubleKeyFrame.EasingFunction>
-                                                                			</EasingDoubleKeyFrame>
-                                                                		</DoubleAnimationUsingKeyFrames>
-                                                                	</Storyboard>
+                                                                <VisualState x:Name="MouseOver">
+                                                                    <Storyboard>
+                                                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="MouseOverHighlight">
+                                                                            <SplineDoubleKeyFrame KeyTime="0" Value="0" />
+                                                                            <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.3">
+                                                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                                                    <PowerEase EasingMode="EaseIn" />
+                                                                                </EasingDoubleKeyFrame.EasingFunction>
+                                                                            </EasingDoubleKeyFrame>
+                                                                            <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0">
+                                                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                                                    <CircleEase EasingMode="EaseOut" />
+                                                                                </EasingDoubleKeyFrame.EasingFunction>
+                                                                            </EasingDoubleKeyFrame>
+                                                                        </DoubleAnimationUsingKeyFrames>
+                                                                    </Storyboard>
                                                                 </VisualState>
                                                             </VisualStateGroup>
                                                             <VisualStateGroup x:Name="SelectionStates">
@@ -221,17 +229,16 @@
                                                             </VisualStateGroup>
                                                         </VisualStateManager.VisualStateGroups>
                                                         <ToolTipService.ToolTip>
-                                                            <ContentControl Content="{TemplateBinding FormattedDependentValue}" />
+                                                            <TextBlock Text="{TemplateBinding FormattedDependentValue}" />
                                                         </ToolTipService.ToolTip>
                                                         <Grid Background="{TemplateBinding Background}">
                                                             <Rectangle x:Name="MouseOverHighlight" Fill="White" Opacity="0" />
-                                                        	<Rectangle x:Name="SelectionHighlight" Fill="{ThemeResource ComboBoxSelectedBackgroundThemeBrush}" Opacity="0" />
+                                                            <Rectangle x:Name="SelectionHighlight" Fill="{ThemeResource ComboBoxSelectedBackgroundThemeBrush}" Opacity="0" />
                                                         </Grid>
                                                     </Border>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="FontFamily" Value="Global User Interface" />
                                         <Setter Property="Foreground" Value="{x:Null}" />
                                     </Style>
                                 </Series:ColumnSeries.Resources>
@@ -248,7 +255,7 @@
                                 </Series:ColumnSeries.DataPointStyle>
                             </Series:ColumnSeries>
                         </Series:Chart>
-                        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Content="更新列表" Margin="10" Click="refreshUsage_Click" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}" Grid.Row="1" />
+                        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Content="{StaticResource StringRefreshList}" Margin="10" Click="refreshUsage_Click" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}" Grid.Row="1" />
                     </Grid>
                 </Viewbox>
             </DataTemplate>

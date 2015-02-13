@@ -25,7 +25,7 @@
         </m3:InitialRotationPreference>
       </m3:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="TsinghuaNet.RefreshBackgroundTask">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Tasks.RefreshBackgroundTask">
           <BackgroundTasks>
             <Task Type="systemEvent" />
           </BackgroundTasks>

@@ -149,14 +149,15 @@ namespace TsinghuaNet
         {
             return Task<bool>.Run(() =>
             {
-                using(var re = new StringContent(this.dropToken))
-                {
-                    re.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                    using(var get = http.PostAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", re).Result)
-                    {
-                        return get.Content.ReadAsStringAsync().Result == "ok";
-                    }
-                }
+                return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
+                //using(var re = new StringContent(this.dropToken))
+                //{
+                //    re.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                //    using(var get = http.PostAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", re).Result)
+                //    {
+                //        return get.Content.ReadAsStringAsync().Result == "ok";
+                //    }
+                //}
             });
         }
 

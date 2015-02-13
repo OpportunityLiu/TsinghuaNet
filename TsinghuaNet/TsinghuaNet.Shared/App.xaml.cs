@@ -36,7 +36,7 @@ namespace TsinghuaNet
             App.Current = this;
 
             //注册后台任务
-             IBackgroundTaskRegistration task = null;
+            IBackgroundTaskRegistration task = null;
             foreach(var cur in BackgroundTaskRegistration.AllTasks)
             {
                 if(cur.Value.Name == "RefreshBackgroundTask")
@@ -129,6 +129,15 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+
+            //注册设置项
+#if WINDOWS_APP
+            Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
+            {
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, (string)this.Resources["StringAbout"], a => new About().Show()));
+            };
+#endif
+
 
             Frame rootFrame = Window.Current.Content as Frame;
             currentDispatcher = Window.Current.Dispatcher;
