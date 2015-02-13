@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace TsinghuaNet_Windows.Common
+namespace TsinghuaNet.Common
 {
     /// <summary>
     /// 专门用于中继自身功能的命令
@@ -40,7 +40,7 @@ namespace TsinghuaNet_Windows.Common
         /// <param name="canExecute">执行状态逻辑。</param>
         public RelayCommand(Action execute, Func<bool> canExecute)
         {
-            if (execute == null)
+            if(execute == null)
                 throw new ArgumentNullException("execute");
             _execute = execute;
             _canExecute = canExecute;
@@ -77,7 +77,7 @@ namespace TsinghuaNet_Windows.Common
         public void RaiseCanExecuteChanged()
         {
             var handler = CanExecuteChanged;
-            if (handler != null)
+            if(handler != null)
             {
                 handler(this, EventArgs.Empty);
             }

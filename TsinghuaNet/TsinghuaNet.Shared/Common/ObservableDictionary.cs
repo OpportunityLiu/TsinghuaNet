@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation.Collections;
 
-namespace TsinghuaNet_Windows.Common
+namespace TsinghuaNet.Common
 {
     /// <summary>
     /// 支持重新进入以用作默认视图模型的 IObservableMap 的

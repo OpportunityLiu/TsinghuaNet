@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -22,12 +17,6 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public MainPage()
-        {
-            this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
-        }
-
         /// <summary>
         /// 在此页将要在 Frame 中显示时进行调用。
         /// </summary>
@@ -44,8 +33,135 @@ namespace TsinghuaNet
             // 则系统会为您处理该事件。
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public MainPage()
         {
+            this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+            appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            pivot.Items.Remove(pivotItemStart);
+            pivot.Items.Remove(pivotItemHistory);
+            pivot.Items.Remove(pivotItemState);
+            if(WebConnect.Current == null)
+            {
+                pivot.Items.Add(pivotItemStart);
+                appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
+            else
+            {
+                this.DataContext = WebConnect.Current;
+                pivot.Items.Add(pivotItemHistory);
+                pivot.Items.Add(pivotItemState);
+                pivot.SelectedItem = pivotItemState;
+                WebConnect.Current.RefreshUsageAnsyc();
+            }
+        }
+
+        MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
+        MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
+
+        private async void logOn_Click(object sender, RoutedEventArgs e)
+        {
+            var userName = textBoxUserName.Text;
+            if(string.IsNullOrEmpty(userName))
+            {
+                await emptyUserName.ShowAsync();
+                return;
+            }
+            var password = passwordBoxPassword.Password;
+            if(string.IsNullOrEmpty(password))
+            {
+                await emptyPassword.ShowAsync();
+                return;
+            }
+            var passMD5 = MD5.MDString(password);
+            ApplicationData.Current.LocalSettings.Values["UserName"] = userName;
+            ApplicationData.Current.LocalSettings.Values["PasswordMD5"] = passMD5;
+            new WebConnect(userName, passMD5);
+            var t = WebConnect.Current.RefreshUsageAnsyc();
+            pivot.Items.Remove(pivotItemStart);
+            pivot.Items.Add(pivotItemHistory);
+            pivot.Items.Add(pivotItemState);
+            pivot.SelectedItem = pivotItemState;
+            this.DataContext = WebConnect.Current;
+            appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            await t;
+        }
+
+        private void changeUser_Click(object sender, RoutedEventArgs e)
+        {
+            pivot.Items.Remove(pivotItemState);
+            pivot.Items.Remove(pivotItemHistory);
+            pivot.Items.Add(pivotItemStart);
+            textBoxUserName.Text = "";
+            passwordBoxPassword.Password = "";
+            commandBar.IsOpen = false;
+            appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        }
+
+        private void rename_Click(object sender, RoutedEventArgs e)
+        {
+            appBarButtonRename.Flyout.Hide();
+            commandBar.IsOpen = false;
+            ((WebDevice)listViewOnlineDevices.SelectedItem).Name = textBoxRename.Text;
+        }
+
+        private async void drop_Click(object sender, RoutedEventArgs e)
+        {
+            appBarButtonDrop.Flyout.Hide();
+            commandBar.IsOpen = false;
+            await ((WebDevice)listViewOnlineDevices.SelectedItem).DropAsync();
+            await WebConnect.Current.RefreshAsync();
+        }
+
+        private async void refresh_Click(object sender, RoutedEventArgs e)
+        {
+            commandBar.IsOpen = false;
+            if((DateTime.Now - WebConnect.Current.UpdateTime).Ticks > 100000000)//10秒
+                await WebConnect.Current.RefreshAsync();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(listViewOnlineDevices.SelectedItem != null)
+            {
+                appBarButtonRename.DataContext = listViewOnlineDevices.SelectedItem;
+                appBarButtonRename.IsEnabled = true;
+            }
+        }
+
+        private void BarSeries_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var selected = ((BarSeries)sender).SelectedItem;
+            if(selected != null)
+                Frame.Navigate(typeof(SingleMonthData), selected);
+        }
+
+        private void refreshUsage_Click(object sender, RoutedEventArgs e)
+        {
+            WebConnect.Current.RefreshUsageAnsyc();
+        }
+
+        private void textBox_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.Enter)
+                if(textBoxUserName.Text == "")
+                    textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                else if(passwordBoxPassword.Password == "")
+                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                else
+                    logOn_Click(sender, e);
+        }
+
+        private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(pivot.SelectedItem == pivotItemHistory)
+                appBarButtonSync.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            else
+                appBarButtonSync.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            if(pivot.SelectedItem == pivotItemState)
+                appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            else
+                appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
     }
 }

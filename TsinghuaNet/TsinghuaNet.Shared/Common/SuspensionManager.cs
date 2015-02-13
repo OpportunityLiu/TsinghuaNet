@@ -11,7 +11,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace TsinghuaNet_Windows.Common
+namespace TsinghuaNet.Common
 {
     /// <summary>
     /// SuspensionManager 捕获全局会话状态以简化应用程序的
@@ -35,7 +35,10 @@ namespace TsinghuaNet_Windows.Common
         /// </summary>
         public static Dictionary<string, object> SessionState
         {
-            get { return _sessionState; }
+            get
+            {
+                return _sessionState;
+            }
         }
 
         /// <summary>
@@ -45,7 +48,10 @@ namespace TsinghuaNet_Windows.Common
         /// </summary>
         public static List<Type> KnownTypes
         {
-            get { return _knownTypes; }
+            get
+            {
+                return _knownTypes;
+            }
         }
 
         /// <summary>
@@ -60,10 +66,10 @@ namespace TsinghuaNet_Windows.Common
             try
             {
                 // 保存所有已注册框架的导航状态
-                foreach (var weakFrameReference in _registeredFrames)
+                foreach(var weakFrameReference in _registeredFrames)
                 {
                     Frame frame;
-                    if (weakFrameReference.TryGetTarget(out frame))
+                    if(weakFrameReference.TryGetTarget(out frame))
                     {
                         SaveFrameNavigationState(frame);
                     }
@@ -77,13 +83,13 @@ namespace TsinghuaNet_Windows.Common
 
                 // 获取 SessionState 文件的输出流并以异步方式写入状态
                 StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(sessionStateFilename, CreationCollisionOption.ReplaceExisting);
-                using (Stream fileStream = await file.OpenStreamForWriteAsync())
+                using(Stream fileStream = await file.OpenStreamForWriteAsync())
                 {
                     sessionData.Seek(0, SeekOrigin.Begin);
                     await sessionData.CopyToAsync(fileStream);
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new SuspensionManagerException(e);
             }
@@ -108,7 +114,7 @@ namespace TsinghuaNet_Windows.Common
             {
                 // 获取 SessionState 文件的输入流
                 StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(sessionStateFilename);
-                using (IInputStream inStream = await file.OpenSequentialReadAsync())
+                using(IInputStream inStream = await file.OpenSequentialReadAsync())
                 {
                     // 反序列化会话状态
                     DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
@@ -116,17 +122,17 @@ namespace TsinghuaNet_Windows.Common
                 }
 
                 // 将任何已注册框架还原为其已保存状态
-                foreach (var weakFrameReference in _registeredFrames)
+                foreach(var weakFrameReference in _registeredFrames)
                 {
                     Frame frame;
-                    if (weakFrameReference.TryGetTarget(out frame) && (string)frame.GetValue(FrameSessionBaseKeyProperty) == sessionBaseKey)
+                    if(weakFrameReference.TryGetTarget(out frame) && (string)frame.GetValue(FrameSessionBaseKeyProperty) == sessionBaseKey)
                     {
                         frame.ClearValue(FrameSessionStateProperty);
                         RestoreFrameNavigationState(frame);
                     }
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new SuspensionManagerException(e);
             }
@@ -156,17 +162,17 @@ namespace TsinghuaNet_Windows.Common
         /// 这可用于区分多个应用程序启动方案。</param>
         public static void RegisterFrame(Frame frame, String sessionStateKey, String sessionBaseKey = null)
         {
-            if (frame.GetValue(FrameSessionStateKeyProperty) != null)
+            if(frame.GetValue(FrameSessionStateKeyProperty) != null)
             {
                 throw new InvalidOperationException("Frames can only be registered to one session state key");
             }
 
-            if (frame.GetValue(FrameSessionStateProperty) != null)
+            if(frame.GetValue(FrameSessionStateProperty) != null)
             {
                 throw new InvalidOperationException("Frames must be either be registered before accessing frame session state, or not registered at all");
             }
 
-            if (!string.IsNullOrEmpty(sessionBaseKey))
+            if(!string.IsNullOrEmpty(sessionBaseKey))
             {
                 frame.SetValue(FrameSessionBaseKeyProperty, sessionBaseKey);
                 sessionStateKey = sessionBaseKey + "_" + sessionStateKey;
@@ -217,13 +223,13 @@ namespace TsinghuaNet_Windows.Common
         {
             var frameState = (Dictionary<String, Object>)frame.GetValue(FrameSessionStateProperty);
 
-            if (frameState == null)
+            if(frameState == null)
             {
                 var frameSessionKey = (String)frame.GetValue(FrameSessionStateKeyProperty);
-                if (frameSessionKey != null)
+                if(frameSessionKey != null)
                 {
                     // 已注册框架反映相应的会话状态
-                    if (!_sessionState.ContainsKey(frameSessionKey))
+                    if(!_sessionState.ContainsKey(frameSessionKey))
                     {
                         _sessionState[frameSessionKey] = new Dictionary<String, Object>();
                     }
@@ -242,7 +248,7 @@ namespace TsinghuaNet_Windows.Common
         private static void RestoreFrameNavigationState(Frame frame)
         {
             var frameState = SessionStateForFrame(frame);
-            if (frameState.ContainsKey("Navigation"))
+            if(frameState.ContainsKey("Navigation"))
             {
                 frame.SetNavigationState((String)frameState["Navigation"]);
             }
