@@ -47,6 +47,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-140.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-180.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.targetsize-16.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.targetsize-256.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.targetsize-32.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.targetsize-48.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-140.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-180.png" />
@@ -96,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\150x150.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\30x30.targetsize-16.psd" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\30x30.psd" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\310x150.psd" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\70x70&amp;71x71.psd" />
