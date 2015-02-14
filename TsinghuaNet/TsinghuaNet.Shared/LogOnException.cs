@@ -60,12 +60,22 @@ namespace TsinghuaNet
         {
         }
 
-        public static ReadOnlyDictionary<string, LogOnExceptionType> LogOnExceptionTypeDict
+        public static LogOnException GetByErrorString(string error)
         {
-            get
-            {
-                return logOnErrorDict;
-            }
+            LogOnExceptionType value;
+            if(logOnErrorDict.TryGetValue(error, out value))
+                return new LogOnException(value);
+            else
+                return new LogOnException(error);
+        }
+
+        public static LogOnException GetByErrorString(string error, Exception inner)
+        {
+            LogOnExceptionType value;
+            if(logOnErrorDict.TryGetValue(error, out value))
+                return new LogOnException(value, inner);
+            else
+                return new LogOnException(error, inner);
         }
 
         private static ReadOnlyDictionary<LogOnExceptionType, string> logOnErrorMessageDict = new ReadOnlyDictionary<LogOnExceptionType, string>(initLogOnErrorMessageDict());
@@ -137,53 +147,98 @@ namespace TsinghuaNet
         LogOnExceptionType exceptionType;
     }
 
+    /// <summary>
+    /// 表示登陆错误的类型。
+    /// </summary>
     public enum LogOnExceptionType
     {
-        ///<summary>未知错误。</summary>
+        /// <summary>
+        /// 未知错误。
+        /// </summary>
         unknown = 0,
         /// <summary>
         /// 连接错误。
         /// </summary>
         connect_error,
-        ///<summary>用户名错误。</summary>
+        /// <summary>
+        /// 用户名错误。
+        /// </summary>
         username_error,
-        ///<summary>密码错误。</summary>
+        /// <summary>
+        /// 密码错误。
+        /// </summary>
         password_error,
-        ///<summary>认证程序未启动。</summary>
+        /// <summary>
+        /// 认证程序未启动。
+        /// </summary>
         user_tab_error,
-        ///<summary>您的计费组信息不正确。</summary>
+        /// <summary>
+        /// 您的计费组信息不正确。
+        /// </summary>
         user_group_error,
-        ///<summary>您无须认证，可直接上网。</summary>
+        /// <summary>
+        /// 您无须认证，可直接上网。
+        /// </summary>
         non_auth_error,
-        ///<summary>用户已欠费，请尽快充值。</summary>
+        /// <summary>
+        /// 用户已欠费，请尽快充值。
+        /// </summary>
         status_error,
-        ///<summary>您的帐号已停用。</summary>
+        /// <summary>
+        /// 您的帐号已停用。
+        /// </summary>
         available_error,
-        ///<summary>您的帐号已删除。</summary>
+        /// <summary>
+        /// 您的帐号已删除。
+        /// </summary>
         delete_error,
-        ///<summary>IP已存在，请稍后再试。</summary>
+        /// <summary>
+        /// IP已存在，请稍后再试。
+        /// </summary>
         ip_exist_error,
-        ///<summary>用户数已达上限。</summary>
+        /// <summary>
+        /// 用户数已达上限。
+        /// </summary>
         usernum_error,
-        ///<summary>该帐号的登录人数已超过限额。</summary>
+        /// <summary>
+        /// 该帐号的登录人数已超过限额。
+        /// </summary>
         online_num_error,
-        ///<summary>系统已禁止WEB方式登录，请使用客户端。</summary>
+        /// <summary>
+        /// 系统已禁止WEB方式登录，请使用客户端。
+        /// </summary>
         mode_error,
-        ///<summary>当前时段不允许连接。</summary>
+        /// <summary>
+        /// 当前时段不允许连接。
+        /// </summary>
         time_policy_error,
-        ///<summary>您的流量已超支。</summary>
+        /// <summary>
+        /// 您的流量已超支。
+        /// </summary>
         flux_error,
-        ///<summary>您的时长已超支。</summary>
+        /// <summary>
+        /// 您的时长已超支。
+        /// </summary>
         minutes_error,
-        ///<summary>您的 IP 地址不合法。</summary>
+        /// <summary>
+        /// 您的 IP 地址不合法。
+        /// </summary>
         ip_error,
-        ///<summary>您的 MAC 地址不合法。</summary>
+        /// <summary>
+        /// 您的 MAC 地址不合法。
+        /// </summary>
         mac_error,
-        ///<summary>您的资料已修改，正在等待同步，请 2 分钟后再试。</summary>
+        /// <summary>
+        /// 您的资料已修改，正在等待同步，请 2 分钟后再试。
+        /// </summary>
         sync_error,
-        ///<summary>您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。</summary>
+        /// <summary>
+        /// 您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。
+        /// </summary>
         ip_alloc,
-        ///<summary>您是区内地址，无法使用。</summary>
+        /// <summary>
+        /// 您是区内地址，无法使用。
+        /// </summary>
         ip_invaild
     }
 }

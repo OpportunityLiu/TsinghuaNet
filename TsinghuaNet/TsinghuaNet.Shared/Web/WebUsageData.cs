@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 表示历史流量的类。

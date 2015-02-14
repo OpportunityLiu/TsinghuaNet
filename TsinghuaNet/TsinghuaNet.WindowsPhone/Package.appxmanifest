@@ -16,8 +16,8 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="TsinghuaNet.WindowsPhone.App">
-      <m3:VisualElements DisplayName="Tsinghua Net" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="TsinghuaNet.WindowsPhone" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
-        <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
+      <m3:VisualElements DisplayName="Tsinghua Net" Square150x150Logo="Assets\150x150.png" Square44x44Logo="Assets\44x44.png" Description="TsinghuaNet.WindowsPhone" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
+        <m3:DefaultTile Square71x71Logo="Assets\71x71.png">
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#743481" />
         <m3:InitialRotationPreference>

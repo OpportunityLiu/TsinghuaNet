@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 表示连入网络的设备。

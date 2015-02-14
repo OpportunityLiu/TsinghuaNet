@@ -18,6 +18,7 @@ using Windows.Data.Xml.Dom;
 using System.Threading.Tasks;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using Windows.UI.Popups;
+using TsinghuaNet.Web;
 
 namespace TsinghuaNet
 {

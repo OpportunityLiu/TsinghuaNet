@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Windows.Storage.Streams;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 表示一定的字节数。

@@ -11,31 +11,29 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace DBCSCodePage
+namespace GB2312Encoder
 {
-    public sealed class DBCSEncoding : Encoding
+    public sealed class GB2312Encoding : Encoding
     {
         private const char LEAD_BYTE_CHAR = '\uFFFE';
         private char[] _dbcsToUnicode = null;
         private ushort[] _unicodeToDbcs = null;
         private string _webName = null;
 
-        private static Dictionary<string, Tuple<char[], ushort[]>> _cache = null;
+        private static Dictionary<string, Tuple<char[], ushort[]>> _cache = new Dictionary<string, Tuple<char[], ushort[]>>();
 
-        static DBCSEncoding()
+        static GB2312Encoding()
         {
             if (!BitConverter.IsLittleEndian)
                 throw new PlatformNotSupportedException("Not supported big endian platform.");
-
-            _cache = new Dictionary<string, Tuple<char[], ushort[]>>();
         }
 
-        private DBCSEncoding() { }
+        private GB2312Encoding() { }
 
-        public static DBCSEncoding GetDBCSEncoding(string name)
+        private static GB2312Encoding GetDBCSEncoding(string name)
         {
             name = name.ToLower();
-            DBCSEncoding encoding = new DBCSEncoding();
+            GB2312Encoding encoding = new GB2312Encoding();
             encoding._webName = name;
             if (_cache.ContainsKey(name))
             {
@@ -73,6 +71,16 @@ namespace DBCSCodePage
             encoding._dbcsToUnicode = dbcsToUnicode;
             encoding._unicodeToDbcs = unicodeToDbcs;
             return encoding;
+        }
+
+        private static Encoding encoding = GetDBCSEncoding("gb2312");
+
+        public static Encoding Gb2312
+        {
+            get
+            {
+                return encoding;
+            }
         }
 
         public override int GetByteCount(char[] chars, int index, int count)
@@ -249,9 +257,9 @@ namespace DBCSCodePage
 
         private sealed class DBCSDecoder : Decoder
         {
-            private DBCSEncoding _encoding = null;
+            private GB2312Encoding _encoding = null;
 
-            public DBCSDecoder(DBCSEncoding encoding)
+            public DBCSDecoder(GB2312Encoding encoding)
             {
                 _encoding = encoding;
             }

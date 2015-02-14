@@ -4,11 +4,13 @@ using System.Text;
 using System.Net.Http;
 using System.Linq;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     public static class HttpGb2312
     {
-        private static Encoding gb2312Encoding = DBCSCodePage.DBCSEncoding.GetDBCSEncoding("gb2312");
+#if WINDOWS_PHONE_APP
+        private static Encoding gb2312Encoding = GB2312Encoding.GB2312Encoding.Gb2312;
+#endif
 
         public static string Post(this HttpClient httpCilent, string uri, string request)
         {
