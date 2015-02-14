@@ -28,15 +28,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DBCSEncoding.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DeviceNameDictionary.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpGB2312.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LogOnException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebConnect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebDevice.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebStruct.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WebUsageData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\DeviceNameDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\HttpGB2312.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebConnect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebStruct.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\WebUsageData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Resources\Header.png">
@@ -60,9 +59,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)gb2312.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Common\ReadMe.txt" />

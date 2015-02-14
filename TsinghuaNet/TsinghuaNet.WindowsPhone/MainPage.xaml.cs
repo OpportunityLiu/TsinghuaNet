@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
+using TsinghuaNet.Web;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -36,7 +37,6 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
             appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             pivot.Items.Remove(pivotItemStart);
             pivot.Items.Remove(pivotItemHistory);
@@ -94,28 +94,25 @@ namespace TsinghuaNet
             pivot.Items.Add(pivotItemStart);
             textBoxUserName.Text = "";
             passwordBoxPassword.Password = "";
-            commandBar.IsOpen = false;
             appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
         private void rename_Click(object sender, RoutedEventArgs e)
         {
             appBarButtonRename.Flyout.Hide();
-            commandBar.IsOpen = false;
             ((WebDevice)listViewOnlineDevices.SelectedItem).Name = textBoxRename.Text;
         }
 
         private async void drop_Click(object sender, RoutedEventArgs e)
         {
             appBarButtonDrop.Flyout.Hide();
-            commandBar.IsOpen = false;
             await ((WebDevice)listViewOnlineDevices.SelectedItem).DropAsync();
             await WebConnect.Current.RefreshAsync();
         }
 
         private async void refresh_Click(object sender, RoutedEventArgs e)
         {
-            commandBar.IsOpen = false;
+            //commandBar.IsOpen = false;
             if((DateTime.Now - WebConnect.Current.UpdateTime).Ticks > 100000000)//10秒
                 await WebConnect.Current.RefreshAsync();
         }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Data.Json;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 可序列化的设备 Mac 和名称的词典。

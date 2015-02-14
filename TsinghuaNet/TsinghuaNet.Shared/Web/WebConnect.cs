@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Data.Html;
 
-namespace TsinghuaNet
+namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
@@ -77,10 +77,8 @@ namespace TsinghuaNet
                 this.IsOnline = false;
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
                     throw new LogOnException(LogOnExceptionType.password_error);
-                else if(LogOnException.LogOnExceptionTypeDict.ContainsKey(res))
-                    throw new LogOnException(LogOnException.LogOnExceptionTypeDict[res]);
                 else
-                    throw new LogOnException("登陆返回异常，返回：\r\n" + res);
+                    throw LogOnException.GetByErrorString(res);
             });
         }
 
@@ -115,7 +113,7 @@ namespace TsinghuaNet
                     case "密码错误":
                         throw new LogOnException(LogOnExceptionType.password_error);
                     default:
-                        throw new LogOnException("返回异常。\r\nHttp请求返回：\r\n" + logOnRes);
+                        throw new LogOnException(logOnRes);
                 }
             };
             try

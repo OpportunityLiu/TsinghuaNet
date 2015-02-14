@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Globalization;
+using TsinghuaNet.Web;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234237 上有介绍
 
@@ -24,7 +24,6 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class SingleMonthData : Page
     {
-
         private NavigationHelper navigationHelper;
 
         /// <summary>
