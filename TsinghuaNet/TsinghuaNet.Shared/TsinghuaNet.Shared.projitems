@@ -38,6 +38,40 @@
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebUsageData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\30x30.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\310x150.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\44x44.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\44x44.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\44x44.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\70x70.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\70x70.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\70x70.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\70x70.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\71x71.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\71x71.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\71x71.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreenPhone.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreenPhone.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreenPhone.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-240.png" />
     <Content Include="$(MSBuildThisFileDirectory)Resources\Header.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -61,6 +95,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\150x150.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\30x30.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\310x150.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\70x70&amp;71x71.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\LogoResources.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\SplashScreen.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\SplashScreenPhone.psd" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\Original\StoreLogo.psd" />
     <None Include="$(MSBuildThisFileDirectory)Common\ReadMe.txt" />
   </ItemGroup>
 </Project>

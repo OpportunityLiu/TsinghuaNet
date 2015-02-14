@@ -129,28 +129,6 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\150x150.scale-100.png" />
-    <Content Include="Assets\150x150.scale-140.png" />
-    <Content Include="Assets\150x150.scale-180.png" />
-    <Content Include="Assets\150x150.scale-80.png" />
-    <Content Include="Assets\30x30.scale-140.png" />
-    <Content Include="Assets\30x30.scale-180.png" />
-    <Content Include="Assets\30x30.scale-80.png" />
-    <Content Include="Assets\310x150.scale-100.png" />
-    <Content Include="Assets\310x150.scale-140.png" />
-    <Content Include="Assets\310x150.scale-180.png" />
-    <Content Include="Assets\310x150.scale-80.png" />
-    <Content Include="Assets\70x70.scale-100.png" />
-    <Content Include="Assets\70x70.scale-140.png" />
-    <Content Include="Assets\70x70.scale-180.png" />
-    <Content Include="Assets\70x70.scale-80.png" />
-    <Content Include="Assets\30x30.scale-100.png" />
-    <Content Include="Assets\SplashScreen.scale-100.png" />
-    <Content Include="Assets\SplashScreen.scale-140.png" />
-    <Content Include="Assets\SplashScreen.scale-180.png" />
-    <Content Include="Assets\StoreLogo.scale-100.png" />
-    <Content Include="Assets\StoreLogo.scale-140.png" />
-    <Content Include="Assets\StoreLogo.scale-180.png" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="packages.config" />
   </ItemGroup>
