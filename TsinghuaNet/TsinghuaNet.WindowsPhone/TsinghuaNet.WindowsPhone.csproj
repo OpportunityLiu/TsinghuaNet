@@ -136,6 +136,20 @@
       <Name>Tasks</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\150x150.scale-240.png" />
+    <Content Include="Assets\310x150.scale-240.png" />
+    <Content Include="Assets\44x44.scale-100.png" />
+    <Content Include="Assets\44x44.scale-140.png" />
+    <Content Include="Assets\44x44.scale-240.png" />
+    <Content Include="Assets\71x71.scale-100.png" />
+    <Content Include="Assets\71x71.scale-140.png" />
+    <Content Include="Assets\71x71.scale-240.png" />
+    <Content Include="Assets\SplashScreenPhone.scale-100.png" />
+    <Content Include="Assets\SplashScreenPhone.scale-140.png" />
+    <Content Include="Assets\SplashScreenPhone.scale-240.png" />
+    <Content Include="Assets\StoreLogo.scale-240.png" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
