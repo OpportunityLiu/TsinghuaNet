@@ -9,10 +9,15 @@
             表示字符编码。
             </summary>
         </member>
-        <member name="P:GB2312.Encoding.GB2312">
-            <summary>
-            获取使用 GB2312 格式的编码。
-            </summary>
-        </member>
+      <member name="P:GB2312.Encoding.GB2312">
+        <summary>
+          获取使用 GB2312 格式的编码。
+        </summary>
+      </member>
+      <member name="M:GB2312.Encoding.#ctor">
+        <summary>
+          初始化 <see cref="T:GB2312.Encoding"/> 类的新实例。
+        </summary>
+      </member>
     </members>
 </doc>
