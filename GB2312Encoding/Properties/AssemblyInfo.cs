@@ -2,19 +2,21 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System;
 
 // 有关程序集的常规信息通过以下特性集
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("GB2312Encoding")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("GB2312")]
+[assembly: AssemblyDescription("A GB2312 Encoding.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GB2312Encoding")]
-[assembly: AssemblyCopyright("版权所有(C)  2015")]
+[assembly: AssemblyProduct("GB2312")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: NeutralResourcesLanguage("zh-Hans")]
+[assembly:ComVisible(false)]
+[assembly:CLSCompliant(true)]
 
 // 程序集的版本信息由以下四个值组成: 
 //

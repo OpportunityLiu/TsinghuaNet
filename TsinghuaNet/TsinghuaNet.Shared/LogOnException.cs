@@ -83,27 +83,27 @@ namespace TsinghuaNet
         private static Dictionary<LogOnExceptionType, string> initLogOnErrorMessageDict()
         {
             var dict = new Dictionary<LogOnExceptionType, string>();
-            dict.Add(LogOnExceptionType.connect_error, "连接错误。");
-            dict.Add(LogOnExceptionType.username_error, "用户名错误。");
-            dict.Add(LogOnExceptionType.password_error, "密码错误。");
-            dict.Add(LogOnExceptionType.user_tab_error, "认证程序未启动。");
-            dict.Add(LogOnExceptionType.user_group_error, "您的计费组信息不正确。");
-            dict.Add(LogOnExceptionType.non_auth_error, "您无须认证，可直接上网。");
-            dict.Add(LogOnExceptionType.status_error, "用户已欠费，请尽快充值。");
-            dict.Add(LogOnExceptionType.available_error, "您的帐号已停用。");
-            dict.Add(LogOnExceptionType.delete_error, "您的帐号已删除。");
-            dict.Add(LogOnExceptionType.ip_exist_error, "IP已存在，请稍后再试。");
-            dict.Add(LogOnExceptionType.usernum_error, "用户数已达上限。");
-            dict.Add(LogOnExceptionType.online_num_error, "该帐号的登录人数已超过限额，请登录https://usereg.tsinghua.edu.cn断开不用的连接。");
-            dict.Add(LogOnExceptionType.mode_error, "系统已禁止WEB方式登录，请使用客户端。");
-            dict.Add(LogOnExceptionType.time_policy_error, "当前时段不允许连接。");
-            dict.Add(LogOnExceptionType.minutes_error, "您的时长已超支。");
-            dict.Add(LogOnExceptionType.ip_error, "您的 IP 地址不合法。");
-            dict.Add(LogOnExceptionType.mac_error, "您的 MAC 地址不合法。");
-            dict.Add(LogOnExceptionType.sync_error, "您的资料已修改，正在等待同步，请 2 分钟后再试。");
-            dict.Add(LogOnExceptionType.ip_alloc, "您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。");
-            dict.Add(LogOnExceptionType.ip_invaild, "您是区内地址，无法使用。");
-            dict.Add(LogOnExceptionType.unknown, "未知错误。");
+            dict.Add(LogOnExceptionType.ConnectError, "连接错误。");
+            dict.Add(LogOnExceptionType.UserNameError, "用户名错误。");
+            dict.Add(LogOnExceptionType.PasswordError, "密码错误。");
+            dict.Add(LogOnExceptionType.UserTabError, "认证程序未启动。");
+            dict.Add(LogOnExceptionType.UserGroupError, "您的计费组信息不正确。");
+            dict.Add(LogOnExceptionType.NonAuthError, "您无须认证，可直接上网。");
+            dict.Add(LogOnExceptionType.BalanceError, "用户已欠费，请尽快充值。");
+            dict.Add(LogOnExceptionType.UnavailableError, "您的帐号已停用。");
+            dict.Add(LogOnExceptionType.DeletedError, "您的帐号已删除。");
+            dict.Add(LogOnExceptionType.IPExistError, "IP已存在，请稍后再试。");
+            dict.Add(LogOnExceptionType.UserCountError, "用户数已达上限。");
+            dict.Add(LogOnExceptionType.OnlineCountError, "该帐号的登录人数已超过限额，请登录https://usereg.tsinghua.edu.cn断开不用的连接。");
+            dict.Add(LogOnExceptionType.ModeError, "系统已禁止WEB方式登录，请使用客户端。");
+            dict.Add(LogOnExceptionType.TimePolicyError, "当前时段不允许连接。");
+            dict.Add(LogOnExceptionType.TimeSpanLengthError, "您的时长已超支。");
+            dict.Add(LogOnExceptionType.IPError, "您的 IP 地址不合法。");
+            dict.Add(LogOnExceptionType.MacAddressError, "您的 MAC 地址不合法。");
+            dict.Add(LogOnExceptionType.SyncError, "您的资料已修改，正在等待同步，请 2 分钟后再试。");
+            dict.Add(LogOnExceptionType.IPAllocError, "您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。");
+            dict.Add(LogOnExceptionType.IPInvalidError, "您是区内地址，无法使用。");
+            dict.Add(LogOnExceptionType.Unknown, "未知错误。");
             return dict;
         }
 
@@ -112,27 +112,27 @@ namespace TsinghuaNet
         private static Dictionary<string, LogOnExceptionType> initLogOnErrorDict()
         {
             var dict = new Dictionary<string, LogOnExceptionType>();
-            dict.Add("connect_error", LogOnExceptionType.connect_error);
-            dict.Add("username_error", LogOnExceptionType.username_error);
-            dict.Add("password_error", LogOnExceptionType.password_error);
-            dict.Add("user_tab_error", LogOnExceptionType.user_tab_error);
-            dict.Add("user_group_error", LogOnExceptionType.user_group_error);
-            dict.Add("non_auth_error", LogOnExceptionType.non_auth_error);
-            dict.Add("status_error", LogOnExceptionType.status_error);
-            dict.Add("available_error", LogOnExceptionType.available_error);
-            dict.Add("delete_error", LogOnExceptionType.delete_error);
-            dict.Add("ip_exist_error", LogOnExceptionType.ip_exist_error);
-            dict.Add("usernum_error", LogOnExceptionType.usernum_error);
-            dict.Add("online_num_error", LogOnExceptionType.online_num_error);
-            dict.Add("mode_error", LogOnExceptionType.mode_error);
-            dict.Add("time_policy_error", LogOnExceptionType.time_policy_error);
-            dict.Add("flux_error", LogOnExceptionType.flux_error);
-            dict.Add("minutes_error", LogOnExceptionType.minutes_error);
-            dict.Add("ip_error", LogOnExceptionType.ip_error);
-            dict.Add("mac_error", LogOnExceptionType.mac_error);
-            dict.Add("sync_error", LogOnExceptionType.sync_error);
-            dict.Add("ip_alloc", LogOnExceptionType.ip_alloc);
-            dict.Add("ip_invaild", LogOnExceptionType.ip_invaild);
+            dict.Add("connect_error", LogOnExceptionType.ConnectError);
+            dict.Add("username_error", LogOnExceptionType.UserNameError);
+            dict.Add("password_error", LogOnExceptionType.PasswordError);
+            dict.Add("user_tab_error", LogOnExceptionType.UserTabError);
+            dict.Add("user_group_error", LogOnExceptionType.UserGroupError);
+            dict.Add("non_auth_error", LogOnExceptionType.NonAuthError);
+            dict.Add("status_error", LogOnExceptionType.BalanceError);
+            dict.Add("available_error", LogOnExceptionType.UnavailableError);
+            dict.Add("delete_error", LogOnExceptionType.DeletedError);
+            dict.Add("ip_exist_error", LogOnExceptionType.IPExistError);
+            dict.Add("usernum_error", LogOnExceptionType.UserCountError);
+            dict.Add("online_num_error", LogOnExceptionType.OnlineCountError);
+            dict.Add("mode_error", LogOnExceptionType.ModeError);
+            dict.Add("time_policy_error", LogOnExceptionType.TimePolicyError);
+            dict.Add("flux_error", LogOnExceptionType.TrafficCountError);
+            dict.Add("minutes_error", LogOnExceptionType.TimeSpanLengthError);
+            dict.Add("ip_error", LogOnExceptionType.IPError);
+            dict.Add("mac_error", LogOnExceptionType.MacAddressError);
+            dict.Add("sync_error", LogOnExceptionType.SyncError);
+            dict.Add("ip_alloc", LogOnExceptionType.IPAllocError);
+            dict.Add("ip_invaild", LogOnExceptionType.IPInvalidError);
             return dict;
         }
 
@@ -155,90 +155,90 @@ namespace TsinghuaNet
         /// <summary>
         /// 未知错误。
         /// </summary>
-        unknown = 0,
+        Unknown = 0,
         /// <summary>
         /// 连接错误。
         /// </summary>
-        connect_error,
+        ConnectError,
         /// <summary>
         /// 用户名错误。
         /// </summary>
-        username_error,
+        UserNameError,
         /// <summary>
         /// 密码错误。
         /// </summary>
-        password_error,
+        PasswordError,
         /// <summary>
         /// 认证程序未启动。
         /// </summary>
-        user_tab_error,
+        UserTabError,
         /// <summary>
         /// 您的计费组信息不正确。
         /// </summary>
-        user_group_error,
+        UserGroupError,
         /// <summary>
         /// 您无须认证，可直接上网。
         /// </summary>
-        non_auth_error,
+        NonAuthError,
         /// <summary>
         /// 用户已欠费，请尽快充值。
         /// </summary>
-        status_error,
+        BalanceError,
         /// <summary>
         /// 您的帐号已停用。
         /// </summary>
-        available_error,
+        UnavailableError,
         /// <summary>
         /// 您的帐号已删除。
         /// </summary>
-        delete_error,
+        DeletedError,
         /// <summary>
         /// IP已存在，请稍后再试。
         /// </summary>
-        ip_exist_error,
+        IPExistError,
         /// <summary>
         /// 用户数已达上限。
         /// </summary>
-        usernum_error,
+        UserCountError,
         /// <summary>
         /// 该帐号的登录人数已超过限额。
         /// </summary>
-        online_num_error,
+        OnlineCountError,
         /// <summary>
         /// 系统已禁止WEB方式登录，请使用客户端。
         /// </summary>
-        mode_error,
+        ModeError,
         /// <summary>
         /// 当前时段不允许连接。
         /// </summary>
-        time_policy_error,
+        TimePolicyError,
         /// <summary>
         /// 您的流量已超支。
         /// </summary>
-        flux_error,
+        TrafficCountError,
         /// <summary>
         /// 您的时长已超支。
         /// </summary>
-        minutes_error,
+        TimeSpanLengthError,
         /// <summary>
         /// 您的 IP 地址不合法。
         /// </summary>
-        ip_error,
+        IPError,
         /// <summary>
-        /// 您的 MAC 地址不合法。
+        /// 您的 Mac 地址不合法。
         /// </summary>
-        mac_error,
+        MacAddressError,
         /// <summary>
         /// 您的资料已修改，正在等待同步，请 2 分钟后再试。
         /// </summary>
-        sync_error,
+        SyncError,
         /// <summary>
         /// 您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。
         /// </summary>
-        ip_alloc,
+        IPAllocError,
         /// <summary>
         /// 您是区内地址，无法使用。
         /// </summary>
-        ip_invaild
+        IPInvalidError
     }
 }

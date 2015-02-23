@@ -79,34 +79,6 @@ namespace TsinghuaNet.Web
 #endif
             }
         }
-
-        private class webDetailQuery
-        {
-            public webDetailQuery(WebDevice onlineDevice)
-            {
-                LogOnTime = onlineDevice.LogOnDateTime;
-                //LogOffTime = DateTime.Now;
-                WebTraffic = onlineDevice.WebTraffic;
-                //Mac = onlineDevice.MacAddress;
-            }
-
-            public webDetailQuery(string partOfHtmlTable)
-            {
-                var list = Regex.Matches(partOfHtmlTable, "(?<=\\<td.+?\\>)(.+?)(?=\\</td\\>)");
-                LogOnTime = DateTime.ParseExact(list[2].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                //LogOffTime = DateTime.ParseExact(list[3].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                WebTraffic = Size.Parse(list[9].Value);
-                //Mac = MacAddress.Parse(list[13].Value);
-            }
-
-            public readonly DateTime LogOnTime;
-
-            //public readonly DateTime LogOffTime;
-
-            public readonly Size WebTraffic;
-
-            //public readonly MacAddress Mac;
-        }
     }
 
     public class MonthlyData : ReadOnlyDictionary<DateTime, Size>
@@ -114,6 +86,8 @@ namespace TsinghuaNet.Web
         public MonthlyData(Dictionary<DateTime, Size> dictionary)
             : base(dictionary)
         {
+            if(dictionary == null)
+                throw new ArgumentNullException("dictionary");
             Sum = dictionary.Values.Aggregate((a, b) => a + b);
         }
 

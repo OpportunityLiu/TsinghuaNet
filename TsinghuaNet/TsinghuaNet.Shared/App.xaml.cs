@@ -66,7 +66,7 @@ namespace TsinghuaNet
             {
                 //已经添加字段
                 if(!string.IsNullOrEmpty((string)ApplicationData.Current.LocalSettings.Values["UserName"]))
-                    new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]);
+                    WebConnect.SetCurrent(new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]));
             }
 
             // 准备Toast通知

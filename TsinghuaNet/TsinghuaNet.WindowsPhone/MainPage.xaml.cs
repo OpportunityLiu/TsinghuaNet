@@ -141,9 +141,9 @@ namespace TsinghuaNet
         private void textBox_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key == Windows.System.VirtualKey.Enter)
-                if(textBoxUserName.Text == "")
+                if(string.IsNullOrEmpty(textBoxUserName.Text))
                     textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                else if(passwordBoxPassword.Password == "")
+                else if(string.IsNullOrEmpty(passwordBoxPassword.Password))
                     passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 else
                     logOn_Click(sender, e);

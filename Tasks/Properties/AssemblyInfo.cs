@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System;
 
 // 有关程序集的常规信息通过以下特性集
 // 控制。更改这些特性值可修改
@@ -9,12 +10,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Tasks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Opportunity")]
 [assembly: AssemblyProduct("Tasks")]
-[assembly: AssemblyCopyright("版权所有(C)  2015")]
+[assembly: AssemblyCopyright("版权所有 Opportunity (C)  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: NeutralResourcesLanguage("zh-Hans")]
+[assembly: ComVisible(false)]
+[assembly: CLSCompliant(true)]
 
 // 程序集的版本信息由以下四个值组成: 
 //

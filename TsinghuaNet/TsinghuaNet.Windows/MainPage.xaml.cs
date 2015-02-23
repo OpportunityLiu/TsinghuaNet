@@ -159,8 +159,9 @@ namespace TsinghuaNet
         {
             if(textBoxUserName != null)
                 return;
-            textBoxUserName = (TextBox)((FrameworkElement)sender).FindName("textBoxUserName");
-            passwordBoxPassword = (PasswordBox)((FrameworkElement)sender).FindName("passwordBoxPassword");
+            var stackPanel = (FrameworkElement)sender;
+            textBoxUserName = (TextBox)stackPanel.FindName("textBoxUserName");
+            passwordBoxPassword = (PasswordBox)stackPanel.FindName("passwordBoxPassword");
         }
 
         private void ColumnSeries_Tapped(object sender, TappedRoutedEventArgs e)
@@ -178,9 +179,9 @@ namespace TsinghuaNet
         private void textBox_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key == Windows.System.VirtualKey.Enter)
-                if(textBoxUserName.Text == "")
+                if(string.IsNullOrEmpty(textBoxUserName.Text))
                     textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                else if(passwordBoxPassword.Password == "")
+                else if(string.IsNullOrEmpty(passwordBoxPassword.Password))
                     passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 else
                     logOn_Click(sender, e);
