@@ -36,7 +36,13 @@ namespace TsinghuaNet.Web
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
             this.RefreshAsync();
-            WebConnect.Current = this;
+        }
+
+        public static void SetCurrent(WebConnect value)
+        {
+            if(value == null)
+                throw new ArgumentNullException("value");
+            WebConnect.Current = value;
         }
 
         public static WebConnect Current
@@ -65,7 +71,7 @@ namespace TsinghuaNet.Web
                 }
                 catch(AggregateException ex)
                 {
-                    throw new LogOnException(LogOnExceptionType.connect_error, ex);
+                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
                 if(Regex.IsMatch(res, @"^\d+,"))
                 {
@@ -76,7 +82,7 @@ namespace TsinghuaNet.Web
                 }
                 this.IsOnline = false;
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
-                    throw new LogOnException(LogOnExceptionType.password_error);
+                    throw new LogOnException(LogOnExceptionType.PasswordError);
                 else
                     throw LogOnException.GetByErrorString(res);
             });
@@ -84,7 +90,7 @@ namespace TsinghuaNet.Web
 
         private string cookie;
 
-        private void logOnUsereg()
+        private void signInUsereg()
         {
             Action logOn = () =>
             {
@@ -109,9 +115,9 @@ namespace TsinghuaNet.Web
                     case "ok":
                         break;
                     case "用户不存在":
-                        throw new LogOnException(LogOnExceptionType.username_error);
+                        throw new LogOnException(LogOnExceptionType.UserNameError);
                     case "密码错误":
-                        throw new LogOnException(LogOnExceptionType.password_error);
+                        throw new LogOnException(LogOnExceptionType.PasswordError);
                     default:
                         throw new LogOnException(logOnRes);
                 }
@@ -122,7 +128,7 @@ namespace TsinghuaNet.Web
             }
             catch(LogOnException ex)
             {
-                if(ex.ExceptionType == LogOnExceptionType.unknown)
+                if(ex.ExceptionType == LogOnExceptionType.Unknown)
                 {
                     Task.Delay(100).Wait();
                     try
@@ -151,7 +157,7 @@ namespace TsinghuaNet.Web
                 {
                     try
                     {
-                        logOnUsereg();
+                        signInUsereg();
                         //获取用户信息
                         var res1 = HtmlUtilities.ConvertToText(http.Get("https://usereg.tsinghua.edu.cn/user_info.php"));
                         var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
@@ -193,7 +199,7 @@ namespace TsinghuaNet.Web
             return Task.Run(async() =>
             {
                 await App.DispatcherRunAnsyc(() => UsageData = null);
-                logOnUsereg();
+                signInUsereg();
                 var res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
                 await App.DispatcherRunAnsyc(() => UsageData = new WebUsageData(res, DeviceList));
                 return;

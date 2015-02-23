@@ -313,14 +313,14 @@ namespace TsinghuaNet.Common
         /// 在导航过程中传递的内容以及任何
         /// 在从以前的会话重新创建页时提供的已保存状态。
         /// </summary>
-        public event LoadStateEventHandler LoadState;
+        public event EventHandler<LoadStateEventArgs> LoadState;
         /// <summary>
         /// 在当前页上注册此事件以保留
         /// 与当前页关联的状态，以防
         /// 应用程序挂起或从导航缓存中丢弃
         /// 该页。
         /// </summary>
-        public event SaveStateEventHandler SaveState;
+        public event EventHandler<SaveStateEventArgs> SaveState;
 
         /// <summary>
         /// 即将在 Frame 中显示此页时调用。 
@@ -369,8 +369,8 @@ namespace TsinghuaNet.Common
         /// 此方法调用 <see cref="SaveState"/>，应在此处放置所有
         /// 导航和进程生命周期管理逻辑。
         /// </summary>
-        /// <param name="e">描述如何访问此页的事件数据。    Parameter
-        /// 属性提供要显示的组。</param>
+        /// <param name="e">描述如何访问此页的事件数据。    
+        /// Parameter 属性提供要显示的组。</param>
         public void OnNavigatedFrom(NavigationEventArgs e)
         {
             var frameState = SuspensionManager.SessionStateForFrame(this.Frame);
@@ -384,15 +384,6 @@ namespace TsinghuaNet.Common
 
         #endregion
     }
-
-    /// <summary>
-    /// 代表将处理 <see cref="NavigationHelper.LoadState"/> 事件的方法
-    /// </summary>
-    public delegate void LoadStateEventHandler(object sender, LoadStateEventArgs e);
-    /// <summary>
-    /// 代表将处理 <see cref="NavigationHelper.SaveState"/> 事件的方法
-    /// </summary>
-    public delegate void SaveStateEventHandler(object sender, SaveStateEventArgs e);
 
     /// <summary>
     /// 一个类，用于存放在某页尝试加载状态时所需的事件数据。

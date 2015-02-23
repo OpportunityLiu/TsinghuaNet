@@ -1,17 +1,9 @@
-﻿/*
- * ****************************************************
- *     Copyright (c) Aimeast.  All rights reserved.
- * ****************************************************
- */
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Reflection;
+using Windows.ApplicationModel;
 
-namespace GB2312Encoding
+namespace GB2312
 {
     public sealed class GB2312Encoding : Encoding
     {
@@ -20,22 +12,13 @@ namespace GB2312Encoding
         private ushort[] unicodeToGb = new ushort[0x10000];
         private string _webName = "gb2312";
 
-        static GB2312Encoding()
+        private static GB2312Encoding GetGB2312Encoding()
         {
             if(!BitConverter.IsLittleEndian)
                 throw new PlatformNotSupportedException("Not supported big endian platform.");
-        }
-
-        private GB2312Encoding()
-        {
-        }
-
-        private static GB2312Encoding GetGB2312Encoding()
-        {
             GB2312Encoding encoding = new GB2312Encoding();
 
-            using(Stream stream = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync("GB2312Encoding\\gb2312.bin").AsTask().Result.OpenStreamForReadAsync().Result)
-            using(BinaryReader reader = new BinaryReader(stream))
+            using(BinaryReader reader = new BinaryReader(Package.Current.InstalledLocation.GetFileAsync("GB2312\\gb2312.bin").AsTask().Result.OpenStreamForReadAsync().Result))
             {
                 for(int i = 0; i < 0xffff; i++)
                 {
@@ -53,7 +36,7 @@ namespace GB2312Encoding
 
         private static Encoding encoding = GetGB2312Encoding();
 
-        public static Encoding Gb2312
+        public static Encoding GB2312
         {
             get
             {
@@ -63,6 +46,8 @@ namespace GB2312Encoding
 
         public override int GetByteCount(char[] chars, int index, int count)
         {
+            if(chars == null)
+                throw new ArgumentNullException("chars");
             int byteCount = 0;
             ushort u;
             char c;
@@ -80,6 +65,10 @@ namespace GB2312Encoding
 
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
+            if(chars == null)
+                throw new ArgumentNullException("chars");
+            if(bytes == null)
+                throw new ArgumentNullException("bytes");
             int byteCount = 0;
             ushort u;
             char c;

@@ -288,7 +288,7 @@ namespace TsinghuaNet
         /// <exception cref="System.ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
         public static string ToHexString(this IEnumerable<byte> array)
         {
-            return ToHexString(array, true);
+            return array.ToHexString(true);
         }
 
         /// <summary>

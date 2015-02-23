@@ -266,8 +266,8 @@ namespace TsinghuaNet.Common
         {
         }
 
-        public SuspensionManagerException(Exception e)
-            : base("SuspensionManager failed", e)
+        public SuspensionManagerException(Exception ex)
+            : base("SuspensionManager failed", ex)
         {
 
         }
