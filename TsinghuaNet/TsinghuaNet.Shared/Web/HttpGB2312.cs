@@ -9,7 +9,7 @@ namespace TsinghuaNet.Web
     public static class HttpGB2312
     {
 #if WINDOWS_PHONE_APP
-        private static Encoding gb2312Encoding = GB2312.GB2312Encoding.GB2312;
+        private static Encoding gb2312Encoding = GB2312.Encoding.GB2312;
 #endif
 
         public static string Post(this HttpClient httpCilent, Uri uri, string request)
@@ -24,7 +24,7 @@ namespace TsinghuaNet.Web
                         return new System.IO.StreamReader(get.Content.ReadAsStreamAsync().Result, gb2312Encoding).ReadToEnd();
                     else
 #endif
-                        return get.Content.ReadAsStringAsync().Result;
+                    return get.Content.ReadAsStringAsync().Result;
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace TsinghuaNet.Web
                         return new System.IO.StreamReader(get.Content.ReadAsStreamAsync().Result, gb2312Encoding).ReadToEnd();
                     else
 #endif
-                        return get.Content.ReadAsStringAsync().Result;
+                    return get.Content.ReadAsStringAsync().Result;
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace TsinghuaNet.Web
                     return new System.IO.StreamReader(get.Content.ReadAsStreamAsync().Result, gb2312Encoding).ReadToEnd();
                 else
 #endif
-                    return get.Content.ReadAsStringAsync().Result;
+                return get.Content.ReadAsStringAsync().Result;
             }
         }
 
@@ -67,7 +67,7 @@ namespace TsinghuaNet.Web
                     return new System.IO.StreamReader(get.Content.ReadAsStreamAsync().Result, gb2312Encoding).ReadToEnd();
                 else
 #endif
-                    return get.Content.ReadAsStringAsync().Result;
+                return get.Content.ReadAsStringAsync().Result;
             }
         }
     }
