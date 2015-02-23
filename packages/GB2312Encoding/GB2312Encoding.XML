@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GB2312Encoding</name>
+    </assembly>
+    <members>
+        <member name="T:GB2312.Encoding">
+            <summary>
+            表示字符编码。
+            </summary>
+        </member>
+        <member name="P:GB2312.Encoding.GB2312">
+            <summary>
+            获取使用 GB2312 格式的编码。
+            </summary>
+        </member>
+    </members>
+</doc>
