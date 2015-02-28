@@ -20,7 +20,7 @@
                 <AppBarButton x:Name="appBarButtonRefresh" Icon="Refresh" Label="{StaticResource StringRefresh}" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
                 <AppBarButton x:Name="appBarButtonChangeUser" Icon="Sync" Label="{StaticResource StringChangeUser}" Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="appBarButtonRename" Icon="Rename" Label="{StaticResource StringRename}" IsEnabled="False">
+            <AppBarButton x:Name="appBarButtonRename" Icon="Rename" Label="{StaticResource StringRename}" IsEnabled="{Binding CanRename, TargetNullValue=False}">
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>

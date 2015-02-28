@@ -148,6 +148,7 @@ namespace TsinghuaNet
             {
                 appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 appBarButtonRename.DataContext = listViewOnlineDevices.SelectedItem;
+                BottomAppBar.IsOpen = true;
             }
             else
             {

@@ -140,6 +140,17 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
+        /// 获取设备是否可以重命名的信息。
+        /// </summary>
+        public bool CanRename
+        {
+            get
+            {
+                return this.MacAddress != MacAddress.Unknown;
+            }
+        }
+
+        /// <summary>
         /// 异步执行使该设备下线的操作。
         /// </summary>
         /// <returns>
