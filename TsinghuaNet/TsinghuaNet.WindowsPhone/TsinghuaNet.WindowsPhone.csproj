@@ -119,10 +119,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GB2312Encoding, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd9bbe88a49b77b6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\GB2312Encoding\GB2312Encoding.dll</HintPath>
-    </Reference>
     <Reference Include="WinRTXamlToolkit">
       <HintPath>..\..\packages\WinRTXamlToolkit.WindowsPhone.1.8.1.0\lib\wpa\WinRTXamlToolkit.dll</HintPath>
     </Reference>
@@ -131,6 +127,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GB2312Encoding\GB2312Encoding.csproj">
+      <Project>{fef0b617-4035-4f52-b3c3-184f28579935}</Project>
+      <Name>GB2312Encoding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Tasks\Tasks.csproj">
       <Project>{325c93ef-3a24-4be4-90b4-528c1197d2ce}</Project>
       <Name>Tasks</Name>
