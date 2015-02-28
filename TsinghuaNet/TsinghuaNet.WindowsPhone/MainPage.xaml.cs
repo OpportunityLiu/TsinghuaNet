@@ -119,11 +119,7 @@ namespace TsinghuaNet
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(listViewOnlineDevices.SelectedItem != null)
-            {
-                appBarButtonRename.DataContext = listViewOnlineDevices.SelectedItem;
-                appBarButtonRename.IsEnabled = true;
-            }
+            appBarButtonRename.DataContext = listViewOnlineDevices.SelectedItem;
         }
 
         private void BarSeries_Tapped(object sender, TappedRoutedEventArgs e)
