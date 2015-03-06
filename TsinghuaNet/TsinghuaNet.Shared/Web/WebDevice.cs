@@ -32,10 +32,11 @@ namespace TsinghuaNet.Web
                 throw new ArgumentNullException("http");
             this.dropToken = "action=drop&user_ip=" + ip + "&checksum=" + dropToken;
             this.IPAddress = ip;
-            this.MacAddress = mac;
+            this.Mac = mac;
             this.WebTraffic = webTraffic;
             this.LogOnDateTime = logOnDateTime;
             this.http = http;
+            deviceDictChanged += (sender, args) => this.PropertyChanging("Name");
         }
 
         private HttpClient http;
@@ -63,7 +64,7 @@ namespace TsinghuaNet.Web
         /// <summary>
         /// 获取 Mac 地址。
         /// </summary>
-        public MacAddress MacAddress
+        public MacAddress Mac
         {
             get;
             private set;
@@ -78,6 +79,8 @@ namespace TsinghuaNet.Web
             private set;
         }
 
+        private static event EventHandler deviceDictChanged;
+
         private static DeviceNameDictionary deviceDict = initDeviceDict();
 
         private static DeviceNameDictionary initDeviceDict()
@@ -86,19 +89,43 @@ namespace TsinghuaNet.Web
             App.Current.Suspending += (sender, e) =>
             {
                 var deferral = e.SuspendingOperation.GetDeferral();
-                ApplicationData.Current.LocalSettings.Values["DeviceDict"] = deviceDict.Stringify();
+                ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Stringify();
                 deferral.Complete();
             };
-            //恢复列表
-            if(!ApplicationData.Current.LocalSettings.Values.ContainsKey("DeviceDict"))
+
+            //同步时更新列表，并通知所有实例更新 Name 属性。
+            ApplicationData.Current.DataChanged += (sender, args) =>
             {
-                ApplicationData.Current.LocalSettings.Values.Add("DeviceDict", "");
+                App.DispatcherRunAnsyc(() =>
+                {
+                    if(!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
+                    {
+                        sender.RoamingSettings.Values.Add("DeviceDict", "");
+                        deviceDict = new DeviceNameDictionary();
+                    }
+                    else
+                        try
+                        {
+                            deviceDict = new DeviceNameDictionary((string)sender.RoamingSettings.Values["DeviceDict"]);
+                        }
+                        catch(ArgumentException)
+                        {
+                            deviceDict = new DeviceNameDictionary();
+                        }
+                    if(deviceDictChanged != null)
+                        deviceDictChanged(deviceDict, null);
+                });
+            };
+            //恢复列表
+            if(!ApplicationData.Current.RoamingSettings.Values.ContainsKey("DeviceDict"))
+            {
+                ApplicationData.Current.RoamingSettings.Values.Add("DeviceDict", "");
                 return new DeviceNameDictionary();
             }
             else
                 try
                 {
-                    return new DeviceNameDictionary((string)ApplicationData.Current.LocalSettings.Values["DeviceDict"]);
+                    return new DeviceNameDictionary((string)ApplicationData.Current.RoamingSettings.Values["DeviceDict"]);
                 }
                 catch(ArgumentException)
                 {
@@ -109,31 +136,35 @@ namespace TsinghuaNet.Web
         /// <summary>
         /// 获取或设置当前设备的名称。
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">不能为未知设备设置名称。/exception>
+        /// <exception cref="System.InvalidOperationException">不能为未知设备设置名称。</exception>
         public string Name
         {
             get
             {
-                if(this.MacAddress == MacAddress.Unknown)
+                if(this.Mac == MacAddress.Unknown)
                     return "(未知设备)";
+                else if(deviceDict.ContainsKey(this.Mac))
+                    return deviceDict[this.Mac];
+                else if(this.Mac.IsCurrent)
+                    return "(本机)";
                 else
-                    return deviceDict.ContainsKey(this.MacAddress) ? deviceDict[this.MacAddress] : this.MacAddress.ToString();
+                    return this.Mac.ToString();
             }
             set
             {
-                if(this.MacAddress == MacAddress.Unknown)
+                if(this.Mac == MacAddress.Unknown)
                     throw new InvalidOperationException("不能为未知设备设置名称");
                 if(string.IsNullOrWhiteSpace(value))
                 {
-                    if(deviceDict.ContainsKey(this.MacAddress))
-                        deviceDict.Remove(this.MacAddress);
+                    if(deviceDict.ContainsKey(this.Mac))
+                        deviceDict.Remove(this.Mac);
                 }
                 else
                 {
-                    if(deviceDict.ContainsKey(this.MacAddress))
-                        deviceDict[this.MacAddress] = value;
+                    if(deviceDict.ContainsKey(this.Mac))
+                        deviceDict[this.Mac] = value;
                     else
-                        deviceDict.Add(this.MacAddress, value);
+                        deviceDict.Add(this.Mac, value);
                 }
                 this.PropertyChanging();
             }
@@ -146,7 +177,7 @@ namespace TsinghuaNet.Web
         {
             get
             {
-                return this.MacAddress != MacAddress.Unknown;
+                return this.Mac != MacAddress.Unknown;
             }
         }
 
@@ -160,15 +191,8 @@ namespace TsinghuaNet.Web
         {
             return Task<bool>.Run(() =>
             {
-                return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
-                //using(var re = new StringContent(this.dropToken))
-                //{
-                //    re.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                //    using(var get = http.PostAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", re).Result)
-                //    {
-                //        return get.Content.ReadAsStringAsync().Result == "ok";
-                //    }
-                //}
+                lock(http)
+                    return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
             });
         }
 

@@ -23,6 +23,15 @@ namespace TsinghuaNet
     {
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
+        private Windows.UI.ViewManagement.StatusBar statusBar;
+
+        public Windows.UI.ViewManagement.StatusBar StatusBar
+        {
+            get
+            {
+                return statusBar;
+            }
+        }
 #endif
 
         /// <summary>
@@ -59,25 +68,26 @@ namespace TsinghuaNet
             //初始化信息存储区
             try
             {
-                ApplicationData.Current.LocalSettings.Values.Add("UserName", "");
-                ApplicationData.Current.LocalSettings.Values.Add("PasswordMD5", "");
+                ApplicationData.Current.RoamingSettings.Values.Add("UserName", "");
+                ApplicationData.Current.RoamingSettings.Values.Add("PasswordMD5", "");
             }
             catch(ArgumentException)
             {
                 //已经添加字段
-                if(!string.IsNullOrEmpty((string)ApplicationData.Current.LocalSettings.Values["UserName"]))
-                    WebConnect.SetCurrent(new WebConnect((string)ApplicationData.Current.LocalSettings.Values["UserName"], (string)ApplicationData.Current.LocalSettings.Values["PasswordMD5"]));
+                if(!string.IsNullOrEmpty((string)ApplicationData.Current.RoamingSettings.Values["UserName"]))
+                {
+                    WebConnect.Current = new WebConnect((string)ApplicationData.Current.RoamingSettings.Values["UserName"], (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"]);
+                    WebConnect.Current.RefreshAsync();
+                }
             }
 
             // 准备Toast通知
-            toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText04);
+            toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
             toastTitle = toastXml.CreateTextNode("");
-            toastText1 = toastXml.CreateTextNode("");
-            toastText2 = toastXml.CreateTextNode("");
+            toastText = toastXml.CreateTextNode("");
             XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
             stringElements[0].AppendChild(toastTitle);
-            stringElements[1].AppendChild(toastText1);
-            stringElements[2].AppendChild(toastText2);
+            stringElements[1].AppendChild(toastText);
         }
 
         public static new App Current
@@ -88,33 +98,49 @@ namespace TsinghuaNet
 
         private static CoreDispatcher currentDispatcher;
 
-        public static Windows.Foundation.IAsyncAction DispatcherRunAnsyc(DispatchedHandler agileCallback)
+        public static System.Threading.Tasks.Task DispatcherRunAnsyc(DispatchedHandler agileCallback)
         {
-            return App.currentDispatcher.RunAsync(CoreDispatcherPriority.Normal, agileCallback);
+            return App.currentDispatcher.RunAsync(CoreDispatcherPriority.Normal, agileCallback).AsTask();
         }
 
-        private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+        private async void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
         {
-            SendToastNotification("Internet Connected", "", "");
+            try
+            {
+                await WebConnect.Current.LogOnAsync();
+            }
+            catch(LogOnException ex)
+            {
+                SendToastNotification("连接错误", ex.Message);
+                return;
+            }
+            SendToastNotification("连接成功","已用流量："+ WebConnect.Current.WebTrafficExact.ToString());
         }
 
         /// <summary>
         /// 发送 Toast 通知。
         /// </summary>
         /// <param name="title">标题，加粗显示。</param>
-        /// <param name="text1">第一行内容。</param>
-        /// <param name="text2">第二行内容。</param>
-        public void SendToastNotification(string title, string text1, string text2)
+        /// <param name="content">内容。</param>
+        public void SendToastNotification(string title, string content)
         {
             toastTitle.NodeValue = title;
-            toastText1.NodeValue = text1;
-            toastText2.NodeValue = text2;
+            toastText.NodeValue = content;
             notifier.Show(new ToastNotification(toastXml));
         }
 
         private XmlDocument toastXml;
-        private XmlText toastTitle, toastText1, toastText2;
+        private XmlText toastTitle, toastText;
         private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
+        private Windows.UI.ViewManagement.AccessibilitySettings accessibilitySettings = new Windows.UI.ViewManagement.AccessibilitySettings();
+
+        public Windows.UI.ViewManagement.AccessibilitySettings AccessibilitySettings
+        {
+            get
+            {
+                return accessibilitySettings;
+            }
+        }
 
         /// <summary>
         /// 在应用程序由最终用户正常启动时进行调用。
@@ -130,6 +156,19 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+#if WINDOWS_PHONE_APP
+            accessibilitySettings.HighContrastChanged += (sender, args) =>
+            {
+                App.DispatcherRunAnsyc(() =>
+                {
+                    if(sender.HighContrast)
+                        statusBar.BackgroundOpacity = 0;
+                    else
+                        statusBar.BackgroundOpacity = 1;
+                });
+            };
+            statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+#endif
 
             //注册设置项
 #if WINDOWS_APP
@@ -138,7 +177,6 @@ namespace TsinghuaNet
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, (string)this.Resources["StringAbout"], a => new About().Show()));
             };
 #endif
-
 
             Frame rootFrame = Window.Current.Content as Frame;
             currentDispatcher = Window.Current.Dispatcher;

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using Windows.UI.Popups;
 using TsinghuaNet.Web;
+using TsinghuaNet.Common;
 
 namespace TsinghuaNet
 {
@@ -27,6 +28,7 @@ namespace TsinghuaNet
     /// </summary>
     public partial class MainPage : Page
     {
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -34,25 +36,6 @@ namespace TsinghuaNet
             hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
             hub.Sections.Remove(hubSectionHistory);
-            Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    if(WebConnect.Current == null)
-                    {
-                        hub.Sections.Add(hubSectionStart);
-                        appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        hub.DataContext = WebConnect.Current;
-                        hub.Sections.Add(hubSectionState);
-                        hub.Sections.Add(hubSectionHistory);
-                        WebConnect.Current.RefreshUsageAnsyc();
-                    }
-                });
-            });
         }
 
         PasswordBox passwordBoxPassword;
@@ -65,26 +48,56 @@ namespace TsinghuaNet
             var userName = textBoxUserName.Text;
             if(string.IsNullOrEmpty(userName))
             {
+                textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 await emptyUserName.ShowAsync();
                 return;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
+                passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 await emptyPassword.ShowAsync();
                 return;
             }
             var passMD5 = MD5.MDString(password);
-            ApplicationData.Current.LocalSettings.Values["UserName"] = userName;
-            ApplicationData.Current.LocalSettings.Values["PasswordMD5"] = passMD5;
-            new WebConnect(userName, passMD5);
-            var t = WebConnect.Current.RefreshUsageAnsyc();
-            hub.Sections.Remove(hubSectionStart);
-            hub.DataContext = WebConnect.Current;
-            hub.Sections.Add(hubSectionState);
-            hub.Sections.Add(hubSectionHistory);
-            appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            await t;
+            LogOnException excep = null;
+            try
+            {
+                WebConnect.Current = new WebConnect(userName, passMD5);
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException ex)
+            {
+                excep = ex;
+            }
+            if(excep == null)
+            {
+                hub.Sections.Remove(hubSectionStart);
+                hub.DataContext = WebConnect.Current;
+                hub.Sections.Add(hubSectionState);
+                hub.Sections.Add(hubSectionHistory);
+                appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                ApplicationData.Current.RoamingSettings.Values["UserName"] = userName;
+                ApplicationData.Current.RoamingSettings.Values["PasswordMD5"] = passMD5;
+                await WebConnect.Current.RefreshUsageAnsyc();
+            }
+            else
+            {
+                await new MessageDialog(excep.Message, (string)App.Current.Resources["StringError"]).ShowAsync();
+                switch(excep.ExceptionType)
+                {
+                    case LogOnExceptionType.UserNameError:
+                        textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                        textBoxUserName.SelectAll();
+                        break;
+                    case LogOnExceptionType.PasswordError:
+                        passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                        passwordBoxPassword.SelectAll();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -135,8 +148,17 @@ namespace TsinghuaNet
         private async void refresh_Click(object sender, RoutedEventArgs e)
         {
             commandBar.IsOpen = false;
-            if((DateTime.Now - WebConnect.Current.UpdateTime).Ticks > 100000000)//10秒
+            if((DateTime.Now - WebConnect.Current.UpdateTime).Ticks > 50000000)//5秒
                 await WebConnect.Current.RefreshAsync();
+            if(!WebConnect.Current.IsOnline)
+                try
+                {
+                    await WebConnect.Current.LogOnAsync();
+                }
+                catch(LogOnException ex)
+                {
+                    App.Current.SendToastNotification("登陆失败", ex.Message);
+                }
         }
 
         ListView listViewOnlineDevices;
@@ -186,6 +208,51 @@ namespace TsinghuaNet
                     passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 else
                     logOn_Click(sender, e);
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(e.NavigationMode == NavigationMode.New)
+            {
+                await Task.Delay(500);
+                await App.DispatcherRunAnsyc(async () =>
+                {
+                    if(WebConnect.Current == null)
+                    {
+                        hub.Sections.Add(hubSectionStart);
+                        appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        hub.DataContext = WebConnect.Current;
+                        hub.Sections.Add(hubSectionState);
+                        hub.Sections.Add(hubSectionHistory);
+                        try
+                        {
+                            await WebConnect.Current.LogOnAsync();
+                            await WebConnect.Current.RefreshUsageAnsyc();
+                        }
+                        catch(LogOnException ex)
+                        {
+                            App.Current.SendToastNotification("登陆错误", ex.Message);
+                        }
+                    }
+                });
+            }
+        }
+
+        private void textBoxRename_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((TextBox)sender).SelectAll();
+        }
+
+        private void textBoxRename_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.Enter)
+            {
+                e.Handled = true;
+                rename_Click(sender, e);
+            }
         }
     }
 }

@@ -35,20 +35,22 @@ namespace TsinghuaNet.Web
             this.http.BaseAddress = new Uri("https://usereg.tsinghua.edu.cn");
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
-            this.RefreshAsync();
         }
 
-        public static void SetCurrent(WebConnect value)
-        {
-            if(value == null)
-                throw new ArgumentNullException("value");
-            WebConnect.Current = value;
-        }
+        private static WebConnect current;
 
         public static WebConnect Current
         {
-            private set;
-            get;
+            set
+            {
+                if(value == null)
+                    throw new ArgumentNullException("value");
+                WebConnect.current = value;
+            }
+            get
+            {
+                return WebConnect.current;
+            }
         }
 
         private string userName, passwordMd5;
@@ -76,11 +78,14 @@ namespace TsinghuaNet.Web
                 if(Regex.IsMatch(res, @"^\d+,"))
                 {
                     var a = res.Split(',');
-                    this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
-                    this.IsOnline = true;
+                    App.DispatcherRunAnsyc(() =>
+                    {
+                        this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
+                        this.IsOnline = true;
+                    }).Wait();
                     return;
                 }
-                this.IsOnline = false;
+                App.DispatcherRunAnsyc(() => this.IsOnline = false).Wait();
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
                     throw new LogOnException(LogOnExceptionType.PasswordError);
                 else
@@ -92,24 +97,28 @@ namespace TsinghuaNet.Web
 
         private void signInUsereg()
         {
-            Action logOn = () =>
+            Action signIn = () =>
             {
-                //获取登陆页以获得 cookie
-                using(var get = http.GetAsync("https://usereg.tsinghua.edu.cn/login.php").Result)
+                string logOnRes;
+                lock(http)
                 {
-                    try
+                    //获取登陆页以获得 cookie
+                    using(var get = http.GetAsync("https://usereg.tsinghua.edu.cn/login.php").Result)
                     {
-                        cookie = get.Headers.GetValues("Set-Cookie").First().Split(";".ToCharArray())[0];
+                        try
+                        {
+                            cookie = get.Headers.GetValues("Set-Cookie").First().Split(";".ToCharArray())[0];
+                        }
+                        catch(InvalidOperationException)
+                        {
+                            //cookie 尚未过期。
+                        }
                     }
-                    catch(InvalidOperationException)
-                    {
-                        //cookie 尚未过期。
-                    }
+                    http.DefaultRequestHeaders.Remove("Cookie");
+                    http.DefaultRequestHeaders.Add("Cookie", cookie);
+                    //登陆
+                    logOnRes = http.Post("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
                 }
-                http.DefaultRequestHeaders.Remove("Cookie");
-                http.DefaultRequestHeaders.Add("Cookie", cookie);
-                //登陆
-                var logOnRes=http.Post("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
                 switch(logOnRes)
                 {
                     case "ok":
@@ -124,7 +133,7 @@ namespace TsinghuaNet.Web
             };
             try
             {
-                logOn();
+                signIn();
             }
             catch(LogOnException ex)
             {
@@ -133,12 +142,12 @@ namespace TsinghuaNet.Web
                     Task.Delay(100).Wait();
                     try
                     {
-                        logOn();//重试第一次
+                        signIn();//重试第一次
                     }
                     catch(InvalidOperationException)
                     {
                         Task.Delay(1000).Wait();
-                        logOn();//重试第二次
+                        signIn();//重试第二次
                     }
                 }
                 else
@@ -154,53 +163,72 @@ namespace TsinghuaNet.Web
         public Task RefreshAsync()
         {
             return Task.Run(() =>
+            {
+                try
                 {
-                    try
+                    signInUsereg();
+                    //获取用户信息
+                    string res1, res2;
+                    lock(http)
+                        res1 = HtmlUtilities.ConvertToText(http.Get("https://usereg.tsinghua.edu.cn/user_info.php"));
+                    var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
+                    if(info1.Count != 3)
                     {
-                        signInUsereg();
-                        //获取用户信息
-                        var res1 = HtmlUtilities.ConvertToText(http.Get("https://usereg.tsinghua.edu.cn/user_info.php"));
-                        var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
-                        if(info1.Count != 3)
-                            throw new InvalidOperationException("获取到的数据格式错误。");
-                        var task1 = App.DispatcherRunAnsyc(() =>
+                        var ex = new InvalidOperationException("获取到的数据格式错误。");
+                        ex.Data.Add("HtmlResponse", res1);
+                        throw ex;
+                    }
+                    var task1 = App.DispatcherRunAnsyc(() =>
+                    {
+                        WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
+                        Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
+                    });
+                    //获取登录信息
+                    lock(http)
+                        res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
+                    var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
+                    var devices = new List<WebDevice>();
+                    foreach(Match item in info2)
+                    {
+                        var details = Regex.Matches(item.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
+                        devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
+                    }
+                    App.DispatcherRunAnsyc(() =>
+                    {
+                        var isOnlineTemp = false;
+                        deviceList.Clear();
+                        foreach(var item in devices)
                         {
-                            WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
-                            Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
-                        }).AsTask();
-                        //获取登录信息
-                        var res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
-                        var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
-                        var devices = new List<WebDevice>();
-                        foreach(Match item in info2)
-                        {
-                            var details = Regex.Matches(item.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
-                            devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
+                            deviceList.Add(item);
+                            if(item.Mac.IsCurrent)
+                                isOnlineTemp = true;
                         }
-                        App.DispatcherRunAnsyc(() =>
-                        {
-                            deviceList.Clear();
-                            foreach(var item in devices)
-                                deviceList.Add(item);
-                        }).AsTask().Wait();
-                        task1.Wait();
-                        //全部成功
-                        App.DispatcherRunAnsyc(() => UpdateTime = DateTime.Now).AsTask().Wait();
-                    }
-                    catch(Exception)
-                    {
-                        throw;
-                    }
-                });
+                        this.IsOnline = isOnlineTemp;
+                    }).Wait();
+                    task1.Wait();
+                    //全部成功
+                    App.DispatcherRunAnsyc(() => UpdateTime = DateTime.Now).Wait();
+                }
+                catch(Exception)
+                {
+                    throw;
+                }
+            });
         }
 
+        /// <summary>
+        /// 异步更新使用记录。
+        /// </summary>
+        /// <returns>表示更新使用记录的异步操作。</returns>
         public Task RefreshUsageAnsyc()
         {
-            return Task.Run(async() =>
+            return Task.Run(async () =>
             {
                 await App.DispatcherRunAnsyc(() => UsageData = null);
                 signInUsereg();
-                var res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
+                string res;
+                lock(http)
+                    res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
                 await App.DispatcherRunAnsyc(() => UsageData = new WebUsageData(res, DeviceList));
                 return;
             });
@@ -256,7 +284,7 @@ namespace TsinghuaNet.Web
             }
         }
 
-        private bool isOnline;
+        private bool isOnline = false;
 
         /// <summary>
         /// 当前账户余额。

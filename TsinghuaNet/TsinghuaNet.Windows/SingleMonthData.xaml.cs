@@ -59,6 +59,7 @@ namespace TsinghuaNet
         /// 的字典。 首次访问页面时，该状态将为 null。</param>
         private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            var delta = 1E-9;
             KeyValuePair<DateTime, MonthlyData> data;
             try
             {
@@ -69,27 +70,64 @@ namespace TsinghuaNet
                 throw new InvalidOperationException("无法从此参数导航。", ex);
             }
             textBlockTitle.Text = data.Key.ToString(CultureInfo.CurrentCulture.DateTimeFormat.YearMonthPattern, CultureInfo.InvariantCulture);
-            var dataContext = new List<KeyValuePair<int, Size>>();
-            var sum = Size.MinValue;
-            var day = data.Key;
-            int dayMax;
-            if(data.Key.Month == DateTime.Now.Month && data.Key.Year == DateTime.Now.Year)
-                dayMax = DateTime.Now.Day;
-            else
-                dayMax = DateTime.DaysInMonth(data.Key.Year, data.Key.Month);
-            for(int i = 1; i <= dayMax; i++)
+            Func<KeyValuePair<DateTime, MonthlyData>, List<KeyValuePair<double, Size>>> loadDataPrevious = d =>
             {
-                try
+                var dataContext = new List<KeyValuePair<double, Size>>();
+                var sum = Size.MinValue;
+                var day = d.Key;
+                var dayMax = DateTime.DaysInMonth(day.Year, day.Month);
+                for(double i = 1; i <= dayMax; i++)
                 {
-                    sum += data.Value[day];
+                    try
+                    {
+                        sum += d.Value[day];
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                    }
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, sum));
+                    day = day.AddDays(1);
                 }
-                catch(KeyNotFoundException)
+                return dataContext;
+            }, loadDataCurrent = d =>
+            {
+                var dataContext = new List<KeyValuePair<double, Size>>();
+                var sum = Size.MinValue;
+                var day = d.Key;
+                var dayMax = DateTime.DaysInMonth(day.Year, day.Month);
+                var dayNow = DateTime.Now.Day;
+                var predictIncrease = d.Value.Sum / dayNow;
+                double i;
+                for(i = 1d; i <= dayNow; i++)
                 {
+                    try
+                    {
+                        sum += d.Value[day];
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                    }
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, sum));
+                    day = day.AddDays(1);
                 }
-                dataContext.Add(new KeyValuePair<int, Size>(i, sum));
-                day = day.AddDays(1);
-            }
-            DataContext = dataContext;
+                dataContext.Add(new KeyValuePair<double, Size>(i - 1 + 2*delta, new Size()));
+                for(; i <= dayMax; i++)
+                {
+                    sum += predictIncrease;
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, new Size()));
+                }
+                return dataContext;
+            };
+            if(data.Key.Month == DateTime.Now.Month && data.Key.Year == DateTime.Now.Year)
+                DataContext = loadDataCurrent(data);
+            else
+                DataContext = loadDataPrevious(data);
         }
 
         #region NavigationHelper 注册

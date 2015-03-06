@@ -38,7 +38,7 @@
             <Charting:Chart.Title>
                 <TextBlock x:Name="textBlockTitle" FontSize="20" />
             </Charting:Chart.Title>
-			<Charting:AreaSeries ItemsSource="{Binding}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.TotalGB}" />
+            <Charting:AreaSeries ItemsSource="{Binding}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.TotalGB}" />
             <Charting:Chart.LegendStyle>
                 <Style TargetType="FrameworkElement">
                     <Setter Property="Width" Value="0" />

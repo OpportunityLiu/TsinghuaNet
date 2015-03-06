@@ -28,10 +28,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LogOnException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\DeviceNameDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\HttpGB2312.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Web\LogOnException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebConnect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebStruct.cs" />
@@ -61,6 +61,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Resources\ThemeDark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Resources\ThemeHighContrast.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Resources\ThemeLight.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
