@@ -90,6 +90,11 @@ namespace TsinghuaNet.Web
             return new Size((ulong)(size1.Value * d2));
         }
 
+        public static Size operator /(Size size1, double d2)
+        {
+            return new Size((ulong)(size1.Value / d2));
+        }
+
         public static Size operator -(Size size1, Size size2)
         {
             if(size1 < size2)
@@ -436,11 +441,9 @@ namespace TsinghuaNet.Web
         /// <returns>一个 32 位有符号整数，它是该实例的哈希代码。</returns>
         public override int GetHashCode()
         {
-            int re = value2;
-            re = re << 8 + value3;
-            re = re << 8 + value4;
-            re = re << 8 + value5;
-            return re;
+            int re = (((value2 << 8) + value3 << 8) + value4 << 8) + value5;
+            int re2 = value0 + (value1 << 8);
+            return re ^ re2;
         }
 
         public static bool operator ==(MacAddress mac1, MacAddress mac2)

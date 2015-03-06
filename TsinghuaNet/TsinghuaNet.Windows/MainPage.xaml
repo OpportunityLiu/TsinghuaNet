@@ -12,9 +12,17 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="OnlineDeviceItemTemplate">
-            <StackPanel Margin="5">
+            <StackPanel Margin="5" Width="1000">
+                <ToolTipService.ToolTip>
+                    <TextBlock FontSize="16">
+                        IP地址:   <Run Text="{Binding IPAddress}" FontWeight="Bold" />
+                        <LineBreak />
+                        MAC:    <Run Text="{Binding Mac}" FontWeight="Bold" />
+                    </TextBlock>
+                </ToolTipService.ToolTip>
                 <TextBlock Text="{Binding Name}" Margin="5" />
                 <TextBlock Text="{Binding WebTraffic}" Margin="5" />
+                <TextBlock Text="{Binding LogOnDateTime}" Margin="5" />
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
@@ -34,7 +42,7 @@
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBox x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" PlaceholderText="{StaticResource StringNewName}" Width="175" Margin="0,0,0,10" />
+                            <TextBox x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" PlaceholderText="{StaticResource StringNewName}" Width="175" Margin="0,0,0,10" Loaded="textBoxRename_Loaded" KeyUp="textBoxRename_KeyUp" />
                             <Button Content="{StaticResource StringRename}" HorizontalAlignment="Right" Click="rename_Click" />
                         </StackPanel>
                     </Flyout>
@@ -68,7 +76,7 @@
                         <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" Width="320" VerticalAlignment="Bottom" HorizontalAlignment="Left" KeyUp="textBox_KeyUp" />
                         <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="0,0,15,0" VerticalAlignment="Center">
                             <Button.RenderTransform>
-                                <CompositeTransform Rotation="180" ScaleX="1.5" ScaleY="1.5" />
+                                <CompositeTransform Rotation="160" ScaleX="1.5" ScaleY="1.5" />
                             </Button.RenderTransform>
                         </Button>
                     </Grid>
@@ -146,7 +154,7 @@
                     </TextBlock>
                     <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="4" Text="{StaticResource StringUpdateTime}" />
                     <TextBlock FontSize="16" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
-                    <ListView Margin="0,10" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged" Grid.Row="5" Grid.ColumnSpan="2" />
+                    <ListView Margin="0,10" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged" Grid.Row="5" Grid.ColumnSpan="2" Header="{StaticResource StringOnlineDevices}" FontSize="16" />
                 </Grid>
             </DataTemplate>
         </HubSection>
@@ -242,11 +250,6 @@
                                         <Setter Property="Foreground" Value="{x:Null}" />
                                     </Style>
                                 </Series:ColumnSeries.Resources>
-                                <Series:ColumnSeries.Transitions>
-                                    <TransitionCollection>
-                                        <ContentThemeTransition />
-                                    </TransitionCollection>
-                                </Series:ColumnSeries.Transitions>
                                 <Series:ColumnSeries.IndependentValueBinding>
                                     <Binding Converter="{StaticResource DateTimeToYearMonthStringConverter}" Path="Key" />
                                 </Series:ColumnSeries.IndependentValueBinding>

@@ -25,7 +25,7 @@ namespace TsinghuaNet.Web
             if(devices == null)
                 throw new ArgumentNullException("devices");
             var trafficD = new Dictionary<DateTime, Size>();
-            traffic = new Dictionary<DateTime, MonthlyData>();
+            traffic = new SortedDictionary<DateTime, MonthlyData>(new dateTimeComparer());
             foreach(Match item in Regex.Matches(detailHtml, "\\<tr align=\"center\" style=.+?/tr\\>", RegexOptions.Singleline))
             {
                 var lines = Regex.Matches(item.Value, "(?<=\\<td.+?\\>)(.+?)(?=\\</td\\>)");
@@ -48,7 +48,7 @@ namespace TsinghuaNet.Web
                             group item by new DateTime(date.Year, date.Month, 1);
             foreach(var item in monthList)
             {
-                var monthlyData = new Dictionary<DateTime, Size>();
+                var monthlyData = new SortedDictionary<DateTime, Size>();
                 foreach(var dailyData in item)
                     monthlyData.Add(dailyData.Key, dailyData.Value);
                 traffic.Add(item.Key, new MonthlyData(monthlyData));
@@ -56,7 +56,29 @@ namespace TsinghuaNet.Web
             Traffic = new ReadOnlyDictionary<DateTime, MonthlyData>(traffic);
         }
 
-        private Dictionary<DateTime, MonthlyData> traffic;
+        private class dateTimeComparer : IComparer<DateTime>
+        {
+            public bool IsAscending
+            {
+                get;
+                set;
+            }
+
+            #region IComparer<DateTime> 成员
+
+            public int Compare(DateTime x, DateTime y)
+            {
+                if(IsAscending)
+                    return x.CompareTo(y);
+                else
+                    return y.CompareTo(x);
+            }
+
+            #endregion
+        }
+
+
+        private SortedDictionary<DateTime, MonthlyData> traffic;
 
         /// <summary>
         /// 表示以月为单位统计的流量数据。
@@ -83,7 +105,7 @@ namespace TsinghuaNet.Web
 
     public class MonthlyData : ReadOnlyDictionary<DateTime, Size>
     {
-        public MonthlyData(Dictionary<DateTime, Size> dictionary)
+        public MonthlyData(IDictionary<DateTime, Size> dictionary)
             : base(dictionary)
         {
             if(dictionary == null)

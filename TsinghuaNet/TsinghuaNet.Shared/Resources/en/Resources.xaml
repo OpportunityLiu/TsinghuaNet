@@ -3,21 +3,24 @@
     <x:String x:Key="StringLanguage">en</x:String>
 
     <x:String x:Key="StringOk">Ok</x:String>
+    <x:String x:Key="StringCancel">Cancel</x:String>
+    
     <x:String x:Key="StringError">Error</x:String>
     <x:String x:Key="StringErrorUserName">Please enter your user ID.</x:String>
     <x:String x:Key="StringErrorPassword">Please enter your password.</x:String>
-
-    <!--MainPage.xaml-->
+    
     <x:String x:Key="StringStart">Quick start</x:String>
     <x:String x:Key="StringStartHint">Enter your user ID and password for Tsinghua University Network to start.</x:String>
     <x:String x:Key="StringUserName">User ID</x:String>
     <x:String x:Key="StringPassword">Password</x:String>
+    <x:String x:Key="StringSignIn">Sign in</x:String>
 
     <x:String x:Key="StringState">State</x:String>
     <x:String x:Key="StringTraffic">Traffic</x:String>
     <x:String x:Key="StringUpdateTime">Update time</x:String>
     <x:String x:Key="StringBalance">Balance</x:String>
     <x:String x:Key="StringYuan">Yuan</x:String>
+    <x:String x:Key="StringOnlineDevices">Online devices</x:String>
 
     <x:String x:Key="StringHistory">History</x:String>
     <x:String x:Key="StringRefreshList">Refresh the chart</x:String>
@@ -29,7 +32,6 @@
     <x:String x:Key="StringDrop">Down</x:String>
     <x:String x:Key="StringDropHint">The selected device will be forced to log off.</x:String>
 
-    <!--About.xaml-->
     <x:String x:Key="StringAbout">About</x:String>
     <x:String x:Key="StringVersion">Version {0}.{1}.{2}.{3}</x:String>
 </ResourceDictionary>

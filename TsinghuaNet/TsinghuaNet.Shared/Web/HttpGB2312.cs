@@ -36,11 +36,11 @@ namespace TsinghuaNet.Web
                 using(var get = httpCilent.PostAsync(uri, re).Result)
                 {
 #if WINDOWS_PHONE_APP
-                    if(get.Content.Headers.ContentType.CharSet=="gb2312")
+                    if(get.Content.Headers.ContentType != null && get.Content.Headers.ContentType.CharSet == "gb2312")
                         return new System.IO.StreamReader(get.Content.ReadAsStreamAsync().Result, gb2312Encoding).ReadToEnd();
                     else
 #endif
-                    return get.Content.ReadAsStringAsync().Result;
+                        return get.Content.ReadAsStringAsync().Result;
                 }
             }
         }
