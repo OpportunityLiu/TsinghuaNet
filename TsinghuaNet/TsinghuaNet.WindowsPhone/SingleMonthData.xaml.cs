@@ -35,6 +35,12 @@ namespace TsinghuaNet
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
+            for(int i = 0; i < 12; i++)
+            {
+                var item = (PivotItem)pivot.Items[i];
+                item.Header = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames[i];
+                item.Tag = i + 1;
+            }
         }
 
         /// <summary>
@@ -82,29 +88,99 @@ namespace TsinghuaNet
             {
                 throw new InvalidOperationException("无法从此参数导航。", ex);
             }
-            textBlockTitle.Text = data.Key.ToString(CultureInfo.CurrentCulture.DateTimeFormat.YearMonthPattern, CultureInfo.InvariantCulture);
-            var dataContext = new List<KeyValuePair<int, Size>>();
-            var sum = Size.MinValue;
-            var day = data.Key;
-            int dayMax;
-            if(data.Key.Month == DateTime.Now.Month && data.Key.Year == DateTime.Now.Year)
-                dayMax = DateTime.Now.Day;
-            else
-                dayMax = DateTime.DaysInMonth(data.Key.Year, data.Key.Month);
-            for(int i = 1; i <= dayMax; i++)
+            selectedYearMonth = data.Key;
+            pivot.Title = selectedYearMonth.ToString("yyyy", CultureInfo.CurrentCulture);
+            if(usageData != WebConnect.Current.UsageData.Traffic)
             {
-                try
-                {
-                    sum += data.Value[day];
-                }
-                catch(KeyNotFoundException)
-                {
-                }
-                dataContext.Add(new KeyValuePair<int, Size>(i, sum));
-                day = day.AddDays(1);
+                usageData = WebConnect.Current.UsageData.Traffic;
+                monthlyDataCache.Clear();
             }
-            DataContext = dataContext;
+            if(pivot.SelectedIndex != selectedYearMonth.Month - 1)
+                pivot.SelectedIndex = selectedYearMonth.Month - 1;
+            else
+                pivot_PivotItemLoading(pivot, new PivotItemEventArgs()
+                {
+                    Item = (PivotItem)pivot.SelectedItem
+                });
         }
+
+        private FrameworkElement getMonthDataChart(DateTime yearMonth, MonthlyData data)
+        {
+            if(monthlyDataChartCache.ContainsKey(yearMonth))
+                return monthlyDataChartCache[yearMonth];
+            var re = (FrameworkElement)((DataTemplate)Resources["ChartTemplate"]).LoadContent();
+            re.DataContext = getMonthData(yearMonth, data);
+            monthlyDataChartCache[yearMonth] = re;
+            return re;
+        }
+
+        private Dictionary<DateTime, FrameworkElement> monthlyDataChartCache = new Dictionary<DateTime, FrameworkElement>();
+
+        private List<KeyValuePair<double, Size>> getMonthData(DateTime yearMonth, MonthlyData data)
+        {
+            if(monthlyDataCache.ContainsKey(yearMonth))
+                return monthlyDataCache[yearMonth];
+            var delta = 1E-9;
+            Func<DateTime, MonthlyData, List<KeyValuePair<double, Size>>> loadDataPrevious = (t, d) =>
+            {
+                var dataContext = new List<KeyValuePair<double, Size>>();
+                var sum = Size.MinValue;
+                var day = t;
+                var dayMax = DateTime.DaysInMonth(day.Year, day.Month);
+                for(double i = 1; i <= dayMax; i++)
+                {
+                    try
+                    {
+                        sum += d[day];
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                    }
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, sum));
+                    day = day.AddDays(1);
+                }
+                return dataContext;
+            }, loadDataCurrent = (t, d) =>
+            {
+                var dataContext = new List<KeyValuePair<double, Size>>();
+                var sum = Size.MinValue;
+                var day = t;
+                var dayMax = DateTime.DaysInMonth(day.Year, day.Month);
+                var dayNow = DateTime.Now.Day;
+                var predictIncrease = d.Sum / dayNow;
+                double i;
+                for(i = 1d; i <= dayNow; i++)
+                {
+                    try
+                    {
+                        sum += d[day];
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                    }
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, sum));
+                    day = day.AddDays(1);
+                }
+                dataContext.Add(new KeyValuePair<double, Size>(i - 1 + 2 * delta, new Size()));
+                for(; i <= dayMax; i++)
+                {
+                    sum += predictIncrease;
+                    dataContext.Add(new KeyValuePair<double, Size>(i - delta, new Size()));
+                    dataContext.Add(new KeyValuePair<double, Size>(i, sum));
+                    dataContext.Add(new KeyValuePair<double, Size>(i + delta, new Size()));
+                }
+                return dataContext;
+            };
+            var re = (yearMonth.Month == DateTime.Now.Month && yearMonth.Year == DateTime.Now.Year) ? loadDataCurrent(yearMonth, data) : loadDataPrevious(yearMonth, data);
+            monthlyDataCache.Add(yearMonth, re);
+            return re;
+        }
+
+        private Dictionary<DateTime, List<KeyValuePair<double, Size>>> monthlyDataCache = new Dictionary<DateTime, List<KeyValuePair<double, Size>>>();
 
         #region NavigationHelper 注册
 
@@ -132,5 +208,37 @@ namespace TsinghuaNet
         }
 
         #endregion
+
+        private DateTime selectedYearMonth;
+        private IReadOnlyDictionary<DateTime, MonthlyData> usageData;
+
+        private void pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
+        {
+            var item = args.Item;
+            if(usageData.ContainsKey(selectedYearMonth))
+                item.Content = getMonthDataChart(selectedYearMonth, usageData[selectedYearMonth]);
+            else
+                item.Content = "暂无数据";
+        }
+
+        private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.RemovedItems.Count==0)
+                return;
+            var removedMonth = (int)((PivotItem)e.RemovedItems[0]).Tag;
+            var addedMonth = (int)((PivotItem)e.AddedItems[0]).Tag;
+            if(removedMonth == 1 && addedMonth == 12)
+            {
+                selectedYearMonth = selectedYearMonth.AddMonths(-1);
+                pivot.Title = selectedYearMonth.ToString("yyyy", CultureInfo.CurrentCulture);
+            }
+            else if(removedMonth - 1 > addedMonth)
+            {
+                selectedYearMonth = new DateTime(selectedYearMonth.Year + 1, addedMonth, 1);
+                pivot.Title = selectedYearMonth.ToString("yyyy", CultureInfo.CurrentCulture);
+            }
+            else
+                selectedYearMonth = new DateTime(selectedYearMonth.Year, (int)((PivotItem)e.AddedItems[0]).Tag, 1);
+        }
     }
 }

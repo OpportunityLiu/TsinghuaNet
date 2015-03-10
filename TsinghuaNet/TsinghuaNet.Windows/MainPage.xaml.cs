@@ -148,17 +148,22 @@ namespace TsinghuaNet
         private async void refresh_Click(object sender, RoutedEventArgs e)
         {
             commandBar.IsOpen = false;
-            if((DateTime.Now - WebConnect.Current.UpdateTime).Ticks > 50000000)//5秒
+            try
+            {
                 await WebConnect.Current.RefreshAsync();
-            if(!WebConnect.Current.IsOnline)
-                try
-                {
-                    await WebConnect.Current.LogOnAsync();
-                }
-                catch(LogOnException ex)
-                {
-                    App.Current.SendToastNotification("登陆失败", ex.Message);
-                }
+                if(!WebConnect.Current.IsOnline)
+                    try
+                    {
+                        await WebConnect.Current.LogOnAsync();
+                    }
+                    catch(LogOnException ex)
+                    {
+                        App.Current.SendToastNotification("登陆失败", ex.Message);
+                    }
+            }
+            catch(LogOnException)
+            {
+            }
         }
 
         ListView listViewOnlineDevices;
