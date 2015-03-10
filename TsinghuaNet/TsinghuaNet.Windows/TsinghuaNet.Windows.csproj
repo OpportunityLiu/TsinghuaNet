@@ -150,9 +150,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Syncfusion.SfChart.Universal">
-      <HintPath>..\..\packages\chart\Syncfusion.SfChart.Universal.dll</HintPath>
-    </Reference>
     <Reference Include="WinRTXamlToolkit">
       <HintPath>..\..\packages\WinRTXamlToolkit.Windows.1.8.1.0\lib\netcore451\WinRTXamlToolkit.dll</HintPath>
     </Reference>
