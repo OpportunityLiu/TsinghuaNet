@@ -101,5 +101,13 @@ namespace TsinghuaNet
                 return false;
             }
         }
+
+        private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            if(new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast)
+                App.Current.StatusBar.BackgroundOpacity = 0;
+            else
+                App.Current.StatusBar.BackgroundOpacity = 1;
+        }
     }
 }

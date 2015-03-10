@@ -14,15 +14,15 @@
         <DataTemplate x:Key="OnlineDeviceItemTemplate">
             <StackPanel Margin="5" Width="1000">
                 <ToolTipService.ToolTip>
-                    <TextBlock FontSize="16">
-                        IP地址:   <Run Text="{Binding IPAddress}" FontWeight="Bold" />
-                        <LineBreak />
-                        MAC:    <Run Text="{Binding Mac}" FontWeight="Bold" />
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" LineHeight="{Binding FontSize, RelativeSource={RelativeSource Mode=Self}}" >
+                        <Run Text="{StaticResource StringMac}" />  
+                        <Run Text="{Binding Mac}"/>
                     </TextBlock>
                 </ToolTipService.ToolTip>
-                <TextBlock Text="{Binding Name}" Margin="5" />
-                <TextBlock Text="{Binding WebTraffic}" Margin="5" />
-                <TextBlock Text="{Binding LogOnDateTime}" Margin="5" />
+                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="{Binding WebTraffic}" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="{Binding IPAddress}" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="{Binding LogOnDateTime}" Style="{ThemeResource SubtitleTextBlockStyle}" />
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
@@ -60,30 +60,30 @@
             </AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
-    <Hub x:Name="hub" Header="{StaticResource AppName}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0">
-        <HubSection x:Name="hubSectionPic" Header="" HorizontalAlignment="Left" Margin="-200,0,0,0" Width="503">
+    <Hub x:Name="hub" Header="{StaticResource AppName}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Margin="-200,0,0,0" Width="500">
             <HubSection.Background>
                 <ImageBrush Stretch="UniformToFill" ImageSource="Resources/Header.png" />
             </HubSection.Background>
             <DataTemplate />
         </HubSection>
-        <HubSection x:Name="hubSectionStart" Header="{StaticResource StringStart}" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionStart" Header="{StaticResource StringStart}" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
             <DataTemplate>
                 <StackPanel Width="400" Loaded="StackPanel_Loaded">
-                    <TextBlock Text="{StaticResource StringStartHint}" VerticalAlignment="Top" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,10" />
+                    <TextBlock Text="{StaticResource StringStartHint}" VerticalAlignment="Top" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,10" />
                     <Grid Height="75" Margin="0,10">
                         <TextBox x:Name="textBoxUserName" PlaceholderText="{StaticResource StringUserName}" InputScope="AlphanumericHalfWidth" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" KeyUp="textBox_KeyUp" />
                         <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" Width="320" VerticalAlignment="Bottom" HorizontalAlignment="Left" KeyUp="textBox_KeyUp" />
                         <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="0,0,15,0" VerticalAlignment="Center">
                             <Button.RenderTransform>
-                                <CompositeTransform Rotation="160" ScaleX="1.5" ScaleY="1.5" />
+                                <CompositeTransform Rotation="180" ScaleX="1.5" ScaleY="1.5" />
                             </Button.RenderTransform>
                         </Button>
                     </Grid>
                 </StackPanel>
             </DataTemplate>
         </HubSection>
-        <HubSection x:Name="hubSectionState" Header="{StaticResource StringState}" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionState" Header="{StaticResource StringState}" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
             <DataTemplate>
                 <Grid Width="400">
                     <Grid.ColumnDefinitions>
@@ -96,11 +96,11 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding UserName}" FontSize="20" Margin="0,5" Grid.ColumnSpan="2" />
-                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="1" Text="{StaticResource StringTraffic}" />
-                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="1" Grid.Column="1" Text="{Binding WebTrafficExact}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding UserName}" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,5" Grid.ColumnSpan="2" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5,20,5" Grid.Row="1" Text="{StaticResource StringTraffic}" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="1" Grid.Column="1" Text="{Binding WebTrafficExact}" FontWeight="SemiBold" />
                     <Grid Margin="0,5" Grid.Row="2" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -147,120 +147,122 @@
                         <TextBlock Text="40" Grid.Row="1" Grid.Column="3" />
                         <TextBlock Text="50" Grid.Row="1" Grid.Column="4" />
                     </Grid>
-                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="3" Text="{StaticResource StringBalance}" />
-                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="3" Grid.Column="1" FontWeight="SemiBold">
-            				<Run Text="{Binding Balance}" />
-            				<Run Text="{StaticResource StringYuan}" />
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="3" Text="{StaticResource StringBalance}" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" FontWeight="SemiBold" Margin="0,5" Grid.Row="3" Grid.Column="1">
+            			<Run Text="{Binding Balance}" />
+            			<Run Text="{StaticResource StringYuan}" />
                     </TextBlock>
-                    <TextBlock FontSize="16" Margin="0,5,20,5" Grid.Row="4" Text="{StaticResource StringUpdateTime}" />
-                    <TextBlock FontSize="16" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
-                    <ListView Margin="0,10" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged" Grid.Row="5" Grid.ColumnSpan="2" Header="{StaticResource StringOnlineDevices}" FontSize="16" />
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="4" Text="{StaticResource StringUpdateTime}" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
+                    <ListView Margin="0,10" Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
+                        <ListView.Header>
+                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="{StaticResource StringOnlineDevices}" />
+                        </ListView.Header>
+                    </ListView>
                 </Grid>
             </DataTemplate>
         </HubSection>
-        <HubSection x:Name="hubSectionHistory" Header="{StaticResource StringHistory}" Style="{StaticResource HubSectionStyle}">
+        <HubSection x:Name="hubSectionHistory" Header="{StaticResource StringHistory}" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Left">
             <DataTemplate>
-                <Viewbox MinWidth="500">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ProgressRing x:Name="progressRing" Width="100" Height="100" IsActive="{Binding UsageData, FallbackValue=False, TargetNullValue=True}" Margin="200,430,200,366.121" Grid.RowSpan="2" />
-                        <Series:Chart MinWidth="500" Width="{Binding UsageData.Length}" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}">
-                            <Series:Chart.LegendStyle>
-                                <Style TargetType="FrameworkElement">
-                                    <Setter Property="Width" Value="0" />
+                <Grid MinWidth="500">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ProgressRing x:Name="progressRing" Width="100" Height="100" IsActive="{Binding UsageData, FallbackValue=False, TargetNullValue=True}" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                    <Series:Chart MinWidth="500" Width="{Binding UsageData.Length}" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}">
+                        <Series:Chart.LegendStyle>
+                            <Style TargetType="FrameworkElement">
+                                <Setter Property="Width" Value="0" />
+                            </Style>
+                        </Series:Chart.LegendStyle>
+                        <Series:ColumnSeries ItemsSource="{Binding UsageData.Traffic}" DependentValueBinding="{Binding Value.Sum.TotalGB}" IsSelectionEnabled="True" Tapped="ColumnSeries_Tapped" AnimationSequence="FirstToLast">
+                            <Series:ColumnSeries.Resources>
+                                <Style x:Key="DataPointStyle" TargetType="Series:ColumnDataPoint">
+                                    <Setter Property="Background" Value="{ThemeResource ComboBoxItemSelectedPointerOverBackgroundThemeBrush}" />
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="IsTabStop" Value="False" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Series:ColumnDataPoint">
+                                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Opacity="0" x:Name="Root">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualStateGroup.Transitions>
+                                                                <VisualTransition GeneratedDuration="0:0:0.1" />
+                                                                <VisualTransition GeneratedDuration="0" To="MouseOver" />
+                                                            </VisualStateGroup.Transitions>
+                                                            <VisualState x:Name="Normal" />
+                                                            <VisualState x:Name="MouseOver">
+                                                                <Storyboard>
+                                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="MouseOverHighlight">
+                                                                        <SplineDoubleKeyFrame KeyTime="0" Value="0" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.3">
+                                                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                                                <PowerEase EasingMode="EaseIn" />
+                                                                            </EasingDoubleKeyFrame.EasingFunction>
+                                                                        </EasingDoubleKeyFrame>
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0">
+                                                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                                                <CircleEase EasingMode="EaseOut" />
+                                                                            </EasingDoubleKeyFrame.EasingFunction>
+                                                                        </EasingDoubleKeyFrame>
+                                                                    </DoubleAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                        <VisualStateGroup x:Name="SelectionStates">
+                                                            <VisualStateGroup.Transitions>
+                                                                <VisualTransition GeneratedDuration="0:0:0.1" />
+                                                            </VisualStateGroup.Transitions>
+                                                            <VisualState x:Name="Unselected" />
+                                                            <VisualState x:Name="Selected">
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetName="SelectionHighlight" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0" />
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                        <VisualStateGroup x:Name="RevealStates">
+                                                            <VisualStateGroup.Transitions>
+                                                                <VisualTransition GeneratedDuration="0:0:0.5" />
+                                                            </VisualStateGroup.Transitions>
+                                                            <VisualState x:Name="Shown">
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="1" />
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Hidden">
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="0" />
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <ToolTipService.ToolTip>
+                                                        <TextBlock Text="{TemplateBinding FormattedDependentValue}" />
+                                                    </ToolTipService.ToolTip>
+                                                    <Grid Background="{TemplateBinding Background}">
+                                                        <Rectangle x:Name="MouseOverHighlight" Fill="White" Opacity="0" />
+                                                        <Rectangle x:Name="SelectionHighlight" Fill="{ThemeResource ComboBoxSelectedBackgroundThemeBrush}" Opacity="0" />
+                                                    </Grid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Foreground" Value="{x:Null}" />
                                 </Style>
-                            </Series:Chart.LegendStyle>
-                            <Series:ColumnSeries ItemsSource="{Binding UsageData.Traffic}" DependentValueBinding="{Binding Value.Sum.TotalGB}" IsSelectionEnabled="True" Tapped="ColumnSeries_Tapped" AnimationSequence="FirstToLast">
-                                <Series:ColumnSeries.Resources>
-                                    <Style x:Key="DataPointStyle" TargetType="Series:ColumnDataPoint">
-                                        <Setter Property="Background" Value="{ThemeResource ComboBoxItemSelectedPointerOverBackgroundThemeBrush}" />
-                                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                                        <Setter Property="BorderThickness" Value="1" />
-                                        <Setter Property="IsTabStop" Value="False" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Series:ColumnDataPoint">
-                                                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Opacity="0" x:Name="Root">
-                                                        <VisualStateManager.VisualStateGroups>
-                                                            <VisualStateGroup x:Name="CommonStates">
-                                                                <VisualStateGroup.Transitions>
-                                                                    <VisualTransition GeneratedDuration="0:0:0.1" />
-                                                                    <VisualTransition GeneratedDuration="0" To="MouseOver" />
-                                                                </VisualStateGroup.Transitions>
-                                                                <VisualState x:Name="Normal" />
-                                                                <VisualState x:Name="MouseOver">
-                                                                    <Storyboard>
-                                                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="MouseOverHighlight">
-                                                                            <SplineDoubleKeyFrame KeyTime="0" Value="0" />
-                                                                            <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.3">
-                                                                                <EasingDoubleKeyFrame.EasingFunction>
-                                                                                    <PowerEase EasingMode="EaseIn" />
-                                                                                </EasingDoubleKeyFrame.EasingFunction>
-                                                                            </EasingDoubleKeyFrame>
-                                                                            <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0">
-                                                                                <EasingDoubleKeyFrame.EasingFunction>
-                                                                                    <CircleEase EasingMode="EaseOut" />
-                                                                                </EasingDoubleKeyFrame.EasingFunction>
-                                                                            </EasingDoubleKeyFrame>
-                                                                        </DoubleAnimationUsingKeyFrames>
-                                                                    </Storyboard>
-                                                                </VisualState>
-                                                            </VisualStateGroup>
-                                                            <VisualStateGroup x:Name="SelectionStates">
-                                                                <VisualStateGroup.Transitions>
-                                                                    <VisualTransition GeneratedDuration="0:0:0.1" />
-                                                                </VisualStateGroup.Transitions>
-                                                                <VisualState x:Name="Unselected" />
-                                                                <VisualState x:Name="Selected">
-                                                                    <Storyboard>
-                                                                        <DoubleAnimation Storyboard.TargetName="SelectionHighlight" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0" />
-                                                                    </Storyboard>
-                                                                </VisualState>
-                                                            </VisualStateGroup>
-                                                            <VisualStateGroup x:Name="RevealStates">
-                                                                <VisualStateGroup.Transitions>
-                                                                    <VisualTransition GeneratedDuration="0:0:0.5" />
-                                                                </VisualStateGroup.Transitions>
-                                                                <VisualState x:Name="Shown">
-                                                                    <Storyboard>
-                                                                        <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="1" />
-                                                                    </Storyboard>
-                                                                </VisualState>
-                                                                <VisualState x:Name="Hidden">
-                                                                    <Storyboard>
-                                                                        <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" To="0" />
-                                                                    </Storyboard>
-                                                                </VisualState>
-                                                            </VisualStateGroup>
-                                                        </VisualStateManager.VisualStateGroups>
-                                                        <ToolTipService.ToolTip>
-                                                            <TextBlock Text="{TemplateBinding FormattedDependentValue}" />
-                                                        </ToolTipService.ToolTip>
-                                                        <Grid Background="{TemplateBinding Background}">
-                                                            <Rectangle x:Name="MouseOverHighlight" Fill="White" Opacity="0" />
-                                                            <Rectangle x:Name="SelectionHighlight" Fill="{ThemeResource ComboBoxSelectedBackgroundThemeBrush}" Opacity="0" />
-                                                        </Grid>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Foreground" Value="{x:Null}" />
-                                    </Style>
-                                </Series:ColumnSeries.Resources>
-                                <Series:ColumnSeries.IndependentValueBinding>
-                                    <Binding Converter="{StaticResource DateTimeToYearMonthStringConverter}" Path="Key" />
-                                </Series:ColumnSeries.IndependentValueBinding>
-                                <Series:ColumnSeries.DataPointStyle>
-                                    <StaticResource ResourceKey="DataPointStyle" />
-                                </Series:ColumnSeries.DataPointStyle>
-                            </Series:ColumnSeries>
-                        </Series:Chart>
-                        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Content="{StaticResource StringRefreshList}" Margin="10" Click="refreshUsage_Click" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}" Grid.Row="1" />
-                    </Grid>
-                </Viewbox>
+                            </Series:ColumnSeries.Resources>
+                            <Series:ColumnSeries.IndependentValueBinding>
+                                <Binding Converter="{StaticResource DateTimeToYearMonthStringConverter}" Path="Key" />
+                            </Series:ColumnSeries.IndependentValueBinding>
+                            <Series:ColumnSeries.DataPointStyle>
+                                <StaticResource ResourceKey="DataPointStyle" />
+                            </Series:ColumnSeries.DataPointStyle>
+                        </Series:ColumnSeries>
+                    </Series:Chart>
+                    <Button VerticalAlignment="Top" HorizontalAlignment="Right" Content="{StaticResource StringRefreshList}" Margin="10" Click="refreshUsage_Click" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=progressRing}" Grid.Row="1" />
+                </Grid>
             </DataTemplate>
         </HubSection>
     </Hub>

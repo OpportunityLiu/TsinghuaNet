@@ -140,5 +140,45 @@ namespace TsinghuaNet
             dropDialog.Title = selectedDevice.Name;
             await dropDialog.ShowAsync();
         }
+
+        private void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(AboutPage));
+        }
+
+        private async void changeUser_Click(object sender, RoutedEventArgs e)
+        {
+            commandBar.IsOpen = false;
+            var signIn = new SignInDialog();
+            var t = signIn.ShowAsync();
+            signIn.Closed += (s, args) => this.DataContext = WebConnect.Current;
+            await t;
+        }
+
+        private async void refresh_Click(object sender, RoutedEventArgs e)
+        {
+            commandBar.IsOpen = false;
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+                if(!WebConnect.Current.IsOnline)
+                    try
+                    {
+                        await WebConnect.Current.LogOnAsync();
+                    }
+                    catch(LogOnException ex)
+                    {
+                        App.Current.SendToastNotification("登陆失败", ex.Message);
+                    }
+            }
+            catch(LogOnException)
+            {
+            }
+        }
+
+        private void history_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(HistoryPage));
+        }
     }
 }

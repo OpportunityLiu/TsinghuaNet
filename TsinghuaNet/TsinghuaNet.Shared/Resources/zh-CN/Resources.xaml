@@ -21,6 +21,7 @@
     <x:String x:Key="StringBalance">余额</x:String>
     <x:String x:Key="StringYuan">元</x:String>
     <x:String x:Key="StringOnlineDevices">在线设备</x:String>
+    <x:String x:Key="StringMac">Mac</x:String>
 
     <x:String x:Key="StringHistory">历史记录</x:String>
     <x:String x:Key="StringRefreshList">更新列表</x:String>

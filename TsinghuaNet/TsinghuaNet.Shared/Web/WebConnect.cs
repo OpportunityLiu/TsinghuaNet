@@ -209,6 +209,10 @@ namespace TsinghuaNet.Web
                     //全部成功
                     App.DispatcherRunAnsyc(() => UpdateTime = DateTime.Now).Wait();
                 }
+                catch(InvalidOperationException ex)
+                {
+                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                }
                 catch(Exception)
                 {
                     throw;
@@ -229,7 +233,8 @@ namespace TsinghuaNet.Web
                 string res;
                 lock(http)
                     res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
-                await App.DispatcherRunAnsyc(() => UsageData = new WebUsageData(res, DeviceList));
+                var data = new WebUsageData(res, DeviceList);
+                await App.DispatcherRunAnsyc(() => UsageData = data);
                 return;
             });
         }

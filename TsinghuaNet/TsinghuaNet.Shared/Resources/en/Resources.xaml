@@ -21,6 +21,7 @@
     <x:String x:Key="StringBalance">Balance</x:String>
     <x:String x:Key="StringYuan">Yuan</x:String>
     <x:String x:Key="StringOnlineDevices">Online devices</x:String>
+    <x:String x:Key="StringMac">Mac</x:String>
 
     <x:String x:Key="StringHistory">History</x:String>
     <x:String x:Key="StringRefreshList">Refresh the chart</x:String>

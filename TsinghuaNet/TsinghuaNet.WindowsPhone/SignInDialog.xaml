@@ -1,7 +1,7 @@
-﻿<ContentDialog x:Class="TsinghuaNet.SignInDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Title="{StaticResource StringStart}" PrimaryButtonText="{StaticResource StringSignIn}" Language="{StaticResource StringLanguage}" Closing="ContentDialog_Closing" FullSizeDesired="True" SecondaryButtonText="{StaticResource StringCancel}" >
+﻿<ContentDialog x:Class="TsinghuaNet.SignInDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Title="{StaticResource StringStart}" PrimaryButtonText="{StaticResource StringSignIn}" Language="{StaticResource StringLanguage}" Closing="ContentDialog_Closing" FullSizeDesired="True" SecondaryButtonText="{StaticResource StringCancel}" Opened="ContentDialog_Opened">
     <StackPanel>
         <TextBlock Text="{StaticResource StringStartHint}" VerticalAlignment="Top" TextWrapping="WrapWholeWords" Margin="0,10" />
-        <TextBox x:Name="textBoxUserName" PlaceholderText="{StaticResource StringUserName}" InputScope="AlphanumericHalfWidth" />
-        <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" />
+        <TextBox x:Name="textBoxUserName" Header="{StaticResource StringUserName}" InputScope="AlphanumericHalfWidth" />
+        <PasswordBox x:Name="passwordBoxPassword" Header="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" />
     </StackPanel>
 </ContentDialog>
