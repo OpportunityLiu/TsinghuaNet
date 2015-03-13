@@ -6,10 +6,10 @@
     </Page.BottomAppBar>
     <Page.Resources>
         <local:DateTimeToYearMonthStringConverter x:Key="DateTimeToYearMonthStringConverter" />
-        <DataTemplate x:Key="ChartTemplate">
-            <Grid x:Name="chart" Margin="19,9.5,19,0">
-                <Charting:Chart>
-                    <Charting:AreaSeries ItemsSource="{Binding}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.TotalGB}" TransitionDuration="0"  />
+        <DataTemplate x:Key="ChartTemplate" >
+            <Grid x:Name="chart" Margin="19,9.5,19,0" CacheMode="BitmapCache">
+                <Charting:Chart >
+                    <Charting:AreaSeries ItemsSource="{Binding}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value.TotalGB}" TransitionDuration="0" FontFamily="Global User Interface" />
                     <Charting:Chart.LegendStyle>
                         <Style TargetType="FrameworkElement">
                             <Setter Property="Width" Value="0" />
