@@ -220,40 +220,6 @@ namespace TsinghuaNet.Web
             });
         }
 
-        /// <summary>
-        /// 异步更新使用记录。
-        /// </summary>
-        /// <returns>表示更新使用记录的异步操作。</returns>
-        public Task RefreshUsageAnsyc()
-        {
-            return Task.Run(async () =>
-            {
-                await App.DispatcherRunAnsyc(() => UsageData = null);
-                signInUsereg();
-                string res;
-                lock(http)
-                    res = http.Get("https://usereg.tsinghua.edu.cn/user_detail_list.php?action=balance2&start_time=1900-01-01&end_time=" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "&is_ipv6=0&page=1&offset=100000");
-                var data = new WebUsageData(res, DeviceList);
-                await App.DispatcherRunAnsyc(() => UsageData = data);
-                return;
-            });
-        }
-
-        private WebUsageData usageData;
-
-        public WebUsageData UsageData
-        {
-            get
-            {
-                return usageData;
-            }
-            set
-            {
-                usageData = value;
-                propertyChanging();
-            }
-        }
-
         public string UserName
         {
             get

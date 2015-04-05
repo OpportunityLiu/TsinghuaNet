@@ -35,7 +35,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebConnect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Web\WebStruct.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Web\WebUsageData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\150x150.scale-100.png" />

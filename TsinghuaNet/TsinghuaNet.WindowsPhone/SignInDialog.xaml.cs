@@ -28,8 +28,8 @@ namespace TsinghuaNet
             this.InitializeComponent();
         }
 
-        MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
-        MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
+        private static MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
+        private static MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
 
         private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
@@ -80,7 +80,6 @@ namespace TsinghuaNet
             {
                 ApplicationData.Current.RoamingSettings.Values["UserName"] = userName;
                 ApplicationData.Current.RoamingSettings.Values["PasswordMD5"] = passMD5;
-                await WebConnect.Current.RefreshUsageAnsyc();
                 return true;
             }
             else
