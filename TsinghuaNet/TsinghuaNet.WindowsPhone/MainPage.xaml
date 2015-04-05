@@ -21,7 +21,6 @@
                 <AppBarButton x:Name="appBarButtonAbout" Label="{StaticResource StringAbout}" Click="appBarButtonAbout_Click" />
                 <AppBarButton x:Name="appBarButtonChangeUser" Label="{StaticResource StringChangeUser}" Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="appBarButtonHistory" Label="{StaticResource StringHistory}" Icon="Calendar" Click="history_Click"/>
             <AppBarButton x:Name="appBarButtonRefresh" Icon="Refresh" Label="{StaticResource StringRefresh}" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
         </CommandBar>
     </Page.BottomAppBar>

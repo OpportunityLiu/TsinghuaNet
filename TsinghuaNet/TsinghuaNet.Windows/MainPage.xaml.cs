@@ -35,7 +35,6 @@ namespace TsinghuaNet
             appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
-            hub.Sections.Remove(hubSectionHistory);
         }
 
         PasswordBox passwordBoxPassword;
@@ -75,11 +74,9 @@ namespace TsinghuaNet
                 hub.Sections.Remove(hubSectionStart);
                 hub.DataContext = WebConnect.Current;
                 hub.Sections.Add(hubSectionState);
-                hub.Sections.Add(hubSectionHistory);
                 appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 ApplicationData.Current.RoamingSettings.Values["UserName"] = userName;
                 ApplicationData.Current.RoamingSettings.Values["PasswordMD5"] = passMD5;
-                await WebConnect.Current.RefreshUsageAnsyc();
             }
             else
             {
@@ -106,12 +103,10 @@ namespace TsinghuaNet
             if(e.NewSize.Width == 500)
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                hubSectionHistory.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
             else
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                hubSectionHistory.Visibility = Windows.UI.Xaml.Visibility.Visible;
             }
         }
 
@@ -119,7 +114,6 @@ namespace TsinghuaNet
         {
             hub.ScrollToSection(hubSectionPic);
             hub.Sections.Remove(hubSectionState);
-            hub.Sections.Remove(hubSectionHistory);
             if(textBoxUserName != null)
             {
                 textBoxUserName.Text = "";
@@ -192,18 +186,6 @@ namespace TsinghuaNet
             passwordBoxPassword = (PasswordBox)stackPanel.FindName("passwordBoxPassword");
         }
 
-        private void ColumnSeries_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            var selected = ((ColumnSeries)sender).SelectedItem;
-            if(selected != null)
-                Frame.Navigate(typeof(SingleMonthData), selected);
-        }
-
-        private void refreshUsage_Click(object sender, RoutedEventArgs e)
-        {
-            WebConnect.Current.RefreshUsageAnsyc();
-        }
-
         private void textBox_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key == Windows.System.VirtualKey.Enter)
@@ -231,11 +213,9 @@ namespace TsinghuaNet
                     {
                         hub.DataContext = WebConnect.Current;
                         hub.Sections.Add(hubSectionState);
-                        hub.Sections.Add(hubSectionHistory);
                         try
                         {
                             await WebConnect.Current.LogOnAsync();
-                            await WebConnect.Current.RefreshUsageAnsyc();
                         }
                         catch(LogOnException ex)
                         {
