@@ -129,32 +129,6 @@ namespace Tasks
     /// </summary>
     internal struct MacAddress
     {
-        /// <summary>
-        /// 将 Mac 地址的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.MacAddress"/>。
-        /// </summary>
-        /// <param name="sizeString">包含要转换的 Mac 地址的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="TsinghuaNet.MacAddress"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的 Mac 地址。</exception>
-        public static MacAddress Parse(string value)
-        {
-            if(string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("value");
-            var mac = value.Split(":. ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if(mac.Length != 6)
-                throw new FormatException("字符串格式有误。");
-            var result = new MacAddress();
-            try
-            {
-                for(int i = 0; i < 6; i++)
-                    result[i] = byte.Parse(mac[i], NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
-            }
-            catch(Exception ex)
-            {
-                throw new FormatException("字符串格式有误。", ex);
-            }
-            return result;
-        }
 
         /// <summary>
         /// 表示本机的 <see cref="TsinghuaNet.MacAddress"/> 对象。
@@ -241,7 +215,7 @@ namespace Tasks
                     throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
                 }
             }
-            set
+            private set
             {
                 switch(index)
                 {
@@ -270,17 +244,6 @@ namespace Tasks
         }
 
         private byte value0, value1, value2, value3, value4, value5;
-
-        /// <summary>
-        /// 获取一个值，指示当前 <see cref="TsinghuaNet.MacAddress"/> 是否与 <see cref="TsinghuaNet.MacAddress.Current"/> 相等。
-        /// </summary>
-        public bool IsCurrent
-        {
-            get
-            {
-                return this == Current;
-            }
-        }
 
         /// <summary>
         /// 返回当前 <see cref="TsinghuaNet.MacAddress"/> 的字符串形式。

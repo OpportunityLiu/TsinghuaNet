@@ -125,6 +125,10 @@ namespace TsinghuaNet.Web
             {
                 signIn();
             }
+            catch(AggregateException ex)
+            {
+                throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+            }
             catch(LogOnException ex)
             {
                 if(ex.ExceptionType == LogOnExceptionType.UnknownError)
