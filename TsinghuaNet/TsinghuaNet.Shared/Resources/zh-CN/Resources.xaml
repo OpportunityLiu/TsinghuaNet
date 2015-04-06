@@ -33,6 +33,7 @@
     <x:String x:Key="StringDrop">下线</x:String>
     <x:String x:Key="StringDropHint">选定的设备将被强制下线。</x:String>
 
+    <x:String x:Key="StringPrivacy">隐私策略</x:String>
     <x:String x:Key="StringAbout">关于</x:String>
     <x:String x:Key="StringVersion">版本 {0}.{1}.{2}.{3}</x:String>
 

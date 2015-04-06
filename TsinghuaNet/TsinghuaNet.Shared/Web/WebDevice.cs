@@ -194,8 +194,15 @@ namespace TsinghuaNet.Web
         {
             return Task<bool>.Run(() =>
             {
-                lock(http)
-                    return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
+                try
+                {
+                    lock(http)
+                        return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
+                }
+                catch(AggregateException)
+                {
+                    return false;
+                }
             });
         }
 

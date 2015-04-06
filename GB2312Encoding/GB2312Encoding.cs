@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Windows.ApplicationModel;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace GB2312
 {
@@ -16,8 +17,8 @@ namespace GB2312
         {
             if(!BitConverter.IsLittleEndian)
                 throw new PlatformNotSupportedException("Not supported big endian platform.");
-
-            using(BinaryReader reader = new BinaryReader(Package.Current.InstalledLocation.GetFileAsync("GB2312Encoding\\gb2312.bin").AsTask().Result.OpenStreamForReadAsync().Result))
+            var file = StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///GB2312Encoding/gb2312.bin")).AsTask().Result;
+            using(var reader = new BinaryReader(file.OpenSequentialReadAsync().AsTask().Result.AsStreamForRead()))
             {
                 for(int i = 0; i < 0xffff; i++)
                 {

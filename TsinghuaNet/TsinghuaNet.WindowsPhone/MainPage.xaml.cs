@@ -75,7 +75,13 @@ namespace TsinghuaNet
         private async void drop_Confirmed(IUICommand sender)
         {
             await selectedDevice.DropAsync();
-            await WebConnect.Current.RefreshAsync();
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
+            }
         }
 
         private void StackPanel_Holding(object sender, HoldingRoutedEventArgs e)

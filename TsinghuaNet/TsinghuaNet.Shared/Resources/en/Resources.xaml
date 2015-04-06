@@ -16,7 +16,7 @@
     <x:String x:Key="StringSignIn">Sign in</x:String>
 
     <x:String x:Key="StringState">State</x:String>
-    <x:String x:Key="StringTraffic">Traffic</x:String>
+    <x:String x:Key="StringTraffic">Usage</x:String>
     <x:String x:Key="StringUpdateTime">Update time</x:String>
     <x:String x:Key="StringBalance">Balance</x:String>
     <x:String x:Key="StringYuan">Yuan</x:String>
@@ -33,6 +33,7 @@
     <x:String x:Key="StringDrop">Down</x:String>
     <x:String x:Key="StringDropHint">The selected device will be forced to log off.</x:String>
 
+    <x:String x:Key="StringPrivacy">Privacy policy</x:String>
     <x:String x:Key="StringAbout">About</x:String>
     <x:String x:Key="StringVersion">Version {0}.{1}.{2}.{3}</x:String>
     

@@ -16,7 +16,6 @@ using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using System.Threading.Tasks;
-using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using Windows.UI.Popups;
 using TsinghuaNet.Web;
 using TsinghuaNet.Common;
@@ -137,7 +136,13 @@ namespace TsinghuaNet
             appBarButtonDrop.Flyout.Hide();
             commandBar.IsOpen = false;
             await ((WebDevice)listViewOnlineDevices.SelectedItem).DropAsync();
-            await WebConnect.Current.RefreshAsync();
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
+            }
         }
 
         private async void refresh_Click(object sender, RoutedEventArgs e)

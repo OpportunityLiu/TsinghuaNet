@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using TsinghuaNet.Web;
+using System.Threading.Tasks;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -77,7 +78,17 @@ namespace TsinghuaNet
                 if(!string.IsNullOrEmpty((string)ApplicationData.Current.RoamingSettings.Values["UserName"]))
                 {
                     WebConnect.Current = new WebConnect((string)ApplicationData.Current.RoamingSettings.Values["UserName"], (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"]);
-                    WebConnect.Current.RefreshAsync();
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            WebConnect.Current.RefreshAsync().Wait();
+                        }
+                        catch(AggregateException)
+                        {
+                        }
+                    });
+                    
                 }
             }
 
@@ -166,6 +177,7 @@ namespace TsinghuaNet
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, (string)this.Resources["StringAbout"], a => new About().Show()));
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, (string)this.Resources["StringPrivacy"], async a => await Windows.System.Launcher.LaunchUriAsync(new Uri("http://myapppolicy.com/app/tsinghuanet "))));
             };
 #endif
 

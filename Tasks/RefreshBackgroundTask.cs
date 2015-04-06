@@ -5,21 +5,21 @@ using Windows.UI.Notifications;
 using System.Net.Http;
 using System;
 using System.Text.RegularExpressions;
-using Windows.ApplicationModel.Resources.Core;
 using System.Globalization;
+using Windows.ApplicationModel.Resources;
 
 namespace Tasks
 {
-    public sealed class RefreshBackgroundTask : IBackgroundTask
+    public sealed class RefreshBackgroundTask : IBackgroundTask,IDisposable
     {
         private HttpClient http = new HttpClient();
 
         private string userName = (string)ApplicationData.Current.RoamingSettings.Values["UserName"];
         private string passwordMd5 = (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"];
 
-        private string logOnSucessful = ResourceManager.Current.MainResourceMap["Tasks/Resources/StringLogOnSucessful"].Resolve().ValueAsString;
+        private string logOnSucessful;
 
-        private string used = ResourceManager.Current.MainResourceMap["Tasks/Resources/StringUsed"].Resolve().ValueAsString;
+        private string used;
 
         /// <summary>
         /// 登陆网络。
@@ -52,7 +52,6 @@ namespace Tasks
             return check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
         }
 
-
         private Size traffic;
 
         public RefreshBackgroundTask()
@@ -64,6 +63,11 @@ namespace Tasks
             XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
             stringElements[0].AppendChild(toastTitle);
             stringElements[1].AppendChild(toastText);
+
+            //加载资源
+            var l = ResourceLoader.GetForViewIndependentUse("Tasks/Resources");
+            used = l.GetString("Used");
+            logOnSucessful = l.GetString("LogOnSucessful");
         }
 
         #region IBackgroundTask 成员
@@ -91,6 +95,16 @@ namespace Tasks
         private XmlDocument toastXml;
         private XmlText toastTitle, toastText;
         private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
+
+        #region IDisposable 成员
+
+        public void Dispose()
+        {
+            if(http != null)
+                http.Dispose();
+        }
+
+        #endregion
     }
 
 }
