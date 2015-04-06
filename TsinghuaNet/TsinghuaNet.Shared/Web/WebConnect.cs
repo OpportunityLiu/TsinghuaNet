@@ -31,7 +31,7 @@ namespace TsinghuaNet.Web
                 throw new ArgumentNullException("passwordMD5");
             this.userName = userName;
             this.passwordMd5 = passwordMD5;
-            this.http = new HttpClient();
+            this.http = new HttpClient(new HttpClientHandler(), true);
             this.http.BaseAddress = new Uri("https://usereg.tsinghua.edu.cn");
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
@@ -65,26 +65,33 @@ namespace TsinghuaNet.Web
         {
             return Task.Run(() =>
             {
-                var toPost = "username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100";
-                string res;
-                try
+                string res = null;
+                Func<string, bool> check = toPost =>
                 {
-                    res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
-                }
-                catch(AggregateException ex)
-                {
-                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                }
-                if(Regex.IsMatch(res, @"^\d+,"))
-                {
-                    var a = res.Split(',');
-                    App.DispatcherRunAnsyc(() =>
+                    try
                     {
-                        this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
-                        this.IsOnline = true;
-                    }).Wait();
+                        res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                    }
+                    catch(AggregateException ex)
+                    {
+                        throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                    }
+                    if(Regex.IsMatch(res, @"^\d+,"))
+                    {
+                        var a = res.Split(',');
+                        App.DispatcherRunAnsyc(() =>
+                        {
+                            this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
+                            this.IsOnline = true;
+                        }).Wait();
+                        return true;
+                    }
+                    return false;
+                };
+                if(check("action=check_online"))
                     return;
-                }
+                if(check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100"))
+                    return;
                 App.DispatcherRunAnsyc(() => this.IsOnline = false).Wait();
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
                     throw new LogOnException(LogOnExceptionType.PasswordError);
@@ -93,8 +100,6 @@ namespace TsinghuaNet.Web
             });
         }
 
-        private string cookie;
-
         private void signInUsereg()
         {
             Action signIn = () =>
@@ -102,21 +107,6 @@ namespace TsinghuaNet.Web
                 string logOnRes;
                 lock(http)
                 {
-                    //获取登陆页以获得 cookie
-                    using(var get = http.GetAsync("https://usereg.tsinghua.edu.cn/login.php").Result)
-                    {
-                        try
-                        {
-                            cookie = get.Headers.GetValues("Set-Cookie").First().Split(";".ToCharArray())[0];
-                        }
-                        catch(InvalidOperationException)
-                        {
-                            //cookie 尚未过期。
-                        }
-                    }
-                    http.DefaultRequestHeaders.Remove("Cookie");
-                    http.DefaultRequestHeaders.Add("Cookie", cookie);
-                    //登陆
                     logOnRes = http.Post("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
                 }
                 switch(logOnRes)
@@ -157,6 +147,8 @@ namespace TsinghuaNet.Web
             }
         }
 
+        private volatile bool refreshing = false;
+
         /// <summary>
         /// 异步请求更新状态。
         /// </summary>
@@ -164,6 +156,9 @@ namespace TsinghuaNet.Web
         {
             return Task.Run(() =>
             {
+                if(refreshing)
+                    return;
+                refreshing = true;
                 try
                 {
                     signInUsereg();
@@ -216,6 +211,10 @@ namespace TsinghuaNet.Web
                 catch(Exception)
                 {
                     throw;
+                }
+                finally
+                {
+                    refreshing = false;
                 }
             });
         }
