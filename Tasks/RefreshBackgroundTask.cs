@@ -5,6 +5,8 @@ using Windows.UI.Notifications;
 using System.Net.Http;
 using System;
 using System.Text.RegularExpressions;
+using Windows.ApplicationModel.Resources.Core;
+using System.Globalization;
 
 namespace Tasks
 {
@@ -14,6 +16,10 @@ namespace Tasks
 
         private string userName = (string)ApplicationData.Current.RoamingSettings.Values["UserName"];
         private string passwordMd5 = (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"];
+
+        private string logOnSucessful = ResourceManager.Current.MainResourceMap["Tasks/Resources/StringLogOnSucessful"].Resolve().ValueAsString;
+
+        private string used = ResourceManager.Current.MainResourceMap["Tasks/Resources/StringUsed"].Resolve().ValueAsString;
 
         /// <summary>
         /// 登陆网络。
@@ -65,7 +71,7 @@ namespace Tasks
         public void Run(IBackgroundTaskInstance taskInstance)
         {
             if(logOn())
-                SendToastNotification("登陆成功", "已用流量：" + traffic.ToString());
+                SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, traffic));
         }
 
         #endregion

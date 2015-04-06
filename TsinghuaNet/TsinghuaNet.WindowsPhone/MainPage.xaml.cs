@@ -29,6 +29,8 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private static readonly string logOnFailed = (string)App.Current.Resources["StringLogOnFailed"];
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -61,7 +63,7 @@ namespace TsinghuaNet
                         }
                         catch(LogOnException ex)
                         {
-                            App.Current.SendToastNotification("登陆错误", ex.Message);
+                            App.Current.SendToastNotification(logOnFailed, ex.Message);
                         }
                     }
                 });
@@ -168,7 +170,7 @@ namespace TsinghuaNet
                     }
                     catch(LogOnException ex)
                     {
-                        App.Current.SendToastNotification("登陆失败", ex.Message);
+                        App.Current.SendToastNotification(logOnFailed, ex.Message);
                     }
             }
             catch(LogOnException)

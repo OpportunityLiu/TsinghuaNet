@@ -28,6 +28,7 @@ namespace TsinghuaNet
     /// </summary>
     public partial class MainPage : Page
     {
+        private static readonly string logOnFailed = (string)App.Current.Resources["StringLogOnFailed"];
 
         public MainPage()
         {
@@ -83,16 +84,16 @@ namespace TsinghuaNet
                 await new MessageDialog(excep.Message, (string)App.Current.Resources["StringError"]).ShowAsync();
                 switch(excep.ExceptionType)
                 {
-                    case LogOnExceptionType.UserNameError:
-                        textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                        textBoxUserName.SelectAll();
-                        break;
-                    case LogOnExceptionType.PasswordError:
-                        passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                        passwordBoxPassword.SelectAll();
-                        break;
-                    default:
-                        break;
+                case LogOnExceptionType.UserNameError:
+                    textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                    textBoxUserName.SelectAll();
+                    break;
+                case LogOnExceptionType.PasswordError:
+                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                    passwordBoxPassword.SelectAll();
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -152,7 +153,7 @@ namespace TsinghuaNet
                     }
                     catch(LogOnException ex)
                     {
-                        App.Current.SendToastNotification("登陆失败", ex.Message);
+                        App.Current.SendToastNotification(logOnFailed, ex.Message);
                     }
             }
             catch(LogOnException)
@@ -219,7 +220,7 @@ namespace TsinghuaNet
                         }
                         catch(LogOnException ex)
                         {
-                            App.Current.SendToastNotification("登陆错误", ex.Message);
+                            App.Current.SendToastNotification(logOnFailed, ex.Message);
                         }
                     }
                 });

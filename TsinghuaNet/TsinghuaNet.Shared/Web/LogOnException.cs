@@ -82,28 +82,29 @@ namespace TsinghuaNet.Web
 
         private static Dictionary<LogOnExceptionType, string> initLogOnErrorMessageDict()
         {
+            Func<string, string> getResourceString = key => App.ResourceString(key);
             var dict = new Dictionary<LogOnExceptionType, string>();
-            dict.Add(LogOnExceptionType.ConnectError, "连接错误。");
-            dict.Add(LogOnExceptionType.UserNameError, "用户名错误。");
-            dict.Add(LogOnExceptionType.PasswordError, "密码错误。");
-            dict.Add(LogOnExceptionType.UserTabError, "认证程序未启动。");
-            dict.Add(LogOnExceptionType.UserGroupError, "您的计费组信息不正确。");
-            dict.Add(LogOnExceptionType.NonAuthError, "您无须认证，可直接上网。");
-            dict.Add(LogOnExceptionType.BalanceError, "用户已欠费，请尽快充值。");
-            dict.Add(LogOnExceptionType.UnavailableError, "您的帐号已停用。");
-            dict.Add(LogOnExceptionType.DeletedError, "您的帐号已删除。");
-            dict.Add(LogOnExceptionType.IPExistError, "IP已存在，请稍后再试。");
-            dict.Add(LogOnExceptionType.UserCountError, "用户数已达上限。");
-            dict.Add(LogOnExceptionType.OnlineCountError, "该帐号的登录人数已超过限额，请登录https://usereg.tsinghua.edu.cn断开不用的连接。");
-            dict.Add(LogOnExceptionType.ModeError, "系统已禁止WEB方式登录，请使用客户端。");
-            dict.Add(LogOnExceptionType.TimePolicyError, "当前时段不允许连接。");
-            dict.Add(LogOnExceptionType.TimeSpanLengthError, "您的时长已超支。");
-            dict.Add(LogOnExceptionType.IPError, "您的 IP 地址不合法。");
-            dict.Add(LogOnExceptionType.MacAddressError, "您的 MAC 地址不合法。");
-            dict.Add(LogOnExceptionType.SyncError, "您的资料已修改，正在等待同步，请 2 分钟后再试。");
-            dict.Add(LogOnExceptionType.IPAllocError, "您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。");
-            dict.Add(LogOnExceptionType.IPInvalidError, "您是区内地址，无法使用。");
-            dict.Add(LogOnExceptionType.Unknown, "未知错误。");
+            dict.Add(LogOnExceptionType.ConnectError,getResourceString("StringConnectError"));
+            dict.Add(LogOnExceptionType.UserNameError,getResourceString("StringUserNameError"));
+            dict.Add(LogOnExceptionType.PasswordError,getResourceString("StringPasswordError"));
+            dict.Add(LogOnExceptionType.UserTabError,getResourceString("StringUserTabError"));
+            dict.Add(LogOnExceptionType.UserGroupError,getResourceString("StringUserGroupError"));
+            dict.Add(LogOnExceptionType.NonAuthError,getResourceString("StringNonAuthError"));
+            dict.Add(LogOnExceptionType.BalanceError,getResourceString("StringBalanceError"));
+            dict.Add(LogOnExceptionType.UnavailableError,getResourceString("StringUnavailableError"));
+            dict.Add(LogOnExceptionType.DeletedError,getResourceString("StringDeletedError"));
+            dict.Add(LogOnExceptionType.IPExistError,getResourceString("StringIPExistError"));
+            dict.Add(LogOnExceptionType.UserCountError,getResourceString("StringUserCountError"));
+            dict.Add(LogOnExceptionType.OnlineCountError,getResourceString("StringOnlineCountError"));
+            dict.Add(LogOnExceptionType.ModeError,getResourceString("StringModeError"));
+            dict.Add(LogOnExceptionType.TimePolicyError,getResourceString("StringTimePolicyError"));
+            dict.Add(LogOnExceptionType.TimeSpanLengthError,getResourceString("StringTimeSpanLengthError"));
+            dict.Add(LogOnExceptionType.IPError,getResourceString("StringIPError"));
+            dict.Add(LogOnExceptionType.MacAddressError,getResourceString("StringMacAddressError"));
+            dict.Add(LogOnExceptionType.SyncError,getResourceString("StringSyncError"));
+            dict.Add(LogOnExceptionType.IPAllocError,getResourceString("StringIPAllocError"));
+            dict.Add(LogOnExceptionType.IPInvalidError,getResourceString("StringIPInvalidError"));
+            dict.Add(LogOnExceptionType.UnknownError,getResourceString("StringUnknownError"));
             return dict;
         }
 
@@ -155,7 +156,7 @@ namespace TsinghuaNet.Web
         /// <summary>
         /// 未知错误。
         /// </summary>
-        Unknown = 0,
+        UnknownError = 0,
         /// <summary>
         /// 连接错误。
         /// </summary>

@@ -127,7 +127,7 @@ namespace TsinghuaNet.Web
             }
             catch(LogOnException ex)
             {
-                if(ex.ExceptionType == LogOnExceptionType.Unknown)
+                if(ex.ExceptionType == LogOnExceptionType.UnknownError)
                 {
                     Task.Delay(100).Wait();
                     try
