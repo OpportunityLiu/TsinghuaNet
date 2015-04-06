@@ -60,7 +60,7 @@ namespace TsinghuaNet
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = "RefreshBackgroundTask";
                 builder.TaskEntryPoint = "Tasks.RefreshBackgroundTask";
-                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
                 task = builder.Register();
             }
             task.Completed += refreshOnCompleted;
@@ -90,6 +90,11 @@ namespace TsinghuaNet
             stringElements[1].AppendChild(toastText);
         }
 
+        private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+        {
+
+        }
+
         public static new App Current
         {
             get;
@@ -101,20 +106,6 @@ namespace TsinghuaNet
         public static System.Threading.Tasks.Task DispatcherRunAnsyc(DispatchedHandler agileCallback)
         {
             return App.currentDispatcher.RunAsync(CoreDispatcherPriority.Normal, agileCallback).AsTask();
-        }
-
-        private async void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
-        {
-            try
-            {
-                await WebConnect.Current.LogOnAsync();
-            }
-            catch(LogOnException ex)
-            {
-                SendToastNotification("连接错误", ex.Message);
-                return;
-            }
-            SendToastNotification("连接成功","已用流量："+ WebConnect.Current.WebTrafficExact.ToString());
         }
 
         /// <summary>
