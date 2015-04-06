@@ -250,5 +250,12 @@ namespace TsinghuaNet
         {
 
         }
+
+        public static string ResourceString(string key)
+        {
+            string r = null;
+            DispatcherRunAnsyc(() => r = (string)App.Current.Resources[key]).Wait();
+            return r;
+        }
     }
 }

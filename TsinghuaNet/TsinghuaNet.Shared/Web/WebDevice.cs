@@ -14,6 +14,9 @@ namespace TsinghuaNet.Web
     /// </summary>
     public class WebDevice : INotifyPropertyChanged
     {
+        private static readonly string current = App.ResourceString("StringCurrent");
+        private static readonly string unknown = App.ResourceString("StringUnknown");
+
         /// <summary>
         /// 初始化 <see cref="TsinghuaNet.WebDevice"/> 的实例并设置相关信息。
         /// </summary>
@@ -142,11 +145,11 @@ namespace TsinghuaNet.Web
             get
             {
                 if(this.Mac == MacAddress.Unknown)
-                    return "(未知设备)";
+                    return unknown;
                 else if(deviceDict.ContainsKey(this.Mac))
                     return deviceDict[this.Mac];
                 else if(this.Mac.IsCurrent)
-                    return "(本机)";
+                    return current;
                 else
                     return this.Mac.ToString();
             }

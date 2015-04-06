@@ -35,4 +35,32 @@
 
     <x:String x:Key="StringAbout">关于</x:String>
     <x:String x:Key="StringVersion">版本 {0}.{1}.{2}.{3}</x:String>
+
+    <x:String x:Key="StringUnknown">(未知设备)</x:String>
+    <x:String x:Key="StringCurrent">(本机)</x:String>
+
+    <x:String x:Key="StringConnectError">连接错误。</x:String>
+    <x:String x:Key="StringUserNameError">用户名错误。</x:String>
+    <x:String x:Key="StringPasswordError">密码错误。</x:String>
+    <x:String x:Key="StringUserTabError">认证程序未启动。</x:String>
+    <x:String x:Key="StringUserGroupError">您的计费组信息不正确。</x:String>
+    <x:String x:Key="StringNonAuthError">您无须认证，可直接上网。</x:String>
+    <x:String x:Key="StringBalanceError">用户已欠费，请尽快充值。</x:String>
+    <x:String x:Key="StringUnavailableError">您的帐号已停用。</x:String>
+    <x:String x:Key="StringDeletedError">您的帐号已删除。</x:String>
+    <x:String x:Key="StringIPExistError">IP已存在，请稍后再试。</x:String>
+    <x:String x:Key="StringUserCountError">用户数已达上限。</x:String>
+    <x:String x:Key="StringOnlineCountError">该帐号的登录人数已超过限额。</x:String>
+    <x:String x:Key="StringModeError">系统已禁止WEB方式登录，请使用客户端。</x:String>
+    <x:String x:Key="StringTimePolicyError">当前时段不允许连接。</x:String>
+    <x:String x:Key="StringTimeSpanLengthError">您的时长已超支。</x:String>
+    <x:String x:Key="StringIPError">您的 IP 地址不合法。</x:String>
+    <x:String x:Key="StringMacAddressError">您的 MAC 地址不合法。</x:String>
+    <x:String x:Key="StringSyncError">您的资料已修改，正在等待同步，请 2 分钟后再试。</x:String>
+    <x:String x:Key="StringIPAllocError">您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。</x:String>
+    <x:String x:Key="StringIPInvalidError">您是区内地址，无法使用。</x:String>
+    <x:String x:Key="StringUnknownError">未知错误。</x:String>
+
+    <x:String x:Key="StringLogOnSucessful">登陆成功</x:String>
+    <x:String x:Key="StringLogOnFailed">登陆失败</x:String>
 </ResourceDictionary>
