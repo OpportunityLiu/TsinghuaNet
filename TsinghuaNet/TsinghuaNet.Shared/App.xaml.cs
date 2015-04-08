@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using TsinghuaNet.Web;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -83,6 +84,8 @@ namespace TsinghuaNet
                         try
                         {
                             WebConnect.Current.RefreshAsync().Wait();
+                            //准备磁贴更新
+                            WebConnect.Current.PropertyChanged += UpdeteTile;
                         }
                         catch(AggregateException)
                         {
@@ -99,6 +102,43 @@ namespace TsinghuaNet
             XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
             stringElements[0].AppendChild(toastTitle);
             stringElements[1].AppendChild(toastText);
+
+        }
+
+        private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                //TODO:
+                var text = WebConnect.Current.WebTrafficExact.ToString(5);
+
+                var squareTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
+                var squareTileTexts = squareTile.GetElementsByTagName("text");
+                squareTileTexts[0].InnerText = text;
+
+                var longTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWide310x150Text01);
+                var longTileTexts = longTile.GetElementsByTagName("text");
+                longTileTexts[0].InnerText = "已用流量：" + text;
+                int i = 1;
+                foreach(var item in WebConnect.Current.DeviceList)
+                {
+                    longTileTexts[i].InnerText = string.Format("{0} 登陆于 {1}", item.Name, item.LogOnDateTime);
+                    squareTileTexts[i++].InnerText = item.Name;
+                    if(i > 3)
+                        break;
+                }
+
+                var node = squareTile.ImportNode(longTile.GetElementsByTagName("binding").Item(0), true);
+                squareTile.GetElementsByTagName("visual").Item(0).AppendChild(node);
+                var bindings = squareTile.GetElementsByTagName("binding");
+                ((XmlElement)bindings[0]).SetAttribute("branding", "name");
+                ((XmlElement)bindings[1]).SetAttribute("branding", "name");
+
+                var tileNotification = new Windows.UI.Notifications.TileNotification(squareTile);
+                tileNotification.Tag = "aa";
+                TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+                TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
+            });
         }
 
         private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
@@ -176,8 +216,7 @@ namespace TsinghuaNet
 #if WINDOWS_APP
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
-                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, (string)this.Resources["StringAbout"], a => new About().Show()));
-                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, (string)this.Resources["StringPrivacy"], async a => await Windows.System.Launcher.LaunchUriAsync(new Uri("http://myapppolicy.com/app/tsinghuanet "))));
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, ResourceLoader.GetForViewIndependentUse().GetString("AboutMenu"), a => new About().Show()));
             };
 #endif
 
@@ -261,13 +300,6 @@ namespace TsinghuaNet
         private void OnResuming(object sender, object e)
         {
 
-        }
-
-        public static string ResourceString(string key)
-        {
-            string r = null;
-            DispatcherRunAnsyc(() => r = (string)App.Current.Resources[key]).Wait();
-            return r;
         }
     }
 }

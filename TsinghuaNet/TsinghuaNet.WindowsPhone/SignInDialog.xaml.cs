@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TsinghuaNet.Web;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -26,26 +27,33 @@ namespace TsinghuaNet
         public SignInDialog()
         {
             this.InitializeComponent();
+            var resources = ResourceLoader.GetForCurrentView();
+            error = resources.GetString("Error");
+            emptyUserName = new MessageDialog(resources.GetString("EmptyUserName"), error);
+            emptyPassword = new MessageDialog(resources.GetString("EmptyPassword"), error);
         }
 
-        private static MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
-        private static MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
+        MessageDialog emptyUserName;
+        MessageDialog emptyPassword;
+        string error;
 
         private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
             switch(args.Result)
             {
-                case ContentDialogResult.None:
+            case ContentDialogResult.None:
+                args.Cancel = true;
+                break;
+            case ContentDialogResult.Primary:
+                var d = args.GetDeferral();
+                if(!await SignIn())
                     args.Cancel = true;
-                    break;
-                case ContentDialogResult.Primary:
-                    if(!await SignIn())
-                        await sender.ShowAsync();
-                    break;
-                case ContentDialogResult.Secondary:
-                    if(WebConnect.Current == null)
-                        App.Current.Exit();
-                    break;
+                d.Complete();
+                break;
+            case ContentDialogResult.Secondary:
+                if(WebConnect.Current == null)
+                    App.Current.Exit();
+                break;
             }
         }
 
@@ -84,7 +92,7 @@ namespace TsinghuaNet
             }
             else
             {
-                await new MessageDialog(excep.Message, (string)App.Current.Resources["StringError"]).ShowAsync();
+                await new MessageDialog(excep.Message, error).ShowAsync();
                 switch(excep.ExceptionType)
                 {
                     case LogOnExceptionType.UserNameError:

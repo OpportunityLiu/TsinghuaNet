@@ -6,6 +6,7 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.ApplicationModel.Resources;
 
 namespace TsinghuaNet.Web
 {
@@ -14,8 +15,8 @@ namespace TsinghuaNet.Web
     /// </summary>
     public class WebDevice : INotifyPropertyChanged
     {
-        private static readonly string current = App.ResourceString("StringCurrent");
-        private static readonly string unknown = App.ResourceString("StringUnknown");
+        private static readonly string current = ResourceLoader.GetForViewIndependentUse().GetString("CurrentDevice");
+        private static readonly string unknown = ResourceLoader.GetForViewIndependentUse().GetString("UnknownDevice");
 
         /// <summary>
         /// 初始化 <see cref="TsinghuaNet.WebDevice"/> 的实例并设置相关信息。
@@ -92,7 +93,7 @@ namespace TsinghuaNet.Web
             App.Current.Suspending += (sender, e) =>
             {
                 var deferral = e.SuspendingOperation.GetDeferral();
-                ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Stringify();
+                ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Serialize();
                 deferral.Complete();
             };
 

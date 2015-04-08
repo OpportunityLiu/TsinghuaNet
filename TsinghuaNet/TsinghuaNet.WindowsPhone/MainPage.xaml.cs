@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using TsinghuaNet.Web;
 using Windows.UI.Input;
 using Windows.UI.Popups;
+using Windows.ApplicationModel.Resources;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -29,19 +30,37 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private static readonly string logOnFailed = (string)App.Current.Resources["StringLogOnFailed"];
+        private static readonly string logOnFailed = ResourceLoader.GetForViewIndependentUse().GetString("ToastFailed");
 
         public MainPage()
         {
+            var resource = ResourceLoader.GetForCurrentView();
             this.InitializeComponent();
-            this.dropDialog = initDropDialog();
-            this.renameDialog = initRenameDialog(out textBoxRename);
+            this.dropDialog = new MessageDialog(resource.GetString("DropHintText"));
+            dropDialog.Commands.Add(new UICommand(resource.GetString("Ok"), drop_Confirmed));
+            dropDialog.Commands.Add(new UICommand(resource.GetString("Cancel")));
+            dropDialog.DefaultCommandIndex = 0;
+            dropDialog.CancelCommandIndex = 1;
+            this.renameDialog = new ContentDialog();
+            renameDialog.PrimaryButtonText = resource.GetString("Ok");
+            renameDialog.SecondaryButtonText = resource.GetString("Cancel");
+            renameDialog.Content = textBoxRename;
+            renameDialog.PrimaryButtonClick += (sender, args) =>
+            {
+                selectedDevice.Name = textBoxRename.Text;
+            };
+            renameDialog.Loaded += (sender, args) =>
+            {
+                textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                textBoxRename.SelectAll();
+            };
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if(e.NavigationMode == NavigationMode.New)
             {
+                await Task.Delay(500);
                 await App.DispatcherRunAnsyc(async () =>
                 {
                     App.Current.StatusBar.BackgroundColor = (Windows.UI.Color)App.Current.Resources["StatusBarColor"];
@@ -101,40 +120,9 @@ namespace TsinghuaNet
 
         MessageDialog dropDialog;
 
-        private MessageDialog initDropDialog()
-        {
-            var dialog = new MessageDialog((string)App.Current.Resources["StringDropHint"]);
-            dialog.Commands.Add(new UICommand((string)App.Current.Resources["StringOk"], drop_Confirmed));
-            dialog.Commands.Add(new UICommand((string)App.Current.Resources["StringCancel"]));
-            dialog.DefaultCommandIndex = 0;
-            dialog.CancelCommandIndex = 1;
-            return dialog;
-        }
-
         ContentDialog renameDialog;
 
-        TextBox textBoxRename;
-
-        private ContentDialog initRenameDialog(out TextBox textBox)
-        {
-            textBox=new TextBox();
-            textBox.PlaceholderText = (string)App.Current.Resources["StringNewName"];
-            var dialog = new ContentDialog();
-            dialog.PrimaryButtonText=(string)App.Current.Resources["StringOk"];
-            dialog.SecondaryButtonText=(string)App.Current.Resources["StringCancel"];
-            dialog.Content = textBox;
-            dialog.PrimaryButtonClick += (sender, args) =>
-            {
-                selectedDevice.Name = textBoxRename.Text;
-            };
-            dialog.Loaded += (sender, args) =>
-            {
-                textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBoxRename.SelectAll();
-            };
-            return dialog;
-        }
+        TextBox textBoxRename=new TextBox();
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
