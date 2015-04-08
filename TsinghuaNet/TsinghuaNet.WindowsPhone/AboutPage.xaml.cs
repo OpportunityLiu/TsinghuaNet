@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TsinghuaNet.Common;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -28,13 +29,12 @@ namespace TsinghuaNet
     public sealed partial class AboutPage : Page
     {
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
         public AboutPage()
         {
             this.InitializeComponent();
             var version =  Package.Current.Id.Version;
-            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, (string)App.Current.Resources["StringVersion"],
+            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, ResourceLoader.GetForCurrentView().GetString("AppVersionFormat"),
 version.Major, version.Minor, version.Build, version.Revision);
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -49,18 +49,6 @@ version.Major, version.Minor, version.Build, version.Revision);
             get
             {
                 return this.navigationHelper;
-            }
-        }
-
-        /// <summary>
-        /// 获取此 <see cref="Page"/> 的视图模型。
-        /// 可将其更改为强类型视图模型。
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
-        {
-            get
-            {
-                return this.defaultViewModel;
             }
         }
 

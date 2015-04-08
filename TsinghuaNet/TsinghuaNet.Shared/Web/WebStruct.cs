@@ -223,20 +223,46 @@ namespace TsinghuaNet.Web
         /// <returns>当前对象的字符串形式。</returns>
         public override string ToString()
         {
+            return ToString(5);
+        }
+
+        /// <summary>
+        /// 返回当前对象的字符串形式。
+        /// </summary>
+        /// <returns>当前对象的字符串形式。</returns>
+        /// <param name="length">数字部分的最大长度（包含小数点）。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> 小于 3。</exception>
+        public string ToString(int length)
+        {
+            if(length < 3)
+                throw new ArgumentOutOfRangeException("length");
             var re = "";
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var ds = culture.NumberFormat.NumberDecimalSeparator;
             var va = Value;
+            Func<double, string> format = value =>
+            {
+                var temp = value.ToString(culture);
+                if(temp.Length <= length)
+                    return temp;
+                temp = temp.Substring(0, length);
+                if(temp.EndsWith(ds))
+                    return temp.Substring(0, temp.Length - ds.Length);
+                else
+                    return temp;
+            };
             if(va < kb)
-                re = va + " B";
+                re = format(va) + " B";
             else if(va < mb)
-                re = (va / kb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " KB";
+                re =  format(va / kb) + " KB";
             else if(va < gb)
-                re = (va / mb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " MB";
+                re = format(va / mb) + " MB";
             else if(va < tb)
-                re = (va / gb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " GB";
+                re = format(va / gb) + " GB";
             else if(va < pb)
-                re = (va / tb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " TB";
+                re = format(va / tb) + " TB";
             else
-                re = (va / pb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " PB";
+                re = format(va / pb) + " PB";
             return re;
         }
     }

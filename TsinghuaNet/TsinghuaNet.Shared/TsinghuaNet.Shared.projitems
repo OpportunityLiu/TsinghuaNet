@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\NavigationHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ObservableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SerializableList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Conventers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MD5.cs" />
@@ -51,14 +52,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Resources\en\Resources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Resources\InvariantCultureResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Resources\ThemeDark.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -68,10 +61,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Resources\ThemeLight.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Resources\zh-CN\Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -87,5 +76,11 @@
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\SplashScreenPhone.psd" />
     <None Include="$(MSBuildThisFileDirectory)Assets\Original\StoreLogo.psd" />
     <None Include="$(MSBuildThisFileDirectory)Common\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Errors.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-CN\Errors.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-CN\Resources.resw" />
   </ItemGroup>
 </Project>

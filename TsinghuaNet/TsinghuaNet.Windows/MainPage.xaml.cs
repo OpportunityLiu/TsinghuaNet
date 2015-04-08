@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using TsinghuaNet.Web;
 using TsinghuaNet.Common;
+using Windows.ApplicationModel.Resources;
 
 namespace TsinghuaNet
 {
@@ -27,11 +28,15 @@ namespace TsinghuaNet
     /// </summary>
     public partial class MainPage : Page
     {
-        private static readonly string logOnFailed = (string)App.Current.Resources["StringLogOnFailed"];
+        private static readonly string logOnFailed = ResourceLoader.GetForViewIndependentUse().GetString("ToastFailed");
 
         public MainPage()
         {
             this.InitializeComponent();
+            var resources=ResourceLoader.GetForCurrentView();
+            error = resources.GetString("Error");
+            emptyUserName = new MessageDialog(resources.GetString("EmptyUserName"), error);
+            emptyPassword = new MessageDialog(resources.GetString("EmptyPassword"), error);
             appBarButtonRename.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             hub.Sections.Remove(hubSectionStart);
             hub.Sections.Remove(hubSectionState);
@@ -39,8 +44,10 @@ namespace TsinghuaNet
 
         PasswordBox passwordBoxPassword;
         TextBox textBoxUserName;
-        MessageDialog emptyUserName = new MessageDialog((string)App.Current.Resources["StringErrorUserName"], (string)App.Current.Resources["StringError"]);
-        MessageDialog emptyPassword = new MessageDialog((string)App.Current.Resources["StringErrorPassword"], (string)App.Current.Resources["StringError"]);
+        MessageDialog emptyUserName;
+        MessageDialog emptyPassword;
+
+        string error;
 
         private async void logOn_Click(object sender, RoutedEventArgs e)
         {
@@ -80,7 +87,7 @@ namespace TsinghuaNet
             }
             else
             {
-                await new MessageDialog(excep.Message, (string)App.Current.Resources["StringError"]).ShowAsync();
+                await new MessageDialog(excep.Message, error).ShowAsync();
                 switch(excep.ExceptionType)
                 {
                 case LogOnExceptionType.UserNameError:
@@ -99,14 +106,20 @@ namespace TsinghuaNet
 
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            hubSectionPic.Width = e.NewSize.Width - 200;
-            if(e.NewSize.Width == 500)
+            var wAll=e.NewSize.Width;
+            var w = wAll - 480 - hubSectionPic.Margin.Left;
+            hubSectionPic.Width = w > 0 ? w : 0;
+            if(wAll <= 480)
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                hubSectionStart.Width = wAll;
+                hubSectionState.Width = wAll;
             }
             else
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                hubSectionStart.Width = double.NaN;
+                hubSectionState.Width = double.NaN;
             }
         }
 
@@ -183,7 +196,7 @@ namespace TsinghuaNet
             }
         }
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        private void logOnGrid_Loaded(object sender, RoutedEventArgs e)
         {
             if(textBoxUserName != null)
                 return;

@@ -1,10 +1,6 @@
 ﻿<Application x:Class="TsinghuaNet.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" >
     <Application.Resources>
-        <ResourceDictionary Source="Resources/Resources.xaml">
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Resources.xaml" />
-                <ResourceDictionary Source="Resources/InvariantCultureResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark" Source="Resources/ThemeDark.xaml" />
                 <ResourceDictionary x:Key="Light" Source="Resources/ThemeLight.xaml" />

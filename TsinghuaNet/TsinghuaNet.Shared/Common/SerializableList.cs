@@ -1,21 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Windows.Data.Json;
 
-namespace TsinghuaNet.Web
+namespace TsinghuaNet.Common
 {
-    /// <summary>
-    /// 可序列化的设备 Mac 和名称的词典。
-    /// </summary>
-    public class DeviceNameDictionary : Dictionary<MacAddress, string>
+    public class SerializableList<T>:List<T>
     {
         /// <summary>
         /// 初始化 <see cref="TsinghuaNet.DeviceNameDictionary"/> 的新实例。
         /// </summary>
-        public DeviceNameDictionary()
+        public SerializableList(ItemSerializer<T> serializer,ItemDeserializer<T> deserializer)
             : base()
         {
+            if(serializer == null)
+                throw new ArgumentNullException("serializer");
+            if(deserializer == null)
+                throw new ArgumentNullException("deserializer");
+            this.serializer = serializer;
+            this.deserializer = deserializer;
         }
 
         /// <summary>
@@ -23,14 +26,14 @@ namespace TsinghuaNet.Web
         /// </summary>
         /// <param name="jsonInput">保存有字典信息的 json 序列化字符串。</param>
         /// <exception cref="System.ArgumentException">输入字符串有误，无法进行反序列化。</exception>
-        public DeviceNameDictionary(string jsonInput)
-            : base()
+        public SerializableList(ItemSerializer<T> serializer,ItemDeserializer<T> deserializer,string jsonInput)
+            : this(serializer,deserializer)
         {
             try
             {
-                foreach(var item in JsonObject.Parse(jsonInput))
+                foreach(var item in JsonArray.Parse(jsonInput))
                 {
-                    this.Add(MacAddress.Parse(item.Key), item.Value.GetString());
+                    Add(deserializer(item.GetString()));
                 }
             }
             catch(Exception ex)
@@ -39,18 +42,25 @@ namespace TsinghuaNet.Web
             }
         }
 
+        private ItemSerializer<T> serializer;
+        private ItemDeserializer<T> deserializer;
+
         /// <summary>
         /// 对当前实例进行序列化。
         /// </summary>
         /// <returns>序列化后的字符串。</returns>
         public string Serialize()
         {
-            var jsonData = new JsonObject();
+            var jsonData = new JsonArray();
             foreach(var item in this)
             {
-                jsonData.Add(item.Key.ToString(), JsonValue.CreateStringValue(item.Value));
+                jsonData.Add(JsonValue.CreateStringValue(serializer(item)));
             }
             return jsonData.Stringify();
         }
     }
+
+    public delegate string ItemSerializer<T>(T item);
+
+    public delegate T ItemDeserializer<T>(string item);
 }

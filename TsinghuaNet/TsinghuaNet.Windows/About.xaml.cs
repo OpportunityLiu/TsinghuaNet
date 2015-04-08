@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using System.Globalization;
+using Windows.ApplicationModel.Resources;
 
 //“设置浮出控件”项模板在 http://go.microsoft.com/fwlink/?LinkId=273769 上有介绍
 
@@ -26,7 +27,7 @@ namespace TsinghuaNet
         {
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
-            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, (string)App.Current.Resources["StringVersion"],
+            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, ResourceLoader.GetForCurrentView().GetString("AppVersionFormat"),
 version.Major, version.Minor, version.Build, version.Revision);
         }
     }

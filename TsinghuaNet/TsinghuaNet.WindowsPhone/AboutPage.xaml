@@ -1,4 +1,4 @@
-﻿<Page x:Class="TsinghuaNet.AboutPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Language="{StaticResource StringLanguage}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" NavigationCacheMode="Enabled">
+﻿<Page x:Uid="AboutPage" x:Class="TsinghuaNet.AboutPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" NavigationCacheMode="Enabled">
 
     <Grid x:Name="LayoutRoot">
 
@@ -15,14 +15,21 @@
 
         <!-- 标题面板 -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="{StaticResource AppName}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
-            <TextBlock Text="{StaticResource StringAbout}" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}" />
+            <TextBlock x:Uid="AppName" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0" />
+            <TextBlock x:Uid="AboutTitle" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}" />
         </StackPanel>
 
         <!--TODO: 应将内容放入以下网格-->
         <StackPanel Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-                <TextBlock x:Name="textBlockAuthor" Style="{StaticResource BodyTextBlockStyle}" Text="{StaticResource AppAuthor}" TextWrapping="Wrap" />
+            <TextBlock x:Uid="AppAuthor" x:Name="textBlockAuthor" Style="{StaticResource BodyTextBlockStyle}"  TextWrapping="Wrap" />
             <TextBlock x:Name="textBlockVersion" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" />
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" Margin="0,10">
+            <Run x:Uid="Contact1" />
+            <Hyperlink NavigateUri="mailto:liuzhengyuan13@outlook.com">
+                <Run x:Uid="ContactLink" />
+            </Hyperlink>
+            <Run x:Uid="Contact2" />
+            </TextBlock>
         </StackPanel>
     </Grid>
 </Page>

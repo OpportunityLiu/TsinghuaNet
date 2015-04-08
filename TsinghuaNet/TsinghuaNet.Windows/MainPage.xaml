@@ -1,4 +1,4 @@
-﻿<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting" xmlns:Series="using:WinRTXamlToolkit.Controls.DataVisualization.Charting" xmlns:datavis="using:WinRTXamlToolkit.Controls.DataVisualization" xmlns:Converters="using:WinRTXamlToolkit.Converters" x:Name="page" x:Class="TsinghuaNet.MainPage" mc:Ignorable="d" SizeChanged="page_SizeChanged" NavigationCacheMode="Required" Language="{StaticResource StringLanguage}">
+﻿<Page x:Uid="MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Class="TsinghuaNet.MainPage" mc:Ignorable="d" SizeChanged="page_SizeChanged" NavigationCacheMode="Required">
     <Page.Resources>
         <Style x:Key="HubSectionStyle" TargetType="HubSection">
             <Setter Property="Transitions">
@@ -10,14 +10,14 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="OnlineDeviceItemTemplate">
-            <StackPanel Margin="5" Width="1000">
+            <StackPanel Margin="10,5" Width="1000">
                 <ToolTipService.ToolTip>
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" LineHeight="{Binding FontSize, RelativeSource={RelativeSource Mode=Self}}" >
-                        <Run Text="{StaticResource StringMac}" />  
+                        <Run x:Uid="Mac" />  
                         <Run Text="{Binding Mac}"/>
                     </TextBlock>
                 </ToolTipService.ToolTip>
-                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,5"/>
                 <TextBlock Text="{Binding WebTraffic}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding IPAddress}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding LogOnDateTime}" Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -32,58 +32,64 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="commandBar" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}">
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="appBarButtonChangeUser" Icon="Sync" Label="{StaticResource StringChangeUser}" Click="changeUser_Click" />
+                <AppBarButton x:Uid="ChangeUser" x:Name="appBarButtonChangeUser" Icon="Sync" Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="appBarButtonRefresh" Icon="Refresh" Label="{StaticResource StringRefresh}" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
+            <AppBarButton x:Uid="Refresh" x:Name="appBarButtonRefresh" Icon="Refresh" Click="refresh_Click" Visibility="{Binding Visibility, ElementName=appBarButtonChangeUser}" />
             <AppBarSeparator Visibility="{Binding Visibility, ElementName=appBarButtonRename}" />
-            <AppBarButton x:Name="appBarButtonRename" IsEnabled="{Binding CanRename}" Icon="Rename" Label="{StaticResource StringRename}">
+            <AppBarButton x:Uid="Rename" x:Name="appBarButtonRename" IsEnabled="{Binding CanRename}" Icon="Rename">
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBox x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" PlaceholderText="{StaticResource StringNewName}" Width="175" Margin="0,0,0,10" Loaded="textBoxRename_Loaded" KeyUp="textBoxRename_KeyUp" />
-                            <Button Content="{StaticResource StringRename}" HorizontalAlignment="Right" Click="rename_Click" />
+                            <TextBox x:Uid="RenameTextBox" x:Name="textBoxRename" Text="{Binding Name, Mode=OneWay}" Width="175" Margin="0,0,0,10" Loaded="textBoxRename_Loaded" KeyUp="textBoxRename_KeyUp" />
+                            <Button x:Uid="RenameButton" HorizontalAlignment="Right" Click="rename_Click" />
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop" Label="{StaticResource StringDrop}">
+            <AppBarButton x:Uid="Drop" x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop" >
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBlock Text="{StaticResource StringDropHint}" TextWrapping="WrapWholeWords" FontSize="16" Margin="0,0,30,10" />
-                            <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="drop_Click" />
+                            <TextBlock x:Uid="DropHint" TextWrapping="WrapWholeWords" FontSize="16" Margin="0,0,30,10" />
+                            <Button x:Uid="OkButton" HorizontalAlignment="Right" Click="drop_Click" />
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
-    <Hub x:Name="hub" Header="{StaticResource AppName}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Margin="-200,0,0,0" Width="500">
+    <Hub x:Uid="Hub" x:Name="hub" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Width="500" Margin="-200,0,0,0">
             <HubSection.Background>
                 <ImageBrush Stretch="UniformToFill" ImageSource="Resources/Header.png" />
             </HubSection.Background>
-            <DataTemplate />
         </HubSection>
-        <HubSection x:Name="hubSectionStart" Header="{StaticResource StringStart}" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
+        <HubSection x:Uid="StartHub" x:Name="hubSectionStart" Style="{StaticResource HubSectionStyle}" HorizontalContentAlignment="Stretch">
             <DataTemplate>
-                <StackPanel Width="400" Loaded="StackPanel_Loaded">
-                    <TextBlock Text="{StaticResource StringStartHint}" VerticalAlignment="Top" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,10" />
-                    <Grid Height="75" Margin="0,10">
-                        <TextBox x:Name="textBoxUserName" PlaceholderText="{StaticResource StringUserName}" InputScope="AlphanumericHalfWidth" Width="320" HorizontalAlignment="Left" VerticalAlignment="Top" KeyUp="textBox_KeyUp" />
-                        <PasswordBox x:Name="passwordBoxPassword" PlaceholderText="{StaticResource StringPassword}" IsPasswordRevealButtonEnabled="True" Width="320" VerticalAlignment="Bottom" HorizontalAlignment="Left" KeyUp="textBox_KeyUp" />
-                        <Button Content="{StaticResource StringOk}" HorizontalAlignment="Right" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="0,0,15,0" VerticalAlignment="Center">
-                            <Button.RenderTransform>
-                                <CompositeTransform Rotation="180" ScaleX="1.5" ScaleY="1.5" />
-                            </Button.RenderTransform>
-                        </Button>
-                    </Grid>
-                </StackPanel>
+                <Grid MaxWidth="400" Loaded="logOnGrid_Loaded">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="SignInHint" Grid.ColumnSpan="2" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,10"/>
+                    <TextBox x:Uid="UserName" x:Name="textBoxUserName" Margin="0,5" InputScope="AlphanumericHalfWidth" KeyUp="textBox_KeyUp" Grid.Row="1" />
+                    <PasswordBox x:Uid="Password" x:Name="passwordBoxPassword" Margin="0,5" IsPasswordRevealButtonEnabled="True" VerticalAlignment="Bottom" KeyUp="textBox_KeyUp" Grid.Row="2" />
+                    <Button Grid.Column="1" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="20,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="2">
+                        <Button.RenderTransform>
+                            <CompositeTransform Rotation="180" ScaleX="1.5" ScaleY="1.5" />
+                        </Button.RenderTransform>
+                    </Button>
+                </Grid>
             </DataTemplate>
         </HubSection>
-        <HubSection x:Name="hubSectionState" Header="{StaticResource StringState}" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
+        <HubSection x:Uid="StateHub" x:Name="hubSectionState" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
             <DataTemplate>
-                <Grid Width="400">
+                <Grid MaxWidth="400">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="1*" />
@@ -97,64 +103,66 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Text="{Binding UserName}" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,5" Grid.ColumnSpan="2" />
-                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5,20,5" Grid.Row="1" Text="{StaticResource StringTraffic}" />
+                    <TextBlock x:Uid="Usage" Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5,20,5" Grid.Row="1" />
                     <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="1" Grid.Column="1" Text="{Binding WebTrafficExact}" FontWeight="SemiBold" />
-                    <Grid Margin="0,5" Grid.Row="2" Grid.ColumnSpan="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20*" />
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="5*" />
-                        </Grid.ColumnDefinitions>
-                        <ProgressBar Height="10" Maximum="55" Value="{Binding WebTrafficExact.TotalGB}" Grid.ColumnSpan="5" Margin="0,2">
-                            <ProgressBar.Foreground>
-                                <LinearGradientBrush EndPoint="400,5" StartPoint="0,5" MappingMode="Absolute">
-                                    <GradientStop Color="GreenYellow" Offset="0" />
-                                    <GradientStop Color="GreenYellow" Offset="0.36363637" />
-                                    <GradientStop Color="YellowGreen" Offset="0.36363637" />
-                                    <GradientStop Color="YellowGreen" Offset="0.54545454" />
-                                    <GradientStop Color="Yellow" Offset="0.54545454" />
-                                    <GradientStop Color="Yellow" Offset="0.72727272" />
-                                    <GradientStop Color="Orange" Offset="0.72727272" />
-                                    <GradientStop Color="Orange" Offset="0.90909091" />
-                                    <GradientStop Color="Red" Offset="0.90909091" />
-                                </LinearGradientBrush>
-                            </ProgressBar.Foreground>
-                            <ProgressBar.Background>
-                                <LinearGradientBrush EndPoint="400,5" StartPoint="0,5" MappingMode="Absolute" Opacity="0.2">
-                                    <GradientStop Color="GreenYellow" Offset="0" />
-                                    <GradientStop Color="GreenYellow" Offset="0.36363637" />
-                                    <GradientStop Color="YellowGreen" Offset="0.36363637" />
-                                    <GradientStop Color="YellowGreen" Offset="0.54545454" />
-                                    <GradientStop Color="Yellow" Offset="0.54545454" />
-                                    <GradientStop Color="Yellow" Offset="0.72727272" />
-                                    <GradientStop Color="Orange" Offset="0.72727272" />
-                                    <GradientStop Color="Orange" Offset="0.90909091" />
-                                    <GradientStop Color="Red" Offset="0.90909091" />
-                                </LinearGradientBrush>
-                            </ProgressBar.Background>
-                        </ProgressBar>
-                        <TextBlock Text="0" Grid.Row="1" />
-                        <TextBlock Text="20" Grid.Row="1" Grid.Column="1" />
-                        <TextBlock Text="30" Grid.Row="1" Grid.Column="2" />
-                        <TextBlock Text="40" Grid.Row="1" Grid.Column="3" />
-                        <TextBlock Text="50" Grid.Row="1" Grid.Column="4" />
-                    </Grid>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="3" Text="{StaticResource StringBalance}" />
+                    <Viewbox Margin="0,5" Grid.Row="2" Grid.ColumnSpan="2">
+                        <Grid Width="400">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="5*" />
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar Height="10" Maximum="55" Value="{Binding WebTrafficExact.TotalGB}" Grid.ColumnSpan="5" Margin="0,2">
+                                <ProgressBar.Foreground>
+                                    <LinearGradientBrush EndPoint="400,5" StartPoint="0,5" MappingMode="Absolute">
+                                        <GradientStop Color="GreenYellow" Offset="0" />
+                                        <GradientStop Color="GreenYellow" Offset="0.36363637" />
+                                        <GradientStop Color="YellowGreen" Offset="0.36363637" />
+                                        <GradientStop Color="YellowGreen" Offset="0.54545454" />
+                                        <GradientStop Color="Yellow" Offset="0.54545454" />
+                                        <GradientStop Color="Yellow" Offset="0.72727272" />
+                                        <GradientStop Color="Orange" Offset="0.72727272" />
+                                        <GradientStop Color="Orange" Offset="0.90909091" />
+                                        <GradientStop Color="Red" Offset="0.90909091" />
+                                    </LinearGradientBrush>
+                                </ProgressBar.Foreground>
+                                <ProgressBar.Background>
+                                    <LinearGradientBrush EndPoint="400,5" StartPoint="0,5" MappingMode="Absolute" Opacity="0.2">
+                                        <GradientStop Color="GreenYellow" Offset="0" />
+                                        <GradientStop Color="GreenYellow" Offset="0.36363637" />
+                                        <GradientStop Color="YellowGreen" Offset="0.36363637" />
+                                        <GradientStop Color="YellowGreen" Offset="0.54545454" />
+                                        <GradientStop Color="Yellow" Offset="0.54545454" />
+                                        <GradientStop Color="Yellow" Offset="0.72727272" />
+                                        <GradientStop Color="Orange" Offset="0.72727272" />
+                                        <GradientStop Color="Orange" Offset="0.90909091" />
+                                        <GradientStop Color="Red" Offset="0.90909091" />
+                                    </LinearGradientBrush>
+                                </ProgressBar.Background>
+                            </ProgressBar>
+                            <TextBlock Text="0" Grid.Row="1" />
+                            <TextBlock Text="20" Grid.Row="1" Grid.Column="1" />
+                            <TextBlock Text="30" Grid.Row="1" Grid.Column="2" />
+                            <TextBlock Text="40" Grid.Row="1" Grid.Column="3" />
+                            <TextBlock Text="50" Grid.Row="1" Grid.Column="4" />
+                        </Grid>
+                    </Viewbox>
+                    <TextBlock x:Uid="Balance" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="3" />
                     <TextBlock Style="{ThemeResource BodyTextBlockStyle}" FontWeight="SemiBold" Margin="0,5" Grid.Row="3" Grid.Column="1">
             			<Run Text="{Binding Balance}" />
-            			<Run Text="{StaticResource StringYuan}" />
+            			<Run x:Uid="Yuan"/>
                     </TextBlock>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="4" Text="{StaticResource StringUpdateTime}" />
+                    <TextBlock x:Uid="UpdateTime" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="4" />
                     <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
                     <ListView Margin="0,10" Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
                         <ListView.Header>
-                            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="{StaticResource StringOnlineDevices}" />
+                            <TextBlock x:Uid="OnlineDevices" Style="{ThemeResource SubtitleTextBlockStyle}" />
                         </ListView.Header>
                     </ListView>
                 </Grid>

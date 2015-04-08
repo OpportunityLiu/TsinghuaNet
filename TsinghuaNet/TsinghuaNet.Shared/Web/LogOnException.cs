@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.ApplicationModel.Resources;
 
 namespace TsinghuaNet.Web
 {
@@ -82,29 +83,30 @@ namespace TsinghuaNet.Web
 
         private static Dictionary<LogOnExceptionType, string> initLogOnErrorMessageDict()
         {
-            Func<string, string> getResourceString = key => App.ResourceString(key);
+            var resource=ResourceLoader.GetForViewIndependentUse("Errors");
+            Func<string, string> getResourceString = key => resource.GetString(key);
             var dict = new Dictionary<LogOnExceptionType, string>();
-            dict.Add(LogOnExceptionType.ConnectError,getResourceString("StringConnectError"));
-            dict.Add(LogOnExceptionType.UserNameError,getResourceString("StringUserNameError"));
-            dict.Add(LogOnExceptionType.PasswordError,getResourceString("StringPasswordError"));
-            dict.Add(LogOnExceptionType.UserTabError,getResourceString("StringUserTabError"));
-            dict.Add(LogOnExceptionType.UserGroupError,getResourceString("StringUserGroupError"));
-            dict.Add(LogOnExceptionType.NonAuthError,getResourceString("StringNonAuthError"));
-            dict.Add(LogOnExceptionType.BalanceError,getResourceString("StringBalanceError"));
-            dict.Add(LogOnExceptionType.UnavailableError,getResourceString("StringUnavailableError"));
-            dict.Add(LogOnExceptionType.DeletedError,getResourceString("StringDeletedError"));
-            dict.Add(LogOnExceptionType.IPExistError,getResourceString("StringIPExistError"));
-            dict.Add(LogOnExceptionType.UserCountError,getResourceString("StringUserCountError"));
-            dict.Add(LogOnExceptionType.OnlineCountError,getResourceString("StringOnlineCountError"));
-            dict.Add(LogOnExceptionType.ModeError,getResourceString("StringModeError"));
-            dict.Add(LogOnExceptionType.TimePolicyError,getResourceString("StringTimePolicyError"));
-            dict.Add(LogOnExceptionType.TimeSpanLengthError,getResourceString("StringTimeSpanLengthError"));
-            dict.Add(LogOnExceptionType.IPError,getResourceString("StringIPError"));
-            dict.Add(LogOnExceptionType.MacAddressError,getResourceString("StringMacAddressError"));
-            dict.Add(LogOnExceptionType.SyncError,getResourceString("StringSyncError"));
-            dict.Add(LogOnExceptionType.IPAllocError,getResourceString("StringIPAllocError"));
-            dict.Add(LogOnExceptionType.IPInvalidError,getResourceString("StringIPInvalidError"));
-            dict.Add(LogOnExceptionType.UnknownError,getResourceString("StringUnknownError"));
+            dict.Add(LogOnExceptionType.ConnectError,getResourceString("ConnectError"));
+            dict.Add(LogOnExceptionType.UserNameError,getResourceString("UserNameError"));
+            dict.Add(LogOnExceptionType.PasswordError,getResourceString("PasswordError"));
+            dict.Add(LogOnExceptionType.UserTabError,getResourceString("UserTabError"));
+            dict.Add(LogOnExceptionType.UserGroupError,getResourceString("UserGroupError"));
+            dict.Add(LogOnExceptionType.NonAuthError,getResourceString("NonAuthError"));
+            dict.Add(LogOnExceptionType.BalanceError,getResourceString("BalanceError"));
+            dict.Add(LogOnExceptionType.UnavailableError,getResourceString("UnavailableError"));
+            dict.Add(LogOnExceptionType.DeletedError,getResourceString("DeletedError"));
+            dict.Add(LogOnExceptionType.IPExistError,getResourceString("IPExistError"));
+            dict.Add(LogOnExceptionType.UserCountError,getResourceString("UserCountError"));
+            dict.Add(LogOnExceptionType.OnlineCountError,getResourceString("OnlineCountError"));
+            dict.Add(LogOnExceptionType.ModeError,getResourceString("ModeError"));
+            dict.Add(LogOnExceptionType.TimePolicyError,getResourceString("TimePolicyError"));
+            dict.Add(LogOnExceptionType.TimeSpanLengthError,getResourceString("TimeSpanLengthError"));
+            dict.Add(LogOnExceptionType.IPError,getResourceString("IPError"));
+            dict.Add(LogOnExceptionType.MacAddressError,getResourceString("MacAddressError"));
+            dict.Add(LogOnExceptionType.SyncError,getResourceString("SyncError"));
+            dict.Add(LogOnExceptionType.IPAllocError,getResourceString("IPAllocError"));
+            dict.Add(LogOnExceptionType.IPInvalidError,getResourceString("IPInvalidError"));
+            dict.Add(LogOnExceptionType.UnknownError,getResourceString("UnknownError"));
             return dict;
         }
 
