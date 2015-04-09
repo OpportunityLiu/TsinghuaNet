@@ -1,22 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TsinghuaNet.Web;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
-using Windows.Storage.Pickers.Provider;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -95,15 +82,16 @@ namespace TsinghuaNet
                 await new MessageDialog(excep.Message, error).ShowAsync();
                 switch(excep.ExceptionType)
                 {
-                    case LogOnExceptionType.UserNameError:
-                        textBoxUserName.Text = "";
-                        passwordBoxPassword.Password = "";
-                        break;
-                    case LogOnExceptionType.PasswordError:
-                        passwordBoxPassword.Password = "";
-                        break;
-                    default:
-                        break;
+                case LogOnExceptionType.UserNameError:
+                    textBoxUserName.SelectAll();
+                    textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                    break;
+                case LogOnExceptionType.PasswordError:
+                    passwordBoxPassword.SelectAll();
+                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                    break;
+                default:
+                    break;
                 }
                 return false;
             }

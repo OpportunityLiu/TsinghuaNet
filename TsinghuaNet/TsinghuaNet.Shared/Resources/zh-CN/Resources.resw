@@ -186,9 +186,6 @@
   <data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
-  <data name="Hub.Header" xml:space="preserve">
-    <value>Tsinghua Net</value>
-  </data>
   <data name="Mac.Text" xml:space="preserve">
     <value>MAC</value>
   </data>
@@ -203,6 +200,15 @@
   </data>
   <data name="OnlineDevices.Text" xml:space="preserve">
     <value>在线设备</value>
+  </data>
+  <data name="PackageAuthor" xml:space="preserve">
+    <value>Opportunity</value>
+  </data>
+  <data name="PackageDescription" xml:space="preserve">
+    <value>Tsinghua Net 是一个第三方的清华大学校园网认证客户端。</value>
+  </data>
+  <data name="PackageName" xml:space="preserve">
+    <value>Tsinghua Net</value>
   </data>
   <data name="Password.PlaceholderText" xml:space="preserve">
     <value>密码</value>

@@ -47,7 +47,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-140.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Resources\Header.png">
+    <Content Include="$(MSBuildThisFileDirectory)Resources\HeaderDark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)Resources\HeaderLight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

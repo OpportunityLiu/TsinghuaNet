@@ -65,7 +65,6 @@ namespace TsinghuaNet
                 builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
                 task = builder.Register();
             }
-            task.Completed += refreshOnCompleted;
 
             //初始化信息存储区
             try
@@ -109,41 +108,35 @@ namespace TsinghuaNet
         {
             await Task.Run(() =>
             {
-                //TODO:
-                var text = WebConnect.Current.WebTrafficExact.ToString(5);
+                var text = WebConnect.Current.WebTrafficExact.ToString();
+                var manager = TileUpdateManager.CreateTileUpdaterForApplication();
+                manager.Clear();
+                manager.EnableNotificationQueue(true);
 
                 var squareTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
-                var squareTileTexts = squareTile.GetElementsByTagName("text");
-                squareTileTexts[0].InnerText = text;
-
                 var longTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWide310x150Text01);
-                var longTileTexts = longTile.GetElementsByTagName("text");
-                longTileTexts[0].InnerText = "已用流量：" + text;
-                int i = 1;
-                foreach(var item in WebConnect.Current.DeviceList)
-                {
-                    longTileTexts[i].InnerText = string.Format("{0} 登陆于 {1}", item.Name, item.LogOnDateTime);
-                    squareTileTexts[i++].InnerText = item.Name;
-                    if(i > 3)
-                        break;
-                }
-
                 var node = squareTile.ImportNode(longTile.GetElementsByTagName("binding").Item(0), true);
                 squareTile.GetElementsByTagName("visual").Item(0).AppendChild(node);
                 var bindings = squareTile.GetElementsByTagName("binding");
                 ((XmlElement)bindings[0]).SetAttribute("branding", "name");
                 ((XmlElement)bindings[1]).SetAttribute("branding", "name");
-
-                var tileNotification = new Windows.UI.Notifications.TileNotification(squareTile);
-                tileNotification.Tag = "aa";
-                TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
-                TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
+                var tileTexts = squareTile.GetElementsByTagName("text");
+                tileTexts[0].InnerText = text;
+                tileTexts[4].InnerText = string.Format("已用流量：{0}", text);
+                var devices = new WebDevice[5];
+                WebConnect.Current.DeviceList.CopyTo(devices, 0);
+                foreach(var item in devices)
+                {
+                    if(item == null)
+                        break;
+                    tileTexts[1].InnerText = tileTexts[5].InnerText = item.Name;
+                    tileTexts[2].InnerText = tileTexts[6].InnerText = item.IPAddress.ToString();
+                    tileTexts[3].InnerText = tileTexts[7].InnerText = item.LogOnDateTime.ToString();
+                    var tileNotification = new Windows.UI.Notifications.TileNotification(squareTile);
+                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
+                    manager.Update(tileNotification);
+                }
             });
-        }
-
-        private void refreshOnCompleted(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
-        {
-
         }
 
         public static new App Current
@@ -217,6 +210,7 @@ namespace TsinghuaNet
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, ResourceLoader.GetForViewIndependentUse().GetString("AboutMenu"), a => new About().Show()));
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, "Settings", a => new Settings().Show()));
             };
 #endif
 

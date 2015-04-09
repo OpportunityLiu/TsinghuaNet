@@ -1,4 +1,4 @@
-﻿<Page x:Uid="MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Class="TsinghuaNet.MainPage" mc:Ignorable="d" SizeChanged="page_SizeChanged" NavigationCacheMode="Required">
+﻿<Page x:Uid="MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" x:Class="TsinghuaNet.MainPage" SizeChanged="page_SizeChanged" NavigationCacheMode="Required">
     <Page.Resources>
         <Style x:Key="HubSectionStyle" TargetType="HubSection">
             <Setter Property="Transitions">
@@ -10,14 +10,14 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="OnlineDeviceItemTemplate">
-            <StackPanel Margin="10,5" Width="1000">
+            <StackPanel Margin="10" Width="1000">
                 <ToolTipService.ToolTip>
                     <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" LineHeight="{Binding FontSize, RelativeSource={RelativeSource Mode=Self}}" >
                         <Run x:Uid="Mac" />  
                         <Run Text="{Binding Mac}"/>
                     </TextBlock>
                 </ToolTipService.ToolTip>
-                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,5"/>
+                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,5"/>
                 <TextBlock Text="{Binding WebTraffic}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding IPAddress}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding LogOnDateTime}" Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -58,12 +58,11 @@
             </AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
-    <Hub x:Uid="Hub" x:Name="hub" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Width="500" Margin="-200,0,0,0">
-            <HubSection.Background>
-                <ImageBrush Stretch="UniformToFill" ImageSource="Resources/Header.png" />
-            </HubSection.Background>
-        </HubSection>
+    <Hub x:Name="hub" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Hub.Header>
+            <TextBlock x:Uid="AppName"/>
+        </Hub.Header>
+        <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Width="500" Margin="-200,0,0,0" Background="{ThemeResource HeaderImage}" />
         <HubSection x:Uid="StartHub" x:Name="hubSectionStart" Style="{StaticResource HubSectionStyle}" HorizontalContentAlignment="Stretch">
             <DataTemplate>
                 <Grid MaxWidth="400" Loaded="logOnGrid_Loaded">
@@ -160,9 +159,9 @@
                     </TextBlock>
                     <TextBlock x:Uid="UpdateTime" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="4" />
                     <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
-                    <ListView Margin="0,10" Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
+                    <ListView Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
                         <ListView.Header>
-                            <TextBlock x:Uid="OnlineDevices" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                            <TextBlock x:Uid="OnlineDevices" Margin="0,10" Style="{ThemeResource SubtitleTextBlockStyle}" />
                         </ListView.Header>
                     </ListView>
                 </Grid>

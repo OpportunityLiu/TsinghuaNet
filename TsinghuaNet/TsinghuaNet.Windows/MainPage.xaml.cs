@@ -1,25 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Threading.Tasks;
+using TsinghuaNet.Web;
+using Windows.ApplicationModel.Resources;
+using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Storage;
-using Windows.UI.Notifications;
-using Windows.Data.Xml.Dom;
-using System.Threading.Tasks;
-using Windows.UI.Popups;
-using TsinghuaNet.Web;
-using TsinghuaNet.Common;
-using Windows.ApplicationModel.Resources;
 
 namespace TsinghuaNet
 {
@@ -30,8 +18,15 @@ namespace TsinghuaNet
     {
         private static readonly string logOnFailed = ResourceLoader.GetForViewIndependentUse().GetString("ToastFailed");
 
+        public static MainPage Current
+        {
+            get;
+            private set;
+        }
+
         public MainPage()
         {
+            Current = this;
             this.InitializeComponent();
             var resources=ResourceLoader.GetForCurrentView();
             error = resources.GetString("Error");
@@ -106,7 +101,7 @@ namespace TsinghuaNet
 
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var wAll=e.NewSize.Width;
+            var wAll = e.NewSize.Width;
             var w = wAll - 480 - hubSectionPic.Margin.Left;
             hubSectionPic.Width = w > 0 ? w : 0;
             if(wAll <= 480)
