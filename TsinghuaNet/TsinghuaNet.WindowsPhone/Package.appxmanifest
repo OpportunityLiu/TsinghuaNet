@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="9595360b-3e9d-4bff-85c6-e8203e23e425" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Tsinghua Net</DisplayName>
-    <PublisherDisplayName>Opportunity</PublisherDisplayName>
+    <PublisherDisplayName>ms-resource:PackageAuthor</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -16,7 +16,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="TsinghuaNet.WindowsPhone.App">
-      <m3:VisualElements DisplayName="Tsinghua Net" Square150x150Logo="Assets\150x150.png" Square44x44Logo="Assets\44x44.png" Description="TsinghuaNet.WindowsPhone" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
+      <m3:VisualElements DisplayName="ms-resource:PackageName" Square150x150Logo="Assets\150x150.png" Square44x44Logo="Assets\44x44.png" Description="ms-resource:PackageDescription" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
         <m3:DefaultTile Square71x71Logo="Assets\71x71.png">
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreenPhone.png" BackgroundColor="#743481" />

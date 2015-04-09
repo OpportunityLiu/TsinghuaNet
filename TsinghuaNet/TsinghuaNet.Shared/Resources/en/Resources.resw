@@ -186,9 +186,6 @@
   <data name="Error" xml:space="preserve">
     <value>Oops</value>
   </data>
-  <data name="Hub.Header" xml:space="preserve">
-    <value>Tsinghua Net</value>
-  </data>
   <data name="Mac.Text" xml:space="preserve">
     <value>Mac</value>
   </data>
@@ -203,6 +200,15 @@
   </data>
   <data name="OnlineDevices.Text" xml:space="preserve">
     <value>Online devices</value>
+  </data>
+  <data name="PackageAuthor" xml:space="preserve">
+    <value>Opportunity</value>
+  </data>
+  <data name="PackageDescription" xml:space="preserve">
+    <value>Tsinghua Net is a third party client for Tsinghua University campus network.</value>
+  </data>
+  <data name="PackageName" xml:space="preserve">
+    <value>Tsinghua Net</value>
   </data>
   <data name="Password.PlaceholderText" xml:space="preserve">
     <value>Password</value>

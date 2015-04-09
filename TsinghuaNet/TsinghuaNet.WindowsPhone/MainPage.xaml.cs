@@ -1,25 +1,15 @@
-﻿using TsinghuaNet.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
+﻿using System;
+using System.Threading.Tasks;
+using TsinghuaNet.Web;
+using Windows.ApplicationModel.Resources;
+using Windows.UI.Input;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using System.Threading.Tasks;
-using TsinghuaNet.Web;
-using Windows.UI.Input;
-using Windows.UI.Popups;
-using Windows.ApplicationModel.Resources;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -49,10 +39,11 @@ namespace TsinghuaNet
             {
                 selectedDevice.Name = textBoxRename.Text;
             };
-            renameDialog.Loaded += (sender, args) =>
+            renameDialog.Loaded += async (sender, args) =>
             {
-                textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                await Task.Delay(10);
                 textBoxRename.SelectAll();
+                textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
             };
         }
 

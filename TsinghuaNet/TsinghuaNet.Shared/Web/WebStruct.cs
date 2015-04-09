@@ -223,7 +223,24 @@ namespace TsinghuaNet.Web
         /// <returns>当前对象的字符串形式。</returns>
         public override string ToString()
         {
-            return ToString(5);
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var ds = culture.NumberFormat.NumberDecimalSeparator;
+            var va = Value;
+            Func<double, string> format = value =>
+            {
+                return value.ToString("##0.00", culture);
+            };
+            if(va < kb)
+                return va.ToString(culture) + " B";
+            if(va < mb)
+                return format(va / kb) + " KB";
+            if(va < gb)
+                return format(va / mb) + " MB";
+            if(va < tb)
+                return format(va / gb) + " GB";
+            if(va < pb)
+                return format(va / tb) + " TB";
+            return format(va / pb) + " PB";
         }
 
         /// <summary>
