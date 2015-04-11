@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,17 +23,16 @@ namespace TsinghuaNet
         public Settings()
         {
             this.InitializeComponent();
-            
             switch(MainPage.Current.RequestedTheme)
             {
             case ElementTheme.Dark:
-                comboBoxTheme.SelectedIndex = 1;
+                comboBoxTheme.SelectedIndex = 0;
                 break;
             case ElementTheme.Light:
-                comboBoxTheme.SelectedIndex = 2;
+                comboBoxTheme.SelectedIndex = 1;
                 break;
             default:
-                comboBoxTheme.SelectedIndex = 0;
+                comboBoxTheme.SelectedIndex = -1;
                 break;
             }
         }
@@ -42,17 +42,15 @@ namespace TsinghuaNet
             switch(comboBoxTheme.SelectedIndex)
             {
             case 0:
-                MainPage.Current.RequestedTheme = ElementTheme.Default;
-                break;
-            case 1:
                 MainPage.Current.RequestedTheme = ElementTheme.Dark;
                 break;
-            case 2:
+            case 1:
                 MainPage.Current.RequestedTheme = ElementTheme.Light;
                 break;
             default:
                 break;
             }
+            ApplicationData.Current.LocalSettings.Values["Theme"] = MainPage.Current.RequestedTheme.ToString();
         }
     }
 }
