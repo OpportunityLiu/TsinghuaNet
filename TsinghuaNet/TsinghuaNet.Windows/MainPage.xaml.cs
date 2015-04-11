@@ -26,6 +26,14 @@ namespace TsinghuaNet
 
         public MainPage()
         {
+            var settings = ApplicationData.Current.LocalSettings.Values;
+            if(settings.ContainsKey("Theme"))
+                RequestedTheme = (ElementTheme)Enum.Parse(typeof(ElementTheme), (string)settings["Theme"]);
+            else
+            {
+                settings["Theme"] = ElementTheme.Dark.ToString();
+                RequestedTheme = ElementTheme.Dark;
+            }
             Current = this;
             this.InitializeComponent();
             var resources=ResourceLoader.GetForCurrentView();

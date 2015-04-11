@@ -67,17 +67,15 @@ namespace TsinghuaNet
             }
 
             //初始化信息存储区
-            try
+            var settings=ApplicationData.Current.RoamingSettings.Values;
+            if(settings.ContainsKey("UserName")&&settings.ContainsKey("PasswordMD5"))
             {
-                ApplicationData.Current.RoamingSettings.Values.Add("UserName", "");
-                ApplicationData.Current.RoamingSettings.Values.Add("PasswordMD5", "");
-            }
-            catch(ArgumentException)
-            {
+                var userName = (string)settings["UserName"];
+                var passwordMD5 = (string)settings["PasswordMD5"];
                 //已经添加字段
-                if(!string.IsNullOrEmpty((string)ApplicationData.Current.RoamingSettings.Values["UserName"]))
+                if(!string.IsNullOrEmpty(userName)&&!string.IsNullOrWhiteSpace(passwordMD5))
                 {
-                    WebConnect.Current = new WebConnect((string)ApplicationData.Current.RoamingSettings.Values["UserName"], (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"]);
+                    WebConnect.Current = new WebConnect(userName, passwordMD5);
                     Task.Run(() =>
                     {
                         try
@@ -90,7 +88,6 @@ namespace TsinghuaNet
                         {
                         }
                     });
-                    
                 }
             }
 
