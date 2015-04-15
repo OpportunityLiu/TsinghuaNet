@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Navigation;
 using TsinghuaNet.Web;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
+using Windows.System.Threading;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -67,22 +68,22 @@ namespace TsinghuaNet
             }
 
             //初始化信息存储区
-            var settings=ApplicationData.Current.RoamingSettings.Values;
-            if(settings.ContainsKey("UserName")&&settings.ContainsKey("PasswordMD5"))
+            var settings = ApplicationData.Current.RoamingSettings.Values;
+            if(settings.ContainsKey("UserName") && settings.ContainsKey("PasswordMD5"))
             {
                 var userName = (string)settings["UserName"];
                 var passwordMD5 = (string)settings["PasswordMD5"];
                 //已经添加字段
-                if(!string.IsNullOrEmpty(userName)&&!string.IsNullOrWhiteSpace(passwordMD5))
+                if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
                 {
                     WebConnect.Current = new WebConnect(userName, passwordMD5);
+                    //准备磁贴更新
+                    WebConnect.Current.PropertyChanged += UpdeteTile;
                     Task.Run(() =>
                     {
                         try
                         {
                             WebConnect.Current.RefreshAsync().Wait();
-                            //准备磁贴更新
-                            WebConnect.Current.PropertyChanged += UpdeteTile;
                         }
                         catch(AggregateException)
                         {
@@ -103,6 +104,8 @@ namespace TsinghuaNet
 
         private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if(e.PropertyName != "UpdateTime")
+                return;
             await Task.Run(() =>
             {
                 var text = WebConnect.Current.WebTrafficExact.ToString();
@@ -189,6 +192,8 @@ namespace TsinghuaNet
             }
 #endif
 #if WINDOWS_PHONE_APP
+            //高对比度设置变化时更改状态栏透明度
+            statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
             accessibilitySettings.HighContrastChanged += (sender, args) =>
             {
                 App.DispatcherRunAnsyc(() =>
@@ -199,11 +204,10 @@ namespace TsinghuaNet
                         statusBar.BackgroundOpacity = 1;
                 });
             };
-            statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 #endif
-
-            //注册设置项
+            
 #if WINDOWS_APP
+            //注册设置项
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, ResourceLoader.GetForViewIndependentUse().GetString("AboutMenu"), a => new About().Show()));
