@@ -35,6 +35,7 @@ namespace TsinghuaNet.Web
             this.http.BaseAddress = new Uri("https://usereg.tsinghua.edu.cn");
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
+            this.deviceList.CollectionChanged += (sender, e) => propertyChanging("WebTrafficExact");
         }
 
         private static WebConnect current;

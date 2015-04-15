@@ -121,8 +121,8 @@ namespace TsinghuaNet
             else
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                hubSectionStart.Width = double.NaN;
-                hubSectionState.Width = double.NaN;
+                hubSectionStart.Width = 480;
+                hubSectionState.Width = 480;
             }
         }
 

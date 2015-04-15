@@ -12,12 +12,12 @@
         <DataTemplate x:Key="OnlineDeviceItemTemplate">
             <StackPanel Margin="10" Width="1000">
                 <ToolTipService.ToolTip>
-                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" LineHeight="{Binding FontSize, RelativeSource={RelativeSource Mode=Self}}" >
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" LineHeight="{Binding FontSize, RelativeSource={RelativeSource Mode=Self}}">
                         <Run x:Uid="Mac" />  
-                        <Run Text="{Binding Mac}"/>
+                        <Run Text="{Binding Mac}" />
                     </TextBlock>
                 </ToolTipService.ToolTip>
-                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,5"/>
+                <TextBlock Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,5" />
                 <TextBlock Text="{Binding WebTraffic}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding IPAddress}" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="{Binding LogOnDateTime}" Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -46,7 +46,7 @@
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton x:Uid="Drop" x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop" >
+            <AppBarButton x:Uid="Drop" x:Name="appBarButtonDrop" Visibility="{Binding Visibility, ElementName=appBarButtonRename}" Icon="Stop">
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
@@ -60,14 +60,14 @@
     </Page.BottomAppBar>
     <Hub x:Name="hub" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Hub.Header>
-            <TextBlock x:Uid="AppName"/>
+            <TextBlock x:Uid="AppName" />
         </Hub.Header>
         <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Width="500" Margin="-200,0,0,0" Background="{ThemeResource HeaderImage}" />
         <HubSection x:Uid="StartHub" x:Name="hubSectionStart" Style="{StaticResource HubSectionStyle}" HorizontalContentAlignment="Stretch">
             <DataTemplate>
-                <Grid MaxWidth="400" Loaded="logOnGrid_Loaded">
+                <Grid Loaded="logOnGrid_Loaded">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -75,7 +75,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock x:Uid="SignInHint" Grid.ColumnSpan="2" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,10"/>
+                    <TextBlock x:Uid="SignInHint" Grid.ColumnSpan="2" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,10" />
                     <TextBox x:Uid="UserName" x:Name="textBoxUserName" Margin="0,5" InputScope="AlphanumericHalfWidth" KeyUp="textBox_KeyUp" Grid.Row="1" />
                     <PasswordBox x:Uid="Password" x:Name="passwordBoxPassword" Margin="0,5" IsPasswordRevealButtonEnabled="True" VerticalAlignment="Bottom" KeyUp="textBox_KeyUp" Grid.Row="2" />
                     <Button Grid.Column="1" Click="logOn_Click" Style="{StaticResource NavigationBackButtonNormalStyle}" RenderTransformOrigin="0.5,0.5" Margin="20,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="2">
@@ -88,10 +88,11 @@
         </HubSection>
         <HubSection x:Uid="StateHub" x:Name="hubSectionState" Style="{StaticResource HubSectionStyle}" VerticalContentAlignment="Stretch">
             <DataTemplate>
-                <Grid MaxWidth="400">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -101,10 +102,10 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding UserName}" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,5" Grid.ColumnSpan="2" />
-                    <TextBlock x:Uid="Usage" Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5,20,5" Grid.Row="1" />
-                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="1" Grid.Column="1" Text="{Binding WebTrafficExact}" FontWeight="SemiBold" />
-                    <Viewbox Margin="0,5" Grid.Row="2" Grid.ColumnSpan="2">
+                    <TextBlock Text="{Binding UserName}" Style="{ThemeResource SubheaderTextBlockStyle}" Margin="0,5" Grid.ColumnSpan="3" />
+                    <TextBlock x:Uid="Usage" Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="1" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="1" Grid.Column="2" Text="{Binding WebTrafficExact}" FontWeight="SemiBold"/>
+                    <Viewbox Margin="0,5" Grid.Row="2" Grid.ColumnSpan="3">
                         <Grid Width="400">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -152,14 +153,14 @@
                             <TextBlock Text="50" Grid.Row="1" Grid.Column="4" />
                         </Grid>
                     </Viewbox>
-                    <TextBlock x:Uid="Balance" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="3" />
-                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" FontWeight="SemiBold" Margin="0,5" Grid.Row="3" Grid.Column="1">
+                    <TextBlock x:Uid="Balance" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5" Grid.Row="3" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" FontWeight="SemiBold" Margin="0,5" Grid.Row="3" Grid.Column="2">
             			<Run Text="{Binding Balance}" />
-            			<Run x:Uid="Yuan"/>
+            			<Run x:Uid="Yuan" />
                     </TextBlock>
-                    <TextBlock x:Uid="UpdateTime" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5,20,5" Grid.Row="4" />
-                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="4" Grid.Column="1" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
-                    <ListView Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
+                    <TextBlock x:Uid="UpdateTime" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,5" Grid.Row="4" />
+                    <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Margin="0,5" Grid.Row="4" Grid.Column="2" Text="{Binding UpdateTime}" FontWeight="SemiBold" />
+                    <ListView Grid.Row="5" Grid.ColumnSpan="3" ItemTemplate="{StaticResource OnlineDeviceItemTemplate}" ItemsSource="{Binding DeviceList}" SelectionChanged="ListView_SelectionChanged">
                         <ListView.Header>
                             <TextBlock x:Uid="OnlineDevices" Margin="0,10" Style="{ThemeResource SubtitleTextBlockStyle}" />
                         </ListView.Header>
