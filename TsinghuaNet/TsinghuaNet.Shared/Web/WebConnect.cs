@@ -187,11 +187,11 @@ namespace TsinghuaNet.Web
                     lock(http)
                         res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
-                    var devices = new List<WebDevice>();
-                    foreach(Match item in info2)
+                    var devices = new WebDevice[info2.Count];
+                    for(int i = 0; i < info2.Count; i++)
                     {
-                        var details = Regex.Matches(item.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
-                        devices.Add(new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(item.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http));
+                        var details = Regex.Matches(info2[i].Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
+                        devices[i]=new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(info2[i].Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http);
                     }
                     App.DispatcherRunAnsyc(() =>
                     {
@@ -307,9 +307,7 @@ namespace TsinghuaNet.Web
             {
                 var sum = webTraffic;
                 foreach(var item in deviceList)
-                {
                     sum += item.WebTraffic;
-                }
                 return sum;
             }
         }
@@ -351,6 +349,10 @@ namespace TsinghuaNet.Web
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 引发 <see cref="PropertyChanged"/> 事件。
+        /// </summary>
+        /// <param name="propertyName">更改的属性名，默认值表示调用方名称。</param>
         private void propertyChanging([CallerMemberName] string propertyName = "")
         {
             if(PropertyChanged != null)

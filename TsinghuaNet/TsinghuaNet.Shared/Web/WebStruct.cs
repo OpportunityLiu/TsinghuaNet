@@ -43,20 +43,20 @@ namespace TsinghuaNet.Web
                 throw new FormatException("字符串格式错误。");
             switch(value[value.Length - 1])
             {
-                case 'P':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * pb));
-                case 'T':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * tb));
-                case 'G':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * gb));
-                case 'M':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * mb));
-                case 'K':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * kb));
-                case 'B':
-                    return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture)));
-                default:
-                    throw new FormatException("字符串格式错误。");
+            case 'P':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * pb));
+            case 'T':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * tb));
+            case 'G':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * gb));
+            case 'M':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * mb));
+            case 'K':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture) * kb));
+            case 'B':
+                return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture)));
+            default:
+                throw new FormatException("字符串格式错误。");
             }
         }
 
@@ -228,7 +228,7 @@ namespace TsinghuaNet.Web
             var va = Value;
             Func<double, string> format = value =>
             {
-                return value.ToString("##0.00", culture);
+                return value.ToString("##0" + ds + "00", culture);
             };
             if(va < kb)
                 return va.ToString(culture) + " B";
@@ -241,46 +241,6 @@ namespace TsinghuaNet.Web
             if(va < pb)
                 return format(va / tb) + " TB";
             return format(va / pb) + " PB";
-        }
-
-        /// <summary>
-        /// 返回当前对象的字符串形式。
-        /// </summary>
-        /// <returns>当前对象的字符串形式。</returns>
-        /// <param name="length">数字部分的最大长度（包含小数点）。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> 小于 3。</exception>
-        public string ToString(int length)
-        {
-            if(length < 3)
-                throw new ArgumentOutOfRangeException("length");
-            var re = "";
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
-            var ds = culture.NumberFormat.NumberDecimalSeparator;
-            var va = Value;
-            Func<double, string> format = value =>
-            {
-                var temp = value.ToString(culture);
-                if(temp.Length <= length)
-                    return temp;
-                temp = temp.Substring(0, length);
-                if(temp.EndsWith(ds))
-                    return temp.Substring(0, temp.Length - ds.Length);
-                else
-                    return temp;
-            };
-            if(va < kb)
-                re = format(va) + " B";
-            else if(va < mb)
-                re =  format(va / kb) + " KB";
-            else if(va < gb)
-                re = format(va / mb) + " MB";
-            else if(va < tb)
-                re = format(va / gb) + " GB";
-            else if(va < pb)
-                re = format(va / tb) + " TB";
-            else
-                re = format(va / pb) + " PB";
-            return re;
         }
     }
 
