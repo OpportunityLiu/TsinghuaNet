@@ -24,6 +24,11 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class App : Application
     {
+        /// <summary>
+        /// Allows tracking page views, exceptions and other telemetry through the Microsoft Application Insights service.
+        /// </summary>
+        public static Microsoft.ApplicationInsights.TelemetryClient TelemetryClient;
+
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
         private Windows.UI.ViewManagement.StatusBar statusBar;
@@ -43,6 +48,8 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
+            TelemetryClient = new Microsoft.ApplicationInsights.TelemetryClient();
+            TelemetryClient.TrackTrace("App Started");
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
@@ -205,13 +212,14 @@ namespace TsinghuaNet
                 });
             };
 #endif
-            
+
 #if WINDOWS_APP
             //注册设置项
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
-                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, ResourceLoader.GetForViewIndependentUse().GetString("AboutMenu"), a => new About().Show()));
-                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, "Settings", a => new Settings().Show()));
+                var resource = ResourceLoader.GetForViewIndependentUse();
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, resource.GetString("AboutMenu"), a => new About().Show()));
+                arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, resource.GetString("SettingsMenu"), a => new Settings().Show()));
             };
 #endif
 
@@ -220,13 +228,13 @@ namespace TsinghuaNet
 
             // 不要在窗口已包含内容时重复应用程序初始化，
             // 只需确保窗口处于活动状态
-            if (rootFrame == null)
+            if(rootFrame == null)
             {
                 // 创建要充当导航上下文的框架，并导航到第一页
                 rootFrame = new Frame();
                 rootFrame.CacheSize = 2;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     // TODO: 从之前挂起的应用程序加载状态
                 }
@@ -235,7 +243,7 @@ namespace TsinghuaNet
                 Window.Current.Content = rootFrame;
             }
 
-            if (rootFrame.Content == null)
+            if(rootFrame.Content == null)
             {
 #if WINDOWS_PHONE_APP
                 // 删除用于启动的旋转门导航。
@@ -255,7 +263,7 @@ namespace TsinghuaNet
                 // 当未还原导航堆栈时，导航到第一页，
                 // 并通过将所需信息作为导航参数传入来配置
                 // 参数
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                if(!rootFrame.Navigate(typeof(MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }

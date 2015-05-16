@@ -23,18 +23,6 @@ namespace TsinghuaNet
         public Settings()
         {
             this.InitializeComponent();
-            switch(MainPage.Current.RequestedTheme)
-            {
-            case ElementTheme.Dark:
-                comboBoxTheme.SelectedIndex = 0;
-                break;
-            case ElementTheme.Light:
-                comboBoxTheme.SelectedIndex = 1;
-                break;
-            default:
-                comboBoxTheme.SelectedIndex = -1;
-                break;
-            }
         }
 
         private void comboBoxTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -50,7 +38,27 @@ namespace TsinghuaNet
             default:
                 break;
             }
+        }
+
+        private void SettingsFlyout_Unloaded(object sender, RoutedEventArgs e)
+        {
             ApplicationData.Current.LocalSettings.Values["Theme"] = MainPage.Current.RequestedTheme.ToString();
+        }
+
+        private void SettingsFlyout_Loaded(object sender, RoutedEventArgs e)
+        {
+            switch(MainPage.Current.RequestedTheme)
+            {
+            case ElementTheme.Dark:
+                comboBoxTheme.SelectedIndex = 0;
+                break;
+            case ElementTheme.Light:
+                comboBoxTheme.SelectedIndex = 1;
+                break;
+            default:
+                comboBoxTheme.SelectedIndex = -1;
+                break;
+            }
         }
     }
 }
