@@ -23,13 +23,6 @@
         <StackPanel Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <TextBlock x:Uid="AppAuthor" x:Name="textBlockAuthor" Style="{StaticResource BodyTextBlockStyle}"  TextWrapping="Wrap" />
             <TextBlock x:Name="textBlockVersion" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" />
-            <TextBlock Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" Margin="0,10">
-            <Run x:Uid="Contact1" />
-            <Hyperlink NavigateUri="mailto:liuzhengyuan13@outlook.com">
-                <Run x:Uid="ContactLink" />
-            </Hyperlink>
-            <Run x:Uid="Contact2" />
-            </TextBlock>
         </StackPanel>
     </Grid>
 </Page>

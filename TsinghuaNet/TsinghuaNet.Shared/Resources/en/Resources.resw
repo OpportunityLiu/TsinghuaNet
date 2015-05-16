@@ -153,15 +153,6 @@
   <data name="ChangeUser.Label" xml:space="preserve">
     <value>Change user</value>
   </data>
-  <data name="Contact1.Text" xml:space="preserve">
-    <value>Please</value>
-  </data>
-  <data name="Contact2.Text" xml:space="preserve">
-    <value>if you have any questions or suggestions.</value>
-  </data>
-  <data name="ContactLink.Text" xml:space="preserve">
-    <value>contact me</value>
-  </data>
   <data name="CurrentDevice" xml:space="preserve">
     <value>(This device)</value>
   </data>
@@ -231,6 +222,15 @@
   <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
     <value>New name</value>
   </data>
+  <data name="Settings.Language" xml:space="preserve">
+    <value>en</value>
+  </data>
+  <data name="Settings.Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsMenu" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="SignInHint.Text" xml:space="preserve">
     <value>Enter your user ID and password for Tsinghua University Network to start.</value>
   </data>
@@ -254,6 +254,15 @@
   </data>
   <data name="StateHub.Header" xml:space="preserve">
     <value>State</value>
+  </data>
+  <data name="Theme.Text" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeDark.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="ThemeLight.Content" xml:space="preserve">
+    <value>Light</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
     <value>Something happened when logging on</value>

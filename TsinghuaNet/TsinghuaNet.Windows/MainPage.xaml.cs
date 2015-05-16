@@ -29,11 +29,6 @@ namespace TsinghuaNet
             var settings = ApplicationData.Current.LocalSettings.Values;
             if(settings.ContainsKey("Theme"))
                 RequestedTheme = (ElementTheme)Enum.Parse(typeof(ElementTheme), (string)settings["Theme"]);
-            else
-            {
-                settings["Theme"] = ElementTheme.Dark.ToString();
-                RequestedTheme = ElementTheme.Dark;
-            }
             Current = this;
             this.InitializeComponent();
             var resources=ResourceLoader.GetForCurrentView();
@@ -203,9 +198,9 @@ namespace TsinghuaNet
         {
             if(textBoxUserName != null)
                 return;
-            var stackPanel = (FrameworkElement)sender;
-            textBoxUserName = (TextBox)stackPanel.FindName("textBoxUserName");
-            passwordBoxPassword = (PasswordBox)stackPanel.FindName("passwordBoxPassword");
+            var grid = (FrameworkElement)sender;
+            textBoxUserName = (TextBox)grid.FindName("textBoxUserName");
+            passwordBoxPassword = (PasswordBox)grid.FindName("passwordBoxPassword");
         }
 
         private void textBox_KeyUp(object sender, KeyRoutedEventArgs e)
