@@ -112,12 +112,14 @@ namespace TsinghuaNet
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 hubSectionStart.Width = wAll;
                 hubSectionState.Width = wAll;
+                textblockHeader.FontSize = 44;
             }
             else
             {
                 hubSectionPic.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 hubSectionStart.Width = 480;
                 hubSectionState.Width = 480;
+                textblockHeader.FontSize = 56;
             }
         }
 

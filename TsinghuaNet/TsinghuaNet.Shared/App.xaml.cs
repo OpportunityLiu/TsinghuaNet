@@ -24,10 +24,6 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class App : Application
     {
-        /// <summary>
-        /// Allows tracking page views, exceptions and other telemetry through the Microsoft Application Insights service.
-        /// </summary>
-        public static Microsoft.ApplicationInsights.TelemetryClient TelemetryClient;
 
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
@@ -48,8 +44,6 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
-            TelemetryClient = new Microsoft.ApplicationInsights.TelemetryClient();
-            TelemetryClient.TrackTrace("App Started");
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
