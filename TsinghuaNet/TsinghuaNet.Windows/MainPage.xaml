@@ -60,7 +60,7 @@
     </Page.BottomAppBar>
     <Hub x:Name="hub" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Hub.Header>
-            <TextBlock x:Uid="AppName" />
+            <TextBlock x:Name="textblockHeader" x:Uid="AppName" />
         </Hub.Header>
         <HubSection x:Name="hubSectionPic" HorizontalAlignment="Left" Width="500" Margin="-200,0,0,0" Background="{ThemeResource HeaderImage}" />
         <HubSection x:Uid="StartHub" x:Name="hubSectionStart" Style="{StaticResource HubSectionStyle}" HorizontalContentAlignment="Stretch">

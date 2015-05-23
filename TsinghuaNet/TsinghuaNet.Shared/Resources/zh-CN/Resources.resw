@@ -259,10 +259,10 @@
     <value>主题</value>
   </data>
   <data name="ThemeDark.Content" xml:space="preserve">
-    <value>黑暗</value>
+    <value>深色</value>
   </data>
   <data name="ThemeLight.Content" xml:space="preserve">
-    <value>明亮</value>
+    <value>浅色</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
     <value>登陆失败</value>

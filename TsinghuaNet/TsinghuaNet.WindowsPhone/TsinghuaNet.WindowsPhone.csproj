@@ -22,7 +22,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <ExpressionBlendVersion>12.0.51020.0</ExpressionBlendVersion>
-    <NuGetPackageImportStamp>e361d784</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>8a849e27</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -109,9 +109,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ApplicationInsights.config" />
     <None Include="Package.StoreAssociation.xml" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AboutPage.xaml">
@@ -151,17 +149,6 @@
     <Content Include="Assets\SplashScreenPhone.scale-240.png" />
     <Content Include="Assets\StoreLogo.scale-240.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.ApplicationInsights">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.0.16.1-build00418\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationInsights.Extensibility.Windows">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.WindowsApps.0.16.1-build00418\lib\wpa81\Microsoft.ApplicationInsights.Extensibility.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationInsights.PersistenceChannel">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.PersistenceChannel.0.16.1-build00418\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.PersistenceChannel.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
@@ -173,15 +160,6 @@
   </PropertyGroup>
   <Import Project="..\TsinghuaNet.Shared\TsinghuaNet.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <Import Project="..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.16-beta\build\portable-net45+win8+wpa81\Microsoft.Diagnostics.Tracing.EventSource.Redist.targets" Condition="Exists('..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.16-beta\build\portable-net45+win8+wpa81\Microsoft.Diagnostics.Tracing.EventSource.Redist.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.16-beta\build\portable-net45+win8+wpa81\Microsoft.Diagnostics.Tracing.EventSource.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.16-beta\build\portable-net45+win8+wpa81\Microsoft.Diagnostics.Tracing.EventSource.Redist.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.ApplicationInsights.0.16.1-build00418\build\portable-win81+wpa81\Microsoft.ApplicationInsights.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.ApplicationInsights.0.16.1-build00418\build\portable-win81+wpa81\Microsoft.ApplicationInsights.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\Microsoft.ApplicationInsights.0.16.1-build00418\build\portable-win81+wpa81\Microsoft.ApplicationInsights.targets" Condition="Exists('..\..\packages\Microsoft.ApplicationInsights.0.16.1-build00418\build\portable-win81+wpa81\Microsoft.ApplicationInsights.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
