@@ -187,12 +187,14 @@ namespace TsinghuaNet.Web
                     lock(http)
                         res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
-                    var devices = new WebDevice[info2.Count];
-                    for(int i = 0; i < info2.Count; i++)
-                    {
-                        var details = Regex.Matches(info2[i].Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)");
-                        devices[i]=new WebDevice(Ipv4Address.Parse(details[3].Value), Size.Parse(details[4].Value), MacAddress.Parse(details[17].Value), DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), Regex.Match(info2[i].Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value, http);
-                    }
+                    var devices = from Match r in info2
+                                  let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
+                                  select new WebDevice(Ipv4Address.Parse(details[3].Value),
+                                                      Size.Parse(details[4].Value),
+                                                      MacAddress.Parse(details[17].Value),
+                                                      DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                                      Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
+                                                      http);
                     App.DispatcherRunAnsyc(() =>
                     {
                         var isOnlineTemp = false;

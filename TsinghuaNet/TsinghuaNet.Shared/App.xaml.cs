@@ -294,9 +294,18 @@ namespace TsinghuaNet
             deferral.Complete();
         }
 
-        private void OnResuming(object sender, object e)
+        private async void OnResuming(object sender, object e)
         {
-
+            if(WebConnect.Current != null)
+            {
+                try
+                {
+                    await WebConnect.Current.RefreshAsync();
+                }
+                catch(LogOnException)
+                {
+                }
+            }
         }
     }
 }
