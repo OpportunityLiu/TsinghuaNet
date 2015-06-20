@@ -147,19 +147,12 @@ namespace TsinghuaNet
             commandBar.IsOpen = false;
             try
             {
+                await WebConnect.Current.LogOnAsync();
                 await WebConnect.Current.RefreshAsync();
-                if(!WebConnect.Current.IsOnline)
-                    try
-                    {
-                        await WebConnect.Current.LogOnAsync();
-                    }
-                    catch(LogOnException ex)
-                    {
-                        App.Current.SendToastNotification(logOnFailed, ex.Message);
-                    }
             }
-            catch(LogOnException)
+            catch(LogOnException ex)
             {
+                App.Current.SendToastNotification(logOnFailed, ex.Message);
             }
         }
     }

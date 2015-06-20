@@ -300,6 +300,7 @@ namespace TsinghuaNet
             {
                 try
                 {
+                    await WebConnect.Current.LogOnAsync();
                     await WebConnect.Current.RefreshAsync();
                 }
                 catch(LogOnException)
