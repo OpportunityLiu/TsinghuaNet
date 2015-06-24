@@ -67,14 +67,6 @@ namespace TsinghuaNet
                     else
                     {
                         this.DataContext = WebConnect.Current;
-                        try
-                        {
-                            await WebConnect.Current.LogOnAsync();
-                        }
-                        catch(LogOnException ex)
-                        {
-                            App.Current.SendToastNotification(logOnFailed, ex.Message);
-                        }
                     }
                 });
             }
@@ -148,11 +140,17 @@ namespace TsinghuaNet
             try
             {
                 await WebConnect.Current.LogOnAsync();
-                await WebConnect.Current.RefreshAsync();
             }
             catch(LogOnException ex)
             {
                 App.Current.SendToastNotification(logOnFailed, ex.Message);
+            }
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
             }
         }
     }

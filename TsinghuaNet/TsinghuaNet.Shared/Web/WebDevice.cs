@@ -191,20 +191,16 @@ namespace TsinghuaNet.Web
         /// <returns>
         /// <c>true</c> 表示成功，<c>false</c> 表示失败，请刷新设备列表后再试。
         /// </returns>
-        public Task<bool> DropAsync()
+        public async Task<bool> DropAsync()
         {
-            return Task<bool>.Run(() =>
+            try
             {
-                try
-                {
-                    lock(http)
-                        return http.Post("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
-                }
-                catch(AggregateException)
-                {
-                    return false;
-                }
-            });
+                return await http.PostStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
+            }
+            catch(AggregateException)
+            {
+                return false;
+            }
         }
 
         #region INotifyPropertyChanged 成员
