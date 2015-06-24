@@ -164,11 +164,17 @@ namespace TsinghuaNet
             try
             {
                 await WebConnect.Current.LogOnAsync();
-                await WebConnect.Current.RefreshAsync();
             }
             catch(LogOnException ex)
             {
                 App.Current.SendToastNotification(logOnFailed, ex.Message);
+            }
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
             }
         }
 
@@ -214,27 +220,16 @@ namespace TsinghuaNet
             if(e.NavigationMode == NavigationMode.New)
             {
                 await Task.Delay(500);
-                await App.DispatcherRunAnsyc(async () =>
+                if(WebConnect.Current == null)
                 {
-                    if(WebConnect.Current == null)
-                    {
-                        hub.Sections.Add(hubSectionStart);
-                        appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        hub.DataContext = WebConnect.Current;
-                        hub.Sections.Add(hubSectionState);
-                        try
-                        {
-                            await WebConnect.Current.LogOnAsync();
-                        }
-                        catch(LogOnException ex)
-                        {
-                            App.Current.SendToastNotification(logOnFailed, ex.Message);
-                        }
-                    }
-                });
+                    hub.Sections.Add(hubSectionStart);
+                    appBarButtonChangeUser.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                }
+                else
+                {
+                    hub.DataContext = WebConnect.Current;
+                    hub.Sections.Add(hubSectionState);
+                }
             }
         }
 

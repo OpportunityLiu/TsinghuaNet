@@ -80,16 +80,6 @@ namespace TsinghuaNet
                     WebConnect.Current = new WebConnect(userName, passwordMD5);
                     //准备磁贴更新
                     WebConnect.Current.PropertyChanged += UpdeteTile;
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            WebConnect.Current.RefreshAsync().Wait();
-                        }
-                        catch(AggregateException)
-                        {
-                        }
-                    });
                 }
             }
 
@@ -184,7 +174,7 @@ namespace TsinghuaNet
         /// 将使用其他入口点。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -264,6 +254,7 @@ namespace TsinghuaNet
             }
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
+            await refresh();
         }
 
 #if WINDOWS_PHONE_APP
@@ -296,16 +287,26 @@ namespace TsinghuaNet
 
         private async void OnResuming(object sender, object e)
         {
-            if(WebConnect.Current != null)
+            await refresh();
+        }
+
+        private async Task refresh()
+        {
+            if(WebConnect.Current == null)
+                return;
+            try
             {
-                try
-                {
-                    await WebConnect.Current.LogOnAsync();
-                    await WebConnect.Current.RefreshAsync();
-                }
-                catch(LogOnException)
-                {
-                }
+                await WebConnect.Current.LogOnAsync();
+            }
+            catch(LogOnException)
+            {
+            }
+            try
+            {
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
             }
         }
     }

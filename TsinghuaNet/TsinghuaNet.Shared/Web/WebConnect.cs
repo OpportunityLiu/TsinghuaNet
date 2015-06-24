@@ -15,7 +15,7 @@ namespace TsinghuaNet.Web
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
     /// </summary>
-    public sealed class WebConnect : IDisposable, INotifyPropertyChanged
+    public sealed class WebConnect : INotifyPropertyChanged
     {
         /// <summary>
         /// 使用用户名和加密后的密码创建新实例。
@@ -31,11 +31,8 @@ namespace TsinghuaNet.Web
                 throw new ArgumentNullException("passwordMD5");
             this.userName = userName;
             this.passwordMd5 = passwordMD5;
-            this.http = new HttpClient(new HttpClientHandler(), true);
-            this.http.BaseAddress = new Uri("https://usereg.tsinghua.edu.cn");
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
-            this.deviceList.CollectionChanged += (sender, e) => propertyChanging("WebTrafficExact");
         }
 
         private static WebConnect current;
@@ -56,62 +53,54 @@ namespace TsinghuaNet.Web
 
         private string userName, passwordMd5;
 
-        private HttpClient http;
-
         /// <summary>
         /// 异步登陆网络。
         /// </summary>
         /// <exception cref="TsinghuaNet.WebConnect.LogOnException">在登陆过程中发生错误。</exception>
-        public Task LogOnAsync()
+        public async Task LogOnAsync()
         {
-            return Task.Run(() =>
+            string res = null;
+            using(var http = new HttpClient())
             {
-                string res = null;
-                Func<string, bool> check = toPost =>
-                {
-                    try
+                Func<string, Task<bool>> check = async toPost =>
                     {
-                        res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
-                    }
-                    catch(AggregateException ex)
-                    {
-                        throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                    }
-                    if(Regex.IsMatch(res, @"^\d+,"))
-                    {
-                        var a = res.Split(',');
-                        App.DispatcherRunAnsyc(() =>
+                        try
                         {
+                            res = await http.PostStrAsync("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                        }
+                        catch(Exception ex)
+                        {
+                            throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                        }
+                        if(Regex.IsMatch(res, @"^\d+,"))
+                        {
+                            var a = res.Split(',');
                             this.WebTraffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
                             this.IsOnline = true;
-                        }).Wait();
-                        return true;
-                    }
-                    return false;
-                };
-                if(check("action=check_online"))
+                            return true;
+                        }
+                        return false;
+                    };
+                if(await check("action=check_online"))
                     return;
-                if(check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100"))
+                if(await check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100"))
                     return;
-                App.DispatcherRunAnsyc(() => this.IsOnline = false).Wait();
+                this.IsOnline = false;
                 if((Regex.IsMatch(res, @"^password_error@\d+")))
                     throw new LogOnException(LogOnExceptionType.PasswordError);
                 else
                     throw LogOnException.GetByErrorString(res);
-            });
+            }
         }
 
-        private void signInUsereg()
+        private async Task signInUsereg(HttpClient http)
         {
-            Action signIn = () =>
-            {
-                string logOnRes;
-                lock(http)
+            bool needRetry = false;
+            Func<Task> signIn = async () =>
                 {
-                    logOnRes = http.Post("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
-                }
-                switch(logOnRes)
-                {
+                    var logOnRes = await http.PostStrAsync("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
+                    switch(logOnRes)
+                    {
                     case "ok":
                         break;
                     case "用户不存在":
@@ -120,110 +109,85 @@ namespace TsinghuaNet.Web
                         throw new LogOnException(LogOnExceptionType.PasswordError);
                     default:
                         throw new LogOnException(logOnRes);
-                }
-            };
+                    }
+                };
             try
             {
-                signIn();
-            }
-            catch(AggregateException ex)
-            {
-                throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                await signIn();
             }
             catch(LogOnException ex)
             {
                 if(ex.ExceptionType == LogOnExceptionType.UnknownError)
                 {
-                    Task.Delay(100).Wait();
-                    try
-                    {
-                        signIn();//重试第一次
-                    }
-                    catch(InvalidOperationException)
-                    {
-                        Task.Delay(1000).Wait();
-                        signIn();//重试第二次
-                    }
+                    needRetry = true;
                 }
                 else
                 {
                     throw;
                 }
             }
+            catch(Exception ex)
+            {
+                throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+            }
+            if(!needRetry)
+                return;
+            await Task.Delay(500);
+            await signIn();//重试}
         }
-
-        private volatile bool refreshing = false;
 
         /// <summary>
         /// 异步请求更新状态。
         /// </summary>
-        public Task RefreshAsync()
+        public async Task RefreshAsync()
         {
-            return Task.Run(() =>
+            var http = new HttpClient(new HttpClientHandler(), true);
+            try
             {
-                if(refreshing)
-                    return;
-                refreshing = true;
-                try
+                await signInUsereg(http);
+                //获取用户信息
+                var res1 = HtmlUtilities.ConvertToText(await http.GetStrAsync("https://usereg.tsinghua.edu.cn/user_info.php"));
+                var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
+                if(info1.Count != 3)
                 {
-                    signInUsereg();
-                    //获取用户信息
-                    string res1, res2;
-                    lock(http)
-                        res1 = HtmlUtilities.ConvertToText(http.Get("https://usereg.tsinghua.edu.cn/user_info.php"));
-                    var info1 = Regex.Match(res1, @"使用流量\(IPV4\)(\d+)\(byte\).+帐户余额(.+)\(元\)", RegexOptions.Singleline).Groups;
-                    if(info1.Count != 3)
-                    {
-                        var ex = new InvalidOperationException("获取到的数据格式错误。");
-                        ex.Data.Add("HtmlResponse", res1);
-                        throw ex;
-                    }
-                    var task1 = App.DispatcherRunAnsyc(() =>
-                    {
-                        WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
-                        Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
-                    });
-                    //获取登录信息
-                    lock(http)
-                        res2 = http.Get("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
-                    var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
-                    var devices = from Match r in info2
-                                  let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
-                                  select new WebDevice(Ipv4Address.Parse(details[3].Value),
-                                                      Size.Parse(details[4].Value),
-                                                      MacAddress.Parse(details[17].Value),
-                                                      DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                                                      Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
-                                                      http);
-                    App.DispatcherRunAnsyc(() =>
-                    {
-                        var isOnlineTemp = false;
-                        deviceList.Clear();
-                        foreach(var item in devices)
-                        {
-                            deviceList.Add(item);
-                            if(item.Mac.IsCurrent)
-                                isOnlineTemp = true;
-                        }
-                        this.IsOnline = isOnlineTemp;
-                    }).Wait();
-                    task1.Wait();
-                    //全部成功
-                    App.DispatcherRunAnsyc(() => UpdateTime = DateTime.Now).Wait();
+                    var ex = new InvalidOperationException("获取到的数据格式错误。");
+                    ex.Data.Add("HtmlResponse", res1);
+                    throw ex;
                 }
-                catch(InvalidOperationException ex)
+                WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
+                Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
+                //获取登录信息
+                var res2 = await http.GetStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
+                var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
+                var devices = from Match r in info2
+                              let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
+                              select new WebDevice(Ipv4Address.Parse(details[3].Value),
+                                                  Size.Parse(details[4].Value),
+                                                  MacAddress.Parse(details[17].Value),
+                                                  DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                                  Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
+                                                  http);
+                deviceList.Clear();
+                foreach(var item in devices)
                 {
-                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                    deviceList.Add(item);
                 }
-                catch(Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    refreshing = false;
-                }
-            });
+                //全部成功
+                UpdateTime = DateTime.Now;
+            }
+            catch(LogOnException)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+            }
+            finally
+            {
+                if(deviceList.Count == 0)
+                    http.Dispose();
+            }
         }
 
         public string UserName
@@ -294,7 +258,6 @@ namespace TsinghuaNet.Web
             {
                 webTraffic = value;
                 propertyChanging();
-                propertyChanging("WebTrafficExact");
             }
         }
 
@@ -329,20 +292,9 @@ namespace TsinghuaNet.Web
             {
                 updateTime = value;
                 propertyChanging();
+                propertyChanging("WebTrafficExact");
             }
         }
-
-        #region IDisposable 成员
-
-        /// <summary>
-        /// 释放由 <see cref="TsinghuaNet.WebConnect"/> 使用的非托管资源和托管资源。
-        /// </summary>
-        public void Dispose()
-        {
-            this.http.Dispose();
-        }
-
-        #endregion
 
         #region INotifyPropertyChanged 成员
 
@@ -355,7 +307,7 @@ namespace TsinghuaNet.Web
         /// 引发 <see cref="PropertyChanged"/> 事件。
         /// </summary>
         /// <param name="propertyName">更改的属性名，默认值表示调用方名称。</param>
-        private void propertyChanging([CallerMemberName] string propertyName = "")
+        private void propertyChanging([CallerMemberName]string propertyName = "")
         {
             if(PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

@@ -10,10 +10,8 @@ using Windows.ApplicationModel.Resources;
 
 namespace Tasks
 {
-    public sealed class RefreshBackgroundTask : IBackgroundTask,IDisposable
+    public sealed class RefreshBackgroundTask : IBackgroundTask
     {
-        private HttpClient http = new HttpClient();
-
         private string userName = (string)ApplicationData.Current.RoamingSettings.Values["UserName"];
         private string passwordMd5 = (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"];
 
@@ -28,28 +26,31 @@ namespace Tasks
         /// <returns>是否发生登陆。</returns>
         private bool logOn()
         {
-            string res = null;
-            Func<string, bool> check = toPost =>
+            using(var http = new HttpClient())
             {
-                try
+                string res = null;
+                Func<string, bool> check = toPost =>
                 {
-                    res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
-                }
-                catch(AggregateException)
-                {
+                    try
+                    {
+                        res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                    }
+                    catch(AggregateException)
+                    {
+                        return false;
+                    }
+                    if(Regex.IsMatch(res, @"^\d+,"))
+                    {
+                        var a = res.Split(',');
+                        traffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
+                        return true;
+                    }
                     return false;
-                }
-                if(Regex.IsMatch(res, @"^\d+,"))
-                {
-                    var a = res.Split(',');
-                    traffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
-                    return true;
-                }
-                return false;
-            };
-            if(check("action=check_online"))
-                return false;
-            return check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
+                };
+                if(check("action=check_online"))
+                    return false;
+                return check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
+            }
         }
 
         private Size traffic;
@@ -95,16 +96,6 @@ namespace Tasks
         private XmlDocument toastXml;
         private XmlText toastTitle, toastText;
         private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
-
-        #region IDisposable 成员
-
-        public void Dispose()
-        {
-            if(http != null)
-                http.Dispose();
-        }
-
-        #endregion
     }
 
 }

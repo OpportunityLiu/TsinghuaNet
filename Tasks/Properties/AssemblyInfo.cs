@@ -16,7 +16,7 @@ using System;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 // 程序集的版本信息由以下四个值组成: 
 //
