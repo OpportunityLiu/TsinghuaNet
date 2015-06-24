@@ -136,6 +136,23 @@ namespace TsinghuaNet.Web
             await signIn();//重试}
         }
 
+        private struct deviceComparer : IEqualityComparer<WebDevice>
+        {
+            #region IEqualityComparer<WebDevice> 成员
+
+            public bool Equals(WebDevice x, WebDevice y)
+            {
+                return x.IPAddress == y.IPAddress && x.Mac == y.Mac;
+            }
+
+            public int GetHashCode(WebDevice obj)
+            {
+                return obj.IPAddress.GetHashCode();
+            }
+
+            #endregion
+        }
+
         /// <summary>
         /// 异步请求更新状态。
         /// </summary>
@@ -162,15 +179,35 @@ namespace TsinghuaNet.Web
                 var devices = from Match r in info2
                               let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
                               select new WebDevice(Ipv4Address.Parse(details[3].Value),
-                                                  Size.Parse(details[4].Value),
-                                                  MacAddress.Parse(details[17].Value),
-                                                  DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                                                  Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
-                                                  http);
-                deviceList.Clear();
+                                                  MacAddress.Parse(details[17].Value))
+                                                  {
+                                                      WebTraffic = Size.Parse(details[4].Value),
+                                                      LogOnDateTime = DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                                      DropToken = Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
+                                                      HttpClient = http
+                                                  };
+                var t = deviceList.FirstOrDefault();
+                if(t != null)
+                    t.HttpClient.Dispose();
+                var common = devices.Join(deviceList, n => n, o => o, (n, o) =>
+                {
+                    o.DropToken = n.DropToken;
+                    o.HttpClient = n.HttpClient;
+                    o.LogOnDateTime = n.LogOnDateTime;
+                    o.WebTraffic = n.WebTraffic;
+                    return o;
+                }, new deviceComparer());
+                for(int i = 0; i < deviceList.Count;)
+                {
+                    if(!common.Contains(deviceList[i]))
+                        deviceList.RemoveAt(i);
+                    else
+                        i++;
+                }
                 foreach(var item in devices)
                 {
-                    deviceList.Add(item);
+                    if(!common.Contains(item, new deviceComparer()))
+                        deviceList.Add(item);
                 }
                 //全部成功
                 UpdateTime = DateTime.Now;

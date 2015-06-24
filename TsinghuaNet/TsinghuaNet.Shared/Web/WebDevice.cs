@@ -22,30 +22,25 @@ namespace TsinghuaNet.Web
         /// 初始化 <see cref="TsinghuaNet.WebDevice"/> 的实例并设置相关信息。
         /// </summary>
         /// <param name="ip">IP 地址。</param>
-        /// <param name="webTraffic">设备登陆以来的流量。</param>
         /// <param name="mac">Mac 地址。</param>
-        /// <param name="logOnDateTime">登陆的时间。</param>
-        /// <param name="dropToken">下线操作使用的令牌。</param>
-        /// <param name="http">下线操作使用的连接。</param>
-        /// <exception cref="System.ArgumentNullException">参数为 <c>null</c>。</exception>
-        public WebDevice(Ipv4Address ip, Size webTraffic, MacAddress mac, DateTime logOnDateTime, string dropToken, HttpClient http)
+        public WebDevice(Ipv4Address ip, MacAddress mac)
         {
-            if(string.IsNullOrEmpty(dropToken))
-                throw new ArgumentNullException("dropToken");
-            if(http == null)
-                throw new ArgumentNullException("http");
-            this.dropToken = "action=drop&user_ip=" + ip + "&checksum=" + dropToken;
             this.IPAddress = ip;
             this.Mac = mac;
-            this.WebTraffic = webTraffic;
-            this.LogOnDateTime = logOnDateTime;
-            this.http = http;
             deviceDictChanged += (sender, args) => this.PropertyChanging("Name");
         }
 
-        private HttpClient http;
-
-        private string dropToken;
+        public string DropToken
+        {
+            get;
+            set;
+        }
+        
+        public HttpClient HttpClient
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// 获取 IP 地址。
@@ -56,13 +51,22 @@ namespace TsinghuaNet.Web
             private set;
         }
 
+        private Size traffic;
+
         /// <summary>
         /// 获取设备登陆以来的流量。
         /// </summary>
         public Size WebTraffic
         {
-            get;
-            private set;
+            get
+            {
+                return traffic;
+            }
+            set
+            {
+                traffic = value;
+                PropertyChanging();
+            }
         }
 
         /// <summary>
@@ -74,13 +78,22 @@ namespace TsinghuaNet.Web
             private set;
         }
 
+        private DateTime logOn;
+
         /// <summary>
         /// 获取登陆的时间。
         /// </summary>
         public DateTime LogOnDateTime
         {
-            get;
-            private set;
+            get
+            {
+                return logOn;
+            }
+            set
+            {
+                logOn = value;
+                PropertyChanging();
+            }
         }
 
         private static event EventHandler deviceDictChanged;
@@ -98,9 +111,9 @@ namespace TsinghuaNet.Web
             };
 
             //同步时更新列表，并通知所有实例更新 Name 属性。
-            ApplicationData.Current.DataChanged += (sender, args) =>
+            ApplicationData.Current.DataChanged += async (sender, args) =>
             {
-                App.DispatcherRunAnsyc(() =>
+                await App.DispatcherRunAnsyc(() =>
                 {
                     if(!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
                     {
@@ -195,7 +208,7 @@ namespace TsinghuaNet.Web
         {
             try
             {
-                return await http.PostStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", this.dropToken) == "ok";
+                return await HttpClient.PostStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken) == "ok";
             }
             catch(AggregateException)
             {
