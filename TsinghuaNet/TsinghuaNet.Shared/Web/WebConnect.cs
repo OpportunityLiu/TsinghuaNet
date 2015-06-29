@@ -51,7 +51,7 @@ namespace TsinghuaNet.Web
             }
         }
 
-        private string userName, passwordMd5;
+        private readonly string userName, passwordMd5;
 
         /// <summary>
         /// 异步登陆网络。
@@ -235,7 +235,7 @@ namespace TsinghuaNet.Web
             }
         }
 
-        private ObservableCollection<WebDevice> deviceList;
+        private readonly ObservableCollection<WebDevice> deviceList;
 
         /// <summary>
         /// 使用该账户的设备列表。
@@ -307,10 +307,7 @@ namespace TsinghuaNet.Web
         {
             get
             {
-                var sum = webTraffic;
-                foreach(var item in deviceList)
-                    sum += item.WebTraffic;
-                return sum;
+                return deviceList.Aggregate(webTraffic, (sum, item) => sum + item.WebTraffic);
             }
         }
 
