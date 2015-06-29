@@ -104,12 +104,7 @@ namespace TsinghuaNet.Web
         {
             //挂起时保存列表
             App.Current.Suspending += (sender, e) =>
-            {
-                var deferral = e.SuspendingOperation.GetDeferral();
                 ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Serialize();
-                deferral.Complete();
-            };
-
             //同步时更新列表，并通知所有实例更新 Name 属性。
             ApplicationData.Current.DataChanged += async (sender, args) =>
             {
@@ -160,28 +155,28 @@ namespace TsinghuaNet.Web
             {
                 if(this.Mac == MacAddress.Unknown)
                     return unknown;
-                else if(deviceDict.ContainsKey(this.Mac))
-                    return deviceDict[this.Mac];
-                else if(this.Mac.IsCurrent)
-                    return current;
                 else
-                    return this.Mac.ToString();
+                {
+                    string r;
+                    if(deviceDict.TryGetValue(this.Mac,out r))
+                        return r;
+                    else if(this.Mac.IsCurrent)
+                        return current;
+                    else
+                        return this.Mac.ToString();
+                }
             }
             set
             {
-                if(this.Mac == MacAddress.Unknown)
+                if(!CanRename)
                     throw new InvalidOperationException("不能为未知设备设置名称");
                 if(string.IsNullOrWhiteSpace(value))
                 {
-                    if(deviceDict.ContainsKey(this.Mac))
-                        deviceDict.Remove(this.Mac);
+                    deviceDict.Remove(this.Mac);
                 }
                 else
                 {
-                    if(deviceDict.ContainsKey(this.Mac))
-                        deviceDict[this.Mac] = value;
-                    else
-                        deviceDict.Add(this.Mac, value);
+                    deviceDict[this.Mac] = value;
                 }
                 this.PropertyChanging();
             }

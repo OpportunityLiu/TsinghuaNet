@@ -9,9 +9,9 @@ namespace GB2312
     internal sealed class GB2312Encoding : System.Text.Encoding
     {
         private const char LEAD_BYTE_CHAR = '\uFFFE';
-        private char[] gbToUnicode = new char[0x10000];
-        private ushort[] unicodeToGb = new ushort[0x10000];
-        private string _webName = "gb2312";
+        private readonly char[] gbToUnicode = new char[0x10000];
+        private readonly ushort[] unicodeToGb = new ushort[0x10000];
+        private readonly string _webName = "gb2312";
 
         public GB2312Encoding()
         {
