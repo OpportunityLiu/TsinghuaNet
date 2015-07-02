@@ -7,8 +7,19 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                mc:Ignorable="d" Closing="ContentDialog_Closing">
     <StackPanel>
-        <TextBlock x:Uid="SignInHint" TextWrapping="WrapWholeWords"  Margin="0,10" />
-        <TextBox x:Uid="UserName" x:Name="textBoxUserName" InputScope="AlphanumericHalfWidth" Margin="0,10"  />
-        <PasswordBox x:Uid="Password" x:Name="passwordBoxPassword" PasswordRevealMode="Peek" />
+        <TextBlock x:Uid="SignInHint"
+                   TextWrapping="WrapWholeWords"
+                   Margin="0,10" />
+        <TextBox x:Uid="UserName"
+                 x:Name="textBoxUserName"
+                 InputScope="AlphanumericHalfWidth"
+                 Margin="0,5" TextChanged="textChanged"/>
+        <PasswordBox x:Uid="Password"
+                     x:Name="passwordBoxPassword"
+                     PasswordRevealMode="Peek"
+                     Margin="0,5"
+                     PasswordChanged="textChanged" />
+        <TextBlock x:Name="textBlockHint"
+                   Foreground="Red" />
     </StackPanel>
 </ContentDialog>

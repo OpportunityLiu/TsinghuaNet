@@ -103,6 +103,9 @@
     </Compile>
     <Compile Include="MD5.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DropDialog.xaml.cs">
+      <DependentUpon>DropDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RenameDialog.xaml.cs">
       <DependentUpon>RenameDialog.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DropDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

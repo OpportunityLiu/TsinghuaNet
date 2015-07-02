@@ -25,11 +25,7 @@ namespace TsinghuaNet
         {
             var resource = ResourceLoader.GetForCurrentView();
             this.InitializeComponent();
-            this.dropDialog = new MessageDialog(resource.GetString("DropHintText"));
-            dropDialog.Commands.Add(new UICommand(resource.GetString("Ok"), drop_Confirmed));
-            dropDialog.Commands.Add(new UICommand(resource.GetString("Cancel")));
-            dropDialog.DefaultCommandIndex = 0;
-            dropDialog.CancelCommandIndex = 1;
+            this.dropDialog = new DropDialog();
             this.renameDialog = new RenameDialog();
         }
 
@@ -37,7 +33,6 @@ namespace TsinghuaNet
         {
             if(e.NavigationMode == NavigationMode.New)
             {
-                await Task.Delay(500);
                 if(WebConnect.Current == null)
                 {
                     await new SignInDialog().ShowAsync();
@@ -64,7 +59,7 @@ namespace TsinghuaNet
             }
         }
 
-        MessageDialog dropDialog;
+        DropDialog dropDialog;
 
         RenameDialog renameDialog;
 
@@ -80,17 +75,32 @@ namespace TsinghuaNet
         private async void Drop_Click(object sender, RoutedEventArgs e)
         {
             dropDialog.Title = selectedDevice.Name;
-            await dropDialog.ShowAsync();
+            if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                await selectedDevice.DropAsync();
+                await refresh();
+            }
+        }
+
+        private async Task refresh()
+        {
+            try
+            {
+                progressBarUsage.IsIndeterminate = true;
+                await WebConnect.Current.RefreshAsync();
+            }
+            catch(LogOnException)
+            {
+            }
         }
 
         private void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
         {
-            //this.Frame.Navigate(typeof(AboutPage));
+            this.Frame.Navigate(typeof(AboutPage));
         }
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)
         {
-            commandBar.IsOpen = false;
             var signIn = new SignInDialog();
             var t = signIn.ShowAsync();
             signIn.Closed += (s, args) => this.DataContext = WebConnect.Current;
@@ -99,7 +109,6 @@ namespace TsinghuaNet
 
         private async void refresh_Click(object sender, RoutedEventArgs e)
         {
-            commandBar.IsOpen = false;
             try
             {
                 await WebConnect.Current.LogOnAsync();
@@ -108,13 +117,7 @@ namespace TsinghuaNet
             {
                 App.Current.SendToastNotification(logOnFailed, ex.Message);
             }
-            try
-            {
-                await WebConnect.Current.RefreshAsync();
-            }
-            catch(LogOnException)
-            {
-            }
+            await refresh();
         }
 
         private void StackPanel_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -123,21 +126,25 @@ namespace TsinghuaNet
                 return;
             var s = (FrameworkElement)sender;
             selectedDevice = (WebDevice)s.DataContext;
-            FlyoutBase.ShowAttachedFlyout(s);
+            var p = e.GetPosition(s);
+            p.Y = s.ActualHeight;
+            ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
         }
 
         private void StackPanel_Holding(object sender, HoldingRoutedEventArgs e)
         {
             switch(e.HoldingState)
             {
-                case HoldingState.Canceled:
-                    FlyoutBase.GetAttachedFlyout((FrameworkElement)sender).Hide();
-                    break;
-                case HoldingState.Started:
-                    var s = (FrameworkElement)sender;
-                    selectedDevice = (WebDevice)s.DataContext;
-                    FlyoutBase.ShowAttachedFlyout(s);
-                    break;
+            case HoldingState.Canceled:
+                FlyoutBase.GetAttachedFlyout((FrameworkElement)sender).Hide();
+                break;
+            case HoldingState.Started:
+                var s = (FrameworkElement)sender;
+                selectedDevice = (WebDevice)s.DataContext;
+                var p = e.GetPosition(s);
+                p.Y = s.ActualHeight;
+                ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s,p);
+                break;
             }
         }
     }

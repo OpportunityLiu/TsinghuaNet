@@ -16,12 +16,12 @@ namespace TsinghuaNet
             this.InitializeComponent();
             var resources = ResourceLoader.GetForCurrentView();
             error = resources.GetString("Error");
-            emptyUserName = new MessageDialog(resources.GetString("EmptyUserName"), error);
-            emptyPassword = new MessageDialog(resources.GetString("EmptyPassword"), error);
+            emptyUserName = resources.GetString("EmptyUserName");
+            emptyPassword = resources.GetString("EmptyPassword");
         }
 
-        MessageDialog emptyUserName;
-        MessageDialog emptyPassword;
+        string emptyUserName;
+        string emptyPassword;
         string error;
 
         private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -50,14 +50,14 @@ namespace TsinghuaNet
             if(string.IsNullOrEmpty(userName))
             {
                 textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                await emptyUserName.ShowAsync();
+                textBlockHint.Text = emptyUserName;
                 return false;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
                 passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                await emptyPassword.ShowAsync();
+                textBlockHint.Text = emptyPassword;
                 return false;
             }
             var passMD5 = MD5.MDString(password);
@@ -79,7 +79,7 @@ namespace TsinghuaNet
             }
             else
             {
-                await new MessageDialog(excep.Message, error).ShowAsync();
+                textBlockHint.Text = excep.Message;
                 switch(excep.ExceptionType)
                 {
                 case LogOnExceptionType.UserNameError:
@@ -95,6 +95,11 @@ namespace TsinghuaNet
                 }
                 return false;
             }
+        }
+
+        private void textChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            textBlockHint.Text = "";
         }
     }
 }

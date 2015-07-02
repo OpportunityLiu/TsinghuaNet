@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About.Language" xml:space="preserve">
-    <value>en</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>About</value>
   </data>
@@ -128,9 +125,6 @@
   </data>
   <data name="AboutMenu" xml:space="preserve">
     <value>About</value>
-  </data>
-  <data name="AboutPage.Language" xml:space="preserve">
-    <value>en</value>
   </data>
   <data name="AboutTitle.Text" xml:space="preserve">
     <value>About</value>
@@ -168,6 +162,15 @@
   <data name="DropMenu.Text" xml:space="preserve">
     <value>Down</value>
   </data>
+  <data name="DropPage.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DropPage.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DropPage.Title" xml:space="preserve">
+    <value>Log off</value>
+  </data>
   <data name="EmptyPassword" xml:space="preserve">
     <value>Please enter your password.</value>
   </data>
@@ -179,9 +182,6 @@
   </data>
   <data name="Mac.Text" xml:space="preserve">
     <value>Mac</value>
-  </data>
-  <data name="MainPage.Language" xml:space="preserve">
-    <value>en</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>Ok</value>
@@ -226,13 +226,10 @@
     <value>Cancel</value>
   </data>
   <data name="RenamePage.Title" xml:space="preserve">
-    <value>Rename</value>
+    <value>Rename device</value>
   </data>
   <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
     <value>New name</value>
-  </data>
-  <data name="Settings.Language" xml:space="preserve">
-    <value>en</value>
   </data>
   <data name="Settings.Title" xml:space="preserve">
     <value>Settings</value>
@@ -242,9 +239,6 @@
   </data>
   <data name="SignInHint.Text" xml:space="preserve">
     <value>Enter your user ID and password for Tsinghua University Network to start.</value>
-  </data>
-  <data name="SignInPage.Language" xml:space="preserve">
-    <value>en</value>
   </data>
   <data name="SignInPage.PrimaryButtonText" xml:space="preserve">
     <value>Ok</value>
@@ -274,7 +268,7 @@
     <value>Light</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
-    <value>Something happened when logging on</value>
+    <value>Something happened when logging on.</value>
   </data>
   <data name="ToastSuccess" xml:space="preserve">
     <value>Log on sucessfully</value>
