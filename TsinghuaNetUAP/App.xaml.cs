@@ -68,7 +68,7 @@ namespace TsinghuaNet
                 var userName = (string)settings["UserName"];
                 var passwordMD5 = (string)settings["PasswordMD5"];
                 //已经添加字段
-                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
+                if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
                 {
                     WebConnect.Current = new WebConnect(userName, passwordMD5);
                     //准备磁贴更新
@@ -144,15 +144,6 @@ namespace TsinghuaNet
         private XmlText toastTitle, toastText;
         private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
 
-        public Windows.UI.ViewManagement.AccessibilitySettings AccessibilitySettings
-        {
-            get;
-            private set;
-        }
-        = new Windows.UI.ViewManagement.AccessibilitySettings();
-
-
-
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -167,7 +158,7 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-
+            var t = refresh();
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -197,7 +188,7 @@ namespace TsinghuaNet
             }
             // Ensure the current window is active
             Window.Current.Activate();
-            await refresh();
+            await t;
         }
 
         private async void OnResuming(object sender, object e)
