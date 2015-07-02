@@ -96,7 +96,6 @@ namespace TsinghuaNet
 
         private void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(AboutPage));
         }
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)
