@@ -8,14 +8,13 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Data.Html;
 
 namespace TsinghuaNet.Web
 {
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
     /// </summary>
-    public sealed class WebConnect : INotifyPropertyChanged
+    public sealed class WebConnect : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// 使用用户名和加密后的密码创建新实例。
@@ -350,6 +349,18 @@ namespace TsinghuaNet.Web
         {
             if(PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region IDisposable Support
+
+        void IDisposable.Dispose()
+        {
+            foreach(var item in deviceList)
+            {
+                item.Dispose();
+            }
         }
 
         #endregion
