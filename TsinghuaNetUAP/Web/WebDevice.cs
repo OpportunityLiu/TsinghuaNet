@@ -13,7 +13,7 @@ namespace TsinghuaNet.Web
     /// <summary>
     /// 表示连入网络的设备。
     /// </summary>
-    public class WebDevice : INotifyPropertyChanged
+    public sealed class WebDevice : INotifyPropertyChanged,IDisposable
     {
         private static readonly string current = ResourceLoader.GetForViewIndependentUse().GetString("CurrentDevice");
         private static readonly string unknown = ResourceLoader.GetForViewIndependentUse().GetString("UnknownDevice");
@@ -27,7 +27,12 @@ namespace TsinghuaNet.Web
         {
             this.IPAddress = ip;
             this.Mac = mac;
-            deviceDictChanged += (sender, args) => this.PropertyChanging("Name");
+            deviceDictChanged += WebDevice_deviceDictChanged;
+        }
+
+        private void WebDevice_deviceDictChanged(object sender, EventArgs e)
+        {
+            this.PropertyChanging("Name");
         }
 
         public string DropToken
@@ -212,10 +217,19 @@ namespace TsinghuaNet.Web
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void PropertyChanging([CallerMemberName] string propertyName = "")
+        private void PropertyChanging([CallerMemberName] string propertyName = "")
         {
             if(PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region IDisposable Support
+        
+        public void Dispose()
+        {
+            deviceDictChanged -= this.WebDevice_deviceDictChanged;
         }
 
         #endregion

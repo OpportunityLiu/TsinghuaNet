@@ -115,7 +115,7 @@ namespace TsinghuaNet
                     tileTexts[1].InnerText = tileTexts[5].InnerText = item.Name;
                     tileTexts[2].InnerText = tileTexts[6].InnerText = item.IPAddress.ToString();
                     tileTexts[3].InnerText = tileTexts[7].InnerText = item.LogOnDateTime.ToString();
-                    var tileNotification = new Windows.UI.Notifications.TileNotification(squareTile);
+                    var tileNotification = new TileNotification(squareTile);
                     tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
                     manager.Update(tileNotification);
                 }
