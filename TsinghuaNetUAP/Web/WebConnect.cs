@@ -176,16 +176,16 @@ namespace TsinghuaNet.Web
                 //获取登录信息
                 var res2 = await http.GetStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
                 var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
-                var devices = from Match r in info2
-                              let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
-                              select new WebDevice(Ipv4Address.Parse(details[3].Value),
-                                                  MacAddress.Parse(details[17].Value))
-                                                  {
-                                                      WebTraffic = Size.Parse(details[4].Value),
-                                                      LogOnDateTime = DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                                                      DropToken = Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
-                                                      HttpClient = http
-                                                  };
+                var devices = (from Match r in info2
+                               let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
+                               select new WebDevice(Ipv4Address.Parse(details[3].Value),
+                                                   MacAddress.Parse(details[17].Value))
+                               {
+                                   WebTraffic = Size.Parse(details[4].Value),
+                                   LogOnDateTime = DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                   DropToken = Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
+                                   HttpClient = http
+                               }).ToArray();
                 var t = deviceList.FirstOrDefault();
                 if(t != null)
                     t.HttpClient.Dispose();
@@ -200,7 +200,10 @@ namespace TsinghuaNet.Web
                 for(int i = 0; i < deviceList.Count;)
                 {
                     if(!common.Contains(deviceList[i]))
+                    {
+                        deviceList[i].Dispose();
                         deviceList.RemoveAt(i);
+                    }
                     else
                         i++;
                 }
@@ -208,6 +211,8 @@ namespace TsinghuaNet.Web
                 {
                     if(!common.Contains(item, new deviceComparer()))
                         deviceList.Add(item);
+                    else
+                        item.Dispose();
                 }
                 //全部成功
                 UpdateTime = DateTime.Now;
