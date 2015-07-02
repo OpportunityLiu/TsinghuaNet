@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TsinghuaNet", "TsinghuaNet", "{466A0B9A-789F-4347-9914-FE7EE691362C}"
 EndProject
@@ -21,41 +21,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasks", "Tasks\Tasks.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GB2312Encoding", "GB2312Encoding\GB2312Encoding.csproj", "{FEF0B617-4035-4F52-B3C3-184F28579935}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsinghuaNetUAP", "TsinghuaNetUAP\TsinghuaNetUAP.csproj", "{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TsinghuaNet\TsinghuaNet.Shared\TsinghuaNet.Shared.projitems*{1ed5fb87-2923-4335-8972-820b10d95f75}*SharedItemsImports = 4
 		TsinghuaNet\TsinghuaNet.Shared\TsinghuaNet.Shared.projitems*{53eafdcd-c3ea-4792-ab30-dbd4987cf04f}*SharedItemsImports = 13
 		TsinghuaNet\TsinghuaNet.Shared\TsinghuaNet.Shared.projitems*{ebb065fd-81a8-4212-88e0-3621cdb6caa4}*SharedItemsImports = 4
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://liuzhengyuan13.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = TsinghuaNet\\TsinghuaNet.Shared\\TsinghuaNet.Shared.projitems
-		SccProjectTopLevelParentUniqueName1 = TsinghuaNet.sln
-		SccProjectName1 = TsinghuaNet/TsinghuaNet.Shared
-		SccLocalPath1 = TsinghuaNet\\TsinghuaNet.Shared
-		SccProjectUniqueName2 = TsinghuaNet\\TsinghuaNet.Shared\\TsinghuaNet.Shared.shproj
-		SccProjectTopLevelParentUniqueName2 = TsinghuaNet.sln
-		SccProjectName2 = TsinghuaNet/TsinghuaNet.Shared
-		SccLocalPath2 = TsinghuaNet\\TsinghuaNet.Shared
-		SccProjectUniqueName3 = TsinghuaNet\\TsinghuaNet.Windows\\TsinghuaNet.Windows.csproj
-		SccProjectTopLevelParentUniqueName3 = TsinghuaNet.sln
-		SccProjectName3 = TsinghuaNet/TsinghuaNet.Windows
-		SccLocalPath3 = TsinghuaNet\\TsinghuaNet.Windows
-		SccProjectUniqueName4 = TsinghuaNet\\TsinghuaNet.WindowsPhone\\TsinghuaNet.WindowsPhone.csproj
-		SccProjectTopLevelParentUniqueName4 = TsinghuaNet.sln
-		SccProjectName4 = TsinghuaNet/TsinghuaNet.WindowsPhone
-		SccLocalPath4 = TsinghuaNet\\TsinghuaNet.WindowsPhone
-		SccProjectUniqueName5 = Tasks\\Tasks.csproj
-		SccProjectTopLevelParentUniqueName5 = TsinghuaNet.sln
-		SccProjectName5 = Tasks
-		SccLocalPath5 = Tasks
-		SccProjectUniqueName6 = GB2312Encoding\\GB2312Encoding.csproj
-		SccProjectTopLevelParentUniqueName6 = TsinghuaNet.sln
-		SccProjectName6 = GB2312Encoding
-		SccLocalPath6 = GB2312Encoding
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +104,26 @@ Global
 		{FEF0B617-4035-4F52-B3C3-184F28579935}.Release|ARM.ActiveCfg = Release|Any CPU
 		{FEF0B617-4035-4F52-B3C3-184F28579935}.Release|x64.ActiveCfg = Release|Any CPU
 		{FEF0B617-4035-4F52-B3C3-184F28579935}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|ARM.Build.0 = Debug|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|ARM.Deploy.0 = Debug|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x64.ActiveCfg = Debug|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x64.Build.0 = Debug|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x64.Deploy.0 = Debug|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x86.ActiveCfg = Debug|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x86.Build.0 = Debug|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|x86.Deploy.0 = Debug|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|Any CPU.ActiveCfg = Release|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|ARM.ActiveCfg = Release|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|ARM.Build.0 = Release|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|ARM.Deploy.0 = Release|ARM
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x64.ActiveCfg = Release|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x64.Build.0 = Release|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x64.Deploy.0 = Release|x64
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.ActiveCfg = Release|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.Build.0 = Release|x86
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,5 +134,40 @@ Global
 		{EBB065FD-81A8-4212-88E0-3621CDB6CAA4} = {466A0B9A-789F-4347-9914-FE7EE691362C}
 		{325C93EF-3A24-4BE4-90B4-528C1197D2CE} = {466A0B9A-789F-4347-9914-FE7EE691362C}
 		{FEF0B617-4035-4F52-B3C3-184F28579935} = {466A0B9A-789F-4347-9914-FE7EE691362C}
+		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049} = {466A0B9A-789F-4347-9914-FE7EE691362C}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://liuzhengyuan13.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = TsinghuaNet\\TsinghuaNet.Shared\\TsinghuaNet.Shared.projitems
+		SccProjectTopLevelParentUniqueName1 = TsinghuaNet.sln
+		SccProjectName1 = TsinghuaNet/TsinghuaNet.Shared
+		SccLocalPath1 = TsinghuaNet\\TsinghuaNet.Shared
+		SccProjectUniqueName2 = TsinghuaNet\\TsinghuaNet.Shared\\TsinghuaNet.Shared.shproj
+		SccProjectTopLevelParentUniqueName2 = TsinghuaNet.sln
+		SccProjectName2 = TsinghuaNet/TsinghuaNet.Shared
+		SccLocalPath2 = TsinghuaNet\\TsinghuaNet.Shared
+		SccProjectUniqueName3 = TsinghuaNet\\TsinghuaNet.Windows\\TsinghuaNet.Windows.csproj
+		SccProjectTopLevelParentUniqueName3 = TsinghuaNet.sln
+		SccProjectName3 = TsinghuaNet/TsinghuaNet.Windows
+		SccLocalPath3 = TsinghuaNet\\TsinghuaNet.Windows
+		SccProjectUniqueName4 = TsinghuaNet\\TsinghuaNet.WindowsPhone\\TsinghuaNet.WindowsPhone.csproj
+		SccProjectTopLevelParentUniqueName4 = TsinghuaNet.sln
+		SccProjectName4 = TsinghuaNet/TsinghuaNet.WindowsPhone
+		SccLocalPath4 = TsinghuaNet\\TsinghuaNet.WindowsPhone
+		SccProjectUniqueName5 = Tasks\\Tasks.csproj
+		SccProjectTopLevelParentUniqueName5 = TsinghuaNet.sln
+		SccProjectName5 = Tasks
+		SccLocalPath5 = Tasks
+		SccProjectUniqueName6 = GB2312Encoding\\GB2312Encoding.csproj
+		SccProjectTopLevelParentUniqueName6 = TsinghuaNet.sln
+		SccProjectName6 = GB2312Encoding
+		SccLocalPath6 = GB2312Encoding
+		SccProjectUniqueName7 = TsinghuaNetUAP\\TsinghuaNetUAP.csproj
+		SccProjectTopLevelParentUniqueName7 = TsinghuaNet.sln
+		SccProjectName7 = TsinghuaNetUAP
+		SccLocalPath7 = TsinghuaNetUAP
 	EndGlobalSection
 EndGlobal

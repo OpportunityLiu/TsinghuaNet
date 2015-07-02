@@ -22,7 +22,7 @@ namespace TsinghuaNet.Web
         /// </summary>
         /// <param name="userName">用户名</param>
         /// <param name="passwordMD5">MD5 加密后的密码，请使用 <see cref="TsinghuaNet.MD5.MDString(string)"/> 方法进行加密。</param>
-        /// <exception cref="System.ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
+        /// <exception cref="ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
         public WebConnect(string userName, string passwordMD5)
         {
             if(string.IsNullOrEmpty(userName))
@@ -133,7 +133,7 @@ namespace TsinghuaNet.Web
             if(!needRetry)
                 return;
             await Task.Delay(500);
-            await signIn();//重试}
+            await signIn();//重试
         }
 
         private struct deviceComparer : IEqualityComparer<WebDevice>

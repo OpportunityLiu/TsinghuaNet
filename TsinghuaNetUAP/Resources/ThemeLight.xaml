@@ -1,0 +1,5 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:TsinghuaNet.Resources">
+    <SolidColorBrush x:Key="SettingsFlyoutHeaderBackgroundThemeBrush">#743481</SolidColorBrush>
+    <Color x:Key="StatusBarColor">#a870b8</Color>
+    <ImageBrush x:Key="HeaderImage" ImageSource="HeaderLight.png" Stretch="UniformToFill" />
+</ResourceDictionary>
