@@ -27,8 +27,7 @@ namespace TsinghuaNet
         {
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
-            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, ResourceLoader.GetForCurrentView().GetString("AppVersionFormat"),
-version.Major, version.Minor, version.Build, version.Revision);
+            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, ResourceLoader.GetForCurrentView().GetString("AppVersionFormat"), version.Major, version.Minor, version.Build, version.Revision);
         }
     }
 }

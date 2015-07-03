@@ -79,7 +79,7 @@ namespace TsinghuaNet.Web
                 return new LogOnException(error, inner);
         }
 
-        private static ReadOnlyDictionary<LogOnExceptionType, string> logOnErrorMessageDict = new ReadOnlyDictionary<LogOnExceptionType, string>(initLogOnErrorMessageDict());
+        private static readonly ReadOnlyDictionary<LogOnExceptionType, string> logOnErrorMessageDict = new ReadOnlyDictionary<LogOnExceptionType, string>(initLogOnErrorMessageDict());
 
         private static Dictionary<LogOnExceptionType, string> initLogOnErrorMessageDict()
         {
@@ -110,7 +110,7 @@ namespace TsinghuaNet.Web
             return dict;
         }
 
-        private static ReadOnlyDictionary<string, LogOnExceptionType> logOnErrorDict = new ReadOnlyDictionary<string, LogOnExceptionType>(initLogOnErrorDict());
+        private static readonly ReadOnlyDictionary<string, LogOnExceptionType> logOnErrorDict = new ReadOnlyDictionary<string, LogOnExceptionType>(initLogOnErrorDict());
 
         private static Dictionary<string, LogOnExceptionType> initLogOnErrorDict()
         {

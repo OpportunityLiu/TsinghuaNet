@@ -117,17 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About.Title" xml:space="preserve">
-    <value>About</value>
-  </data>
   <data name="AboutAppButton.Label" xml:space="preserve">
-    <value>About</value>
+    <value>关于</value>
   </data>
-  <data name="AboutMenu" xml:space="preserve">
-    <value>About</value>
+  <data name="AboutPage.PrimaryButtonText" xml:space="preserve">
+    <value>确定</value>
   </data>
-  <data name="AboutTitle.Text" xml:space="preserve">
-    <value>About</value>
+  <data name="AboutPage.Title" xml:space="preserve">
+    <value>关于</value>
   </data>
   <data name="AppAuthor.Text" xml:space="preserve">
     <value>Opportunity</value>
@@ -136,159 +133,126 @@
     <value>Tsinghua Net</value>
   </data>
   <data name="AppVersionFormat" xml:space="preserve">
-    <value>Version {0}.{1}.{2}.{3}</value>
+    <value>版本 {0}.{1}.{2}.{3}</value>
   </data>
   <data name="Balance.Text" xml:space="preserve">
-    <value>Balance</value>
+    <value>余额</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
-  <data name="ChangeUser.Label" xml:space="preserve">
-    <value>Change user</value>
+  <data name="ChangeUserAppButton.Label" xml:space="preserve">
+    <value>更换用户</value>
   </data>
   <data name="CurrentDevice" xml:space="preserve">
-    <value>(This device)</value>
-  </data>
-  <data name="Drop.Label" xml:space="preserve">
-    <value>Down</value>
+    <value>(本机)</value>
   </data>
   <data name="DropHint.Text" xml:space="preserve">
-    <value>The selected device will be forced to log off.</value>
-  </data>
-  <data name="DropHintText" xml:space="preserve">
-    <value>The selected device will be forced to log off.</value>
+    <value>选定的设备将被强制下线。</value>
   </data>
   <data name="DropMenu.Text" xml:space="preserve">
-    <value>Down</value>
+    <value>下线</value>
   </data>
   <data name="DropPage.PrimaryButtonText" xml:space="preserve">
-    <value>OK</value>
+    <value>确定</value>
   </data>
   <data name="DropPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
   <data name="DropPage.Title" xml:space="preserve">
-    <value>Log off</value>
+    <value>强制下线</value>
   </data>
   <data name="EmptyPassword" xml:space="preserve">
-    <value>Please enter your password.</value>
+    <value>请输入密码。</value>
   </data>
   <data name="EmptyUserName" xml:space="preserve">
-    <value>Please enter your user ID.</value>
+    <value>请输入用户名。</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Oops</value>
+    <value>错误</value>
   </data>
   <data name="Mac.Text" xml:space="preserve">
-    <value>Mac</value>
+    <value>MAC</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>Ok</value>
+    <value>确定</value>
   </data>
   <data name="OkButton.Content" xml:space="preserve">
-    <value>Ok</value>
+    <value>确定</value>
   </data>
   <data name="OnlineDevices.Text" xml:space="preserve">
-    <value>Online devices</value>
+    <value>在线设备</value>
   </data>
   <data name="PackageAuthor" xml:space="preserve">
     <value>Opportunity</value>
   </data>
   <data name="PackageDescription" xml:space="preserve">
-    <value>Tsinghua Net is a third party client for Tsinghua University campus network.</value>
+    <value>Tsinghua Net 是一个第三方的清华大学校园网认证客户端。</value>
   </data>
   <data name="PackageName" xml:space="preserve">
     <value>Tsinghua Net</value>
   </data>
   <data name="Password.PlaceholderText" xml:space="preserve">
-    <value>Password</value>
+    <value>密码</value>
   </data>
-  <data name="PasswordPhone.Header" xml:space="preserve">
-    <value>Password</value>
-  </data>
-  <data name="Refresh.Label" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="Rename.Label" xml:space="preserve">
-    <value>Rename</value>
-  </data>
-  <data name="RenameButton.Content" xml:space="preserve">
-    <value>Rename</value>
+  <data name="RefreshAppButton.Label" xml:space="preserve">
+    <value>刷新</value>
   </data>
   <data name="RenameMenu.Text" xml:space="preserve">
-    <value>Rename</value>
+    <value>重命名</value>
   </data>
   <data name="RenamePage.PrimaryButtonText" xml:space="preserve">
-    <value>Rename</value>
+    <value>重命名</value>
   </data>
   <data name="RenamePage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
   <data name="RenamePage.Title" xml:space="preserve">
-    <value>Rename device</value>
+    <value>重命名设备</value>
   </data>
   <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
-    <value>New name</value>
-  </data>
-  <data name="Settings.Title" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="SettingsMenu" xml:space="preserve">
-    <value>Settings</value>
+    <value>新名称</value>
   </data>
   <data name="SignInHint.Text" xml:space="preserve">
-    <value>Enter your user ID and password for Tsinghua University Network to start.</value>
+    <value>输入清华大学校园网用户名与密码以开始使用。</value>
   </data>
   <data name="SignInPage.PrimaryButtonText" xml:space="preserve">
-    <value>Ok</value>
+    <value>确定</value>
   </data>
   <data name="SignInPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
   <data name="SignInPage.Title" xml:space="preserve">
-    <value>Sign in</value>
-  </data>
-  <data name="StartHub.Header" xml:space="preserve">
-    <value>Quick start</value>
-  </data>
-  <data name="State.Text" xml:space="preserve">
-    <value>State</value>
-  </data>
-  <data name="StateHub.Header" xml:space="preserve">
-    <value>State</value>
+    <value>登陆</value>
   </data>
   <data name="Theme.Text" xml:space="preserve">
-    <value>Theme</value>
+    <value>主题</value>
   </data>
   <data name="ThemeDark.Content" xml:space="preserve">
-    <value>Dark</value>
+    <value>深色</value>
   </data>
   <data name="ThemeLight.Content" xml:space="preserve">
-    <value>Light</value>
+    <value>浅色</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
-    <value>Something happened when logging on.</value>
+    <value>登陆失败</value>
   </data>
   <data name="ToastSuccess" xml:space="preserve">
-    <value>Log on sucessfully</value>
+    <value>登陆成功</value>
   </data>
   <data name="UnknownDevice" xml:space="preserve">
-    <value>(Unknown device)</value>
+    <value>(未知设备)</value>
   </data>
   <data name="UpdateTime.Text" xml:space="preserve">
-    <value>Update time</value>
+    <value>更新时间</value>
   </data>
   <data name="Usage.Text" xml:space="preserve">
-    <value>Usage</value>
+    <value>流量</value>
   </data>
   <data name="UserName.PlaceholderText" xml:space="preserve">
-    <value>User ID</value>
-  </data>
-  <data name="UserNamePhone.Header" xml:space="preserve">
-    <value>User ID</value>
+    <value>用户名</value>
   </data>
   <data name="Yuan.Text" xml:space="preserve">
-    <value>Yuan</value>
+    <value>元</value>
   </data>
 </root>

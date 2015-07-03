@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
+using Windows.Web.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -52,6 +52,8 @@ namespace TsinghuaNet.Web
 
         private readonly string userName, passwordMd5;
 
+        private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/cgi-bin/do_login");
+
         /// <summary>
         /// 异步登陆网络。
         /// </summary>
@@ -65,7 +67,7 @@ namespace TsinghuaNet.Web
                     {
                         try
                         {
-                            res = await http.PostStrAsync("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                            res = await http.PostStrAsync(logOnUri, toPost);
                         }
                         catch(Exception ex)
                         {
@@ -97,7 +99,7 @@ namespace TsinghuaNet.Web
             bool needRetry = false;
             Func<Task> signIn = async () =>
                 {
-                    var logOnRes = await http.PostStrAsync("https://usereg.tsinghua.edu.cn/do.php", "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
+                    var logOnRes = await http.PostStrAsync(new Uri("https://usereg.tsinghua.edu.cn/do.php"), "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
                     switch(logOnRes)
                     {
                     case "ok":
@@ -157,12 +159,12 @@ namespace TsinghuaNet.Web
         /// </summary>
         public async Task RefreshAsync()
         {
-            var http = new HttpClient(new HttpClientHandler(), true);
+            var http = new HttpClient();
             try
             {
                 await signInUsereg(http);
                 //获取用户信息
-                var res1 = await http.GetStrAsync("https://usereg.tsinghua.edu.cn/user_info.php");
+                var res1 = await http.GetStrAsync(new Uri("https://usereg.tsinghua.edu.cn/user_info.php"));
                 var info1 = Regex.Match(res1, "使用流量\\(IPV4\\).+?(\\d+?)\\(byte\\).+?帐户余额.+?([0-9.]+)\\(元\\)", RegexOptions.Singleline).Groups;
                 if(info1.Count != 3)
                 {
@@ -173,7 +175,7 @@ namespace TsinghuaNet.Web
                 WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
                 Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
                 //获取登录信息
-                var res2 = await http.GetStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
+                var res2 = await http.GetStrAsync(new Uri("https://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                 var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
                 var devices = (from Match r in info2
                                let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")

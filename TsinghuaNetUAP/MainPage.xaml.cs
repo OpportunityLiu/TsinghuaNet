@@ -19,11 +19,8 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private static readonly string logOnFailed = ResourceLoader.GetForViewIndependentUse().GetString("ToastFailed");
-
         public MainPage()
         {
-            var resource = ResourceLoader.GetForCurrentView();
             this.InitializeComponent();
             this.dropDialog = new DropDialog();
             this.renameDialog = new RenameDialog();
@@ -94,16 +91,16 @@ namespace TsinghuaNet
             }
         }
 
-        private void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
+        private async void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
         {
+            await new AboutDialog().ShowAsync();
         }
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)
         {
             var signIn = new SignInDialog();
-            var t = signIn.ShowAsync();
             signIn.Closed += (s, args) => this.DataContext = WebConnect.Current;
-            await t;
+            await signIn.ShowAsync();
         }
 
         private async void refresh_Click(object sender, RoutedEventArgs e)
@@ -114,7 +111,7 @@ namespace TsinghuaNet
             }
             catch(LogOnException ex)
             {
-                App.Current.SendToastNotification(logOnFailed, ex.Message);
+                App.Current.SendToastNotification(LocalizedStrings.ToastFailed, ex.Message);
             }
             await refresh();
         }

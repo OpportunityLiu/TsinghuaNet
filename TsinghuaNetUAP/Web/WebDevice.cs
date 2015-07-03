@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net.Http;
+using Windows.Web.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -15,9 +15,6 @@ namespace TsinghuaNet.Web
     /// </summary>
     public sealed class WebDevice : INotifyPropertyChanged,IDisposable
     {
-        private static readonly string current = ResourceLoader.GetForViewIndependentUse().GetString("CurrentDevice");
-        private static readonly string unknown = ResourceLoader.GetForViewIndependentUse().GetString("UnknownDevice");
-
         /// <summary>
         /// 初始化 <see cref="TsinghuaNet.WebDevice"/> 的实例并设置相关信息。
         /// </summary>
@@ -156,14 +153,14 @@ namespace TsinghuaNet.Web
             get
             {
                 if(this.Mac == MacAddress.Unknown)
-                    return unknown;
+                    return LocalizedStrings.UnknownDevice;
                 else
                 {
                     string r;
                     if(deviceDict.TryGetValue(this.Mac,out r))
                         return r;
                     else if(this.Mac.IsCurrent)
-                        return current;
+                        return LocalizedStrings.CurrentDevice;
                     else
                         return this.Mac.ToString();
                 }
@@ -195,6 +192,8 @@ namespace TsinghuaNet.Web
             }
         }
 
+        private static readonly Uri dropUri = new Uri("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
+
         /// <summary>
         /// 异步执行使该设备下线的操作。
         /// </summary>
@@ -205,9 +204,9 @@ namespace TsinghuaNet.Web
         {
             try
             {
-                return await HttpClient.PostStrAsync("https://usereg.tsinghua.edu.cn/online_user_ipv4.php", "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken) == "ok";
+                return await HttpClient.PostStrAsync(dropUri, "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken) == "ok";
             }
-            catch(AggregateException)
+            catch(Exception)
             {
                 return false;
             }

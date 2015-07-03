@@ -14,15 +14,7 @@ namespace TsinghuaNet
         public SignInDialog()
         {
             this.InitializeComponent();
-            var resources = ResourceLoader.GetForCurrentView();
-            error = resources.GetString("Error");
-            emptyUserName = resources.GetString("EmptyUserName");
-            emptyPassword = resources.GetString("EmptyPassword");
         }
-
-        string emptyUserName;
-        string emptyPassword;
-        string error;
 
         private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
@@ -50,34 +42,27 @@ namespace TsinghuaNet
             if(string.IsNullOrEmpty(userName))
             {
                 textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = emptyUserName;
+                textBlockHint.Text = LocalizedStrings.EmptyUserName;
                 return false;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
                 passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = emptyPassword;
+                textBlockHint.Text = LocalizedStrings.EmptyPassword;
                 return false;
             }
             var passMD5 = MD5.MDString(password);
-            LogOnException excep = null;
             try
             {
-                WebConnect.Current = new WebConnect(userName, passMD5);
-                await WebConnect.Current.RefreshAsync();
-            }
-            catch(LogOnException ex)
-            {
-                excep = ex;
-            }
-            if(excep == null)
-            {
+                var connect = new WebConnect(userName, passMD5);
+                await connect.RefreshAsync();
                 ApplicationData.Current.RoamingSettings.Values["UserName"] = userName;
                 ApplicationData.Current.RoamingSettings.Values["PasswordMD5"] = passMD5;
+                WebConnect.Current = connect;
                 return true;
             }
-            else
+            catch(LogOnException excep)
             {
                 textBlockHint.Text = excep.Message;
                 switch(excep.ExceptionType)
