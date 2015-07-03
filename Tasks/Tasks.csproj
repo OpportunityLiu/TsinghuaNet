@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorCode.cs" />
-    <Compile Include="HttpGB2312.cs" />
+    <Compile Include="HttpHelper.cs" />
     <Compile Include="RefreshBackgroundTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebStruct.cs" />
