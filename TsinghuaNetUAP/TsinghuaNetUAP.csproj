@@ -127,7 +127,7 @@
       <DependentUpon>SignInDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Web\DeviceNameDictionary.cs" />
-    <Compile Include="Web\HttpGB2312.cs" />
+    <Compile Include="Web\HttpHelper.cs" />
     <Compile Include="Web\LogOnException.cs" />
     <Compile Include="Web\WebConnect.cs" />
     <Compile Include="Web\WebDevice.cs" />

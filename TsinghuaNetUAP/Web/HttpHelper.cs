@@ -7,10 +7,8 @@ using Windows.Web.Http;
 
 namespace TsinghuaNet.Web
 {
-    public static class HttpGB2312
+    public static class HttpHelper
     {
-        //private static Encoding gb2312Encoding = GB2312.Encoding.GB2312;
-
         public static async Task<string> PostStrAsync(this HttpClient httpCilent, Uri uri, string request)
         {
             using(var re = new HttpStringContent(request))
@@ -20,8 +18,6 @@ namespace TsinghuaNet.Web
                 {
                     if(!get.IsSuccessStatusCode)
                         throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
-                    //if(get.Content.Headers.ContentType != null && get.Content.Headers.ContentType.CharSet == "gb2312")
-                    //    return new System.IO.StreamReader((await get.Content.ReadAsInputStreamAsync()), gb2312Encoding).ReadToEnd();
                     else
                         return await get.Content.ReadAsStringAsync();
                 }
@@ -34,8 +30,6 @@ namespace TsinghuaNet.Web
             {
                 if(!get.IsSuccessStatusCode)
                     throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
-                //if(get.Content.Headers.ContentType.CharSet == "gb2312")
-                //    return new System.IO.StreamReader(await get.Content.ReadAsStreamAsync(), gb2312Encoding).ReadToEnd();
                 else
                     return await get.Content.ReadAsStringAsync();
             }
