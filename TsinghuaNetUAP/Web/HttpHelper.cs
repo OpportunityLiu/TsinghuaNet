@@ -7,7 +7,7 @@ using Windows.Web.Http;
 
 namespace TsinghuaNet.Web
 {
-    public static class HttpHelper
+    internal static class HttpHelper
     {
         public static async Task<string> PostStrAsync(this HttpClient httpCilent, Uri uri, string request)
         {
