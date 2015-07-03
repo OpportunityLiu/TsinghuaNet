@@ -2,11 +2,12 @@
 using Windows.Data.Xml.Dom;
 using Windows.Storage;
 using Windows.UI.Notifications;
-using System.Net.Http;
+using Windows.Web.Http;
 using System;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using Windows.ApplicationModel.Resources;
+using System.Threading.Tasks;
 
 namespace Tasks
 {
@@ -24,16 +25,16 @@ namespace Tasks
         /// </summary>
         /// <exception cref="System.InvalidOperationException">在登陆过程中发生错误。</exception>
         /// <returns>是否发生登陆。</returns>
-        private bool logOn()
+        private async Task<bool> logOn()
         {
             using(var http = new HttpClient())
             {
                 string res = null;
-                Func<string, bool> check = toPost =>
+                Func<string, Task<bool>> check = async toPost =>
                 {
                     try
                     {
-                        res = http.Post("http://net.tsinghua.edu.cn/cgi-bin/do_login", toPost);
+                        res = await http.PostStrAsync(new Uri("http://net.tsinghua.edu.cn/cgi-bin/do_login"), toPost);
                     }
                     catch(AggregateException)
                     {
@@ -42,14 +43,14 @@ namespace Tasks
                     if(Regex.IsMatch(res, @"^\d+,"))
                     {
                         var a = res.Split(',');
-                        traffic = new Size(ulong.Parse(a[2], System.Globalization.CultureInfo.InvariantCulture));
+                        traffic = new Size(ulong.Parse(a[2], CultureInfo.InvariantCulture));
                         return true;
                     }
                     return false;
                 };
-                if(check("action=check_online"))
+                if(await check("action=check_online"))
                     return false;
-                return check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
+                return await check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
             }
         }
 
@@ -73,10 +74,12 @@ namespace Tasks
 
         #region IBackgroundTask 成员
 
-        public void Run(IBackgroundTaskInstance taskInstance)
+        public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            if(logOn())
+            var d = taskInstance.GetDeferral();
+            if(await logOn())
                 SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, traffic));
+            d.Complete();
         }
 
         #endregion

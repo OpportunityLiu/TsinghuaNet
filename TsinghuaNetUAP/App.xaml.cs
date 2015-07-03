@@ -87,7 +87,7 @@ namespace TsinghuaNet
 
         private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "UpdateTime")
+            if(e.PropertyName != "UpdateTime")
                 return;
             await Task.Run(() =>
             {
