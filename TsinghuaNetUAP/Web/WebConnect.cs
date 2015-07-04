@@ -20,7 +20,7 @@ namespace TsinghuaNet.Web
         /// 使用用户名和加密后的密码创建新实例。
         /// </summary>
         /// <param name="userName">用户名</param>
-        /// <param name="passwordMD5">MD5 加密后的密码，请使用 <see cref="TsinghuaNet.MD5.MDString(string)"/> 方法进行加密。</param>
+        /// <param name="passwordMD5">MD5 加密后的密码，请使用 <see cref="MD5Helper.GetMd5Hash(string)"/> 方法进行加密。</param>
         /// <exception cref="ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
         public WebConnect(string userName, string passwordMD5)
         {

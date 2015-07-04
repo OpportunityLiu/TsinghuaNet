@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TsinghuaNet", "TsinghuaNet", "{466A0B9A-789F-4347-9914-FE7EE691362C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsinghuaNetUAP", "TsinghuaNetUAP\TsinghuaNetUAP.csproj", "{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasks", "Tasks\Tasks.csproj", "{325C93EF-3A24-4BE4-90B4-528C1197D2CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsinghuaNetUAP", "TsinghuaNetUAP\TsinghuaNetUAP.csproj", "{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,22 +19,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|ARM.Build.0 = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x64.Build.0 = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x86.Build.0 = Debug|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|ARM.ActiveCfg = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|ARM.Build.0 = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x64.ActiveCfg = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x64.Build.0 = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x86.ActiveCfg = Release|Any CPU
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x86.Build.0 = Release|Any CPU
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|Any CPU.Build.0 = Debug|x64
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Debug|Any CPU.Deploy.0 = Debug|x64
@@ -61,26 +43,37 @@ Global
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.ActiveCfg = Release|x86
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.Build.0 = Release|x86
 		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049}.Release|x86.Deploy.0 = Release|x86
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Debug|x86.Build.0 = Debug|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|ARM.Build.0 = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x64.Build.0 = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{325C93EF-3A24-4BE4-90B4-528C1197D2CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{325C93EF-3A24-4BE4-90B4-528C1197D2CE} = {466A0B9A-789F-4347-9914-FE7EE691362C}
-		{DE46CBC2-4B3E-4E46-8F8D-54EB09E7A049} = {466A0B9A-789F-4347-9914-FE7EE691362C}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://liuzhengyuan13.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Tasks\\Tasks.csproj
+		SccProjectUniqueName1 = TsinghuaNetUAP\\TsinghuaNetUAP.csproj
 		SccProjectTopLevelParentUniqueName1 = TsinghuaNet.sln
-		SccProjectName1 = Tasks
-		SccLocalPath1 = Tasks
-		SccProjectUniqueName2 = TsinghuaNetUAP\\TsinghuaNetUAP.csproj
-		SccProjectTopLevelParentUniqueName2 = TsinghuaNet.sln
-		SccProjectName2 = TsinghuaNetUAP
-		SccLocalPath2 = TsinghuaNetUAP
+		SccProjectName1 = TsinghuaNetUAP
+		SccLocalPath1 = TsinghuaNetUAP
+		SccProjectUniqueName2 = Tasks\\Tasks.csproj
+		SccProjectName2 = Tasks
+		SccLocalPath2 = Tasks
 	EndGlobalSection
 EndGlobal

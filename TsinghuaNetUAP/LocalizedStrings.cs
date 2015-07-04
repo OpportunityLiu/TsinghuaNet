@@ -4,7 +4,7 @@ namespace TsinghuaNet
 {
     public static class LocalizedStrings
     {
-        private readonly static ResourceLoader loader = new ResourceLoader();
+        private static readonly ResourceLoader loader = new ResourceLoader();
 
         public static string AppVersionFormat
         {
