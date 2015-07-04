@@ -10,10 +10,12 @@
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       NavigationCacheMode="Required">
     <Page.Resources>
-        <DataTemplate x:Key="OnlineDeviceItemTemplate" x:DataType="web:WebDevice">
-            <StackPanel Holding="StackPanel_Holding"
+        <DataTemplate x:Key="OnlineDeviceItemTemplate"
+                      x:DataType="web:WebDevice">
+            <StackPanel x:Name="stackPanel"
+                        Holding="StackPanel_Holding"
                         RightTapped="StackPanel_RightTapped"
-                        Margin="5,10">
+                        Margin="0,8">
                 <ToolTipService.ToolTip>
                     <TextBlock Text="{x:Bind Mac}" />
                 </ToolTipService.ToolTip>
@@ -54,12 +56,26 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid Margin="20,0">
+    <Grid x:Name="gridRoot"
+          Margin="12,0">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="gridRoot.Margin"
+                                Value="24,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="1*" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Margin="0,10"
+        <TextBlock Margin="0,12"
                    Text="{Binding UserName, Mode=OneWay}"
                    Style="{ThemeResource TitleTextBlockStyle}" />
         <ScrollViewer HorizontalScrollMode="Disabled"
@@ -85,15 +101,15 @@
                 </Grid.RowDefinitions>
                 <TextBlock x:Uid="Usage"
                            Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5,20,5"
+                           Margin="0,4,20,4"
                            Grid.Row="1" />
                 <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5"
+                           Margin="0,4"
                            Grid.Row="1"
                            Grid.Column="1"
                            Text="{Binding WebTrafficExact}"
                            FontWeight="SemiBold" />
-                <Grid Margin="0,5"
+                <Grid Margin="0,4"
                       Grid.Row="2"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>
@@ -109,7 +125,7 @@
                     </Grid.ColumnDefinitions>
                     <ProgressBar x:Name="progressBarUsage"
                                  Grid.ColumnSpan="5"
-                                 Margin="0,2"
+                                 Margin="0"
                                  Maximum="55"
                                  Value="{Binding WebTrafficExact.TotalGB}"
                                  Height="10"
@@ -136,10 +152,10 @@
                 </Grid>
                 <TextBlock x:Uid="Balance"
                            Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5,20,5"
+                           Margin="0,4,20,4"
                            Grid.Row="3" />
                 <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5"
+                           Margin="0,4"
                            Grid.Row="3"
                            Grid.Column="1"
                            FontWeight="SemiBold">
@@ -148,21 +164,36 @@
                 </TextBlock>
                 <TextBlock x:Uid="UpdateTime"
                            Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5,20,5"
+                           Margin="0,4,20,4"
                            Grid.Row="4" />
                 <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,5"
+                           Margin="0,4"
                            Grid.Row="4"
                            Grid.Column="1"
                            Text="{Binding UpdateTime}"
                            FontWeight="SemiBold" />
                 <ListView x:Name="listViewOnlineDevices"
-                          Margin="0,10"
+                          Margin="0,0,0,8"
                           Grid.Row="5"
                           Grid.ColumnSpan="2"
                           ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
                           ItemsSource="{Binding DeviceList}"
                           SelectionMode="None">
+                    <ListView.Template>
+                        <ControlTemplate TargetType="ListView">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}">
+                                <ItemsPresenter FooterTransitions="{TemplateBinding FooterTransitions}"
+                                                FooterTemplate="{TemplateBinding FooterTemplate}"
+                                                Footer="{TemplateBinding Footer}"
+                                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                                Header="{TemplateBinding Header}"
+                                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                                                Padding="{TemplateBinding Padding}" />
+                            </Border>
+                        </ControlTemplate>
+                    </ListView.Template>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment"
@@ -171,7 +202,8 @@
                     </ListView.ItemContainerStyle>
                     <ListView.Header>
                         <TextBlock x:Uid="OnlineDevices"
-                                   Style="{ThemeResource BodyTextBlockStyle}" />
+                                   Style="{ThemeResource BodyTextBlockStyle}"
+                                   Margin="0,4" />
                     </ListView.Header>
                 </ListView>
             </Grid>
