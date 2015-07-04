@@ -18,12 +18,12 @@ namespace Tasks
         private const double pb = 1e15;
 
         /// <summary>
-        /// 将字节数的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.Size"/>。
+        /// 将字节数的字符串表示形式转换为它的等效 <see cref="Size"/>。
         /// </summary>
         /// <param name="sizeString">包含要转换的数字的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的数值或符号等效的 <see cref="TsinghuaNet.Size"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的数字。</exception>
+        /// <returns>与 <paramref name="sizeString"/> 中指定的数值或符号等效的 <see cref="Size"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <exception cref="FormatException"><paramref name="sizeString"/> 不表示一个有效格式的数字。</exception>
         public static Size Parse(string sizeString)
         {
             if(sizeString == null)
@@ -74,7 +74,7 @@ namespace Tasks
         }
 
         /// <summary>
-        /// 创建 <see cref="TsinghuaNet.Size"/> 的新实例。
+        /// 创建 <see cref="Size"/> 的新实例。
         /// </summary>
         /// <param name="sizeString">要存储的字节数。</param>
         public Size(ulong sizeValue)
@@ -110,15 +110,15 @@ namespace Tasks
             if(va < kb)
                 re = va + " B";
             else if(va < mb)
-                re = (va / kb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " KB";
+                re = (va / kb).ToString("0.00", CultureInfo.InvariantCulture) + " KB";
             else if(va < gb)
-                re = (va / mb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " MB";
+                re = (va / mb).ToString("0.00", CultureInfo.InvariantCulture) + " MB";
             else if(va < tb)
-                re = (va / gb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " GB";
+                re = (va / gb).ToString("0.00", CultureInfo.InvariantCulture) + " GB";
             else if(va < pb)
-                re = (va / tb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " TB";
+                re = (va / tb).ToString("0.00", CultureInfo.InvariantCulture) + " TB";
             else
-                re = (va / pb).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " PB";
+                re = (va / pb).ToString("0.00", CultureInfo.InvariantCulture) + " PB";
             return re;
         }
     }
@@ -131,7 +131,7 @@ namespace Tasks
     {
 
         /// <summary>
-        /// 表示本机的 <see cref="TsinghuaNet.MacAddress"/> 对象。
+        /// 表示本机的 <see cref="MacAddress"/> 对象。
         /// 此字段为只读。
         /// </summary>
         public static readonly MacAddress Current = initCurrentMac();
@@ -162,16 +162,16 @@ namespace Tasks
         }
 
         /// <summary>
-        /// 表示未知的 <see cref="TsinghuaNet.MacAddress"/>。
+        /// 表示未知的 <see cref="MacAddress"/>。
         /// 此字段为只读。
         /// </summary>
         public static readonly MacAddress Unknown = new MacAddress();
 
         /// <summary>
-        /// 通过字节数组创建 <see cref="TsinghuaNet.MacAddress"/> 的新实例。
+        /// 通过字节数组创建 <see cref="MacAddress"/> 的新实例。
         /// </summary>
         /// <param name="sizeString">长度为 6 的 <see cref="System.Byte[]"/>，表示一个 Mac 地址。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
         /// <exception cref="System.ArgumentException"><paramref name="sizeString"/> 长度不为 6。</exception>
         public MacAddress(params byte[] value)
         {
@@ -188,10 +188,10 @@ namespace Tasks
         }
 
         /// <summary>
-        /// 获取或设置 <see cref="TsinghuaNet.MacAddress"/> 的值。
+        /// 获取或设置 <see cref="MacAddress"/> 的值。
         /// </summary>
         /// <param name="index">索引，0~5。</param>
-        /// <returns><see cref="TsinghuaNet.MacAddress"/> 相应位的值。</returns>
+        /// <returns><see cref="MacAddress"/> 相应位的值。</returns>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="index"/> 超出索引范围。</exception>
         public byte this[int index]
         {
@@ -246,12 +246,12 @@ namespace Tasks
         private byte value0, value1, value2, value3, value4, value5;
 
         /// <summary>
-        /// 返回当前 <see cref="TsinghuaNet.MacAddress"/> 的字符串形式。
+        /// 返回当前 <see cref="MacAddress"/> 的字符串形式。
         /// </summary>
-        /// <returns>当前 <see cref="TsinghuaNet.MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
+        /// <returns>当前 <see cref="MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
         public override string ToString()
         {
-            return string.Join(":", value0.ToString("X2", CultureInfo.InvariantCulture), value1.ToString("X2", CultureInfo.InvariantCulture), value2.ToString("X2", CultureInfo.InvariantCulture), value3.ToString("X2", CultureInfo.InvariantCulture), value4.ToString("X2", CultureInfo.InvariantCulture), value5.ToString("X2", CultureInfo.InvariantCulture));
+            return $"{value0:X2}:{value1:X2}:{value2:X2}:{value3:X2}:{value4:X2}:{value5:X2}";
         }
 
         /// <summary>

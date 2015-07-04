@@ -13,12 +13,11 @@ namespace Tasks
 {
     public sealed class RefreshBackgroundTask : IBackgroundTask
     {
-        private string userName = (string)ApplicationData.Current.RoamingSettings.Values["UserName"];
-        private string passwordMd5 = (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"];
+        private readonly string userName = (string)ApplicationData.Current.RoamingSettings.Values["UserName"];
+        private readonly string passwordMd5 = (string)ApplicationData.Current.RoamingSettings.Values["PasswordMD5"];
 
-        private string logOnSucessful;
-
-        private string used;
+        private readonly string logOnSucessful;
+        private readonly string used;
 
         /// <summary>
         /// 登陆网络。

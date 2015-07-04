@@ -9,5 +9,5 @@
                Loaded="ContentDialog_Loaded">
     <TextBox x:Uid="RenameTextBox"
              x:Name="textBoxRename"
-             Margin="0,10" />
+             Margin="0,4" />
 </ContentDialog>

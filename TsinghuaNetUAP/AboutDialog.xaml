@@ -9,7 +9,7 @@
     <StackPanel>
         <TextBlock x:Uid="AppName"
                    Style="{StaticResource BodyTextBlockStyle}"
-                   Margin="0,5" />
+                   Margin="0,4" />
         <TextBlock x:Uid="AppAuthor"/>
         <TextBlock x:Name="textBlockVersion"/>
     </StackPanel>
