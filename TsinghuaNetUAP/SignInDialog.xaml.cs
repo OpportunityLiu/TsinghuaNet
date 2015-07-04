@@ -52,7 +52,8 @@ namespace TsinghuaNet
                 textBlockHint.Text = LocalizedStrings.EmptyPassword;
                 return false;
             }
-            var passMD5 = MD5.MDString(password);
+            //var passMD5 = MD5.MDString(password);
+            var passMD5 = MD5Helper.GetMd5Hash(password);
             try
             {
                 var connect = new WebConnect(userName, passMD5);

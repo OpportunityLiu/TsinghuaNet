@@ -11,15 +11,13 @@
 <# 
     // 用于存放所有 resw 的 key。
     HashSet<string> names = new HashSet<string>();
-    string projectPath = GetProjectPath();
-
-    string stringsPath = Path.Combine(projectPath, "Strings");
+    string stringsPath = Path.Combine(GetProjectPath(), "Strings");
     string[] reswPaths;
 
     // 当前项目存在 Strings 文件夹。
     if(Directory.Exists(stringsPath))
     {
-        // 获取 Strings 文件夹下所有的 resw 文件的路径。
+        // 获取 Strings 文件夹下所有的 Resources.resw 文件的路径。
         reswPaths = Directory.GetFiles(stringsPath, "Resources.resw", SearchOption.AllDirectories);
     }
     else
@@ -34,17 +32,14 @@
 
         // 获取 resw 文件中的 data 节点。
         XmlNodeList dataNodes = document.GetElementsByTagName("data");
-        foreach(var temp in dataNodes)
+        foreach(XmlElement dataNode in dataNodes)
         {
-            XmlElement dataNode = temp as XmlElement;
             if(dataNode != null)
             {
                 string value = dataNode.GetAttribute("name");
                 // key 中包含 ‘.’ 的作为控件的多语言化，不处理。
-                if(value.Contains(".") == false)
-                {
+                if(!value.Contains("."))
                     names.Add(value);
-                }
             }
         }
     }
@@ -55,11 +50,11 @@
 #>
 using Windows.ApplicationModel.Resources;
 
-namespace <# WriteLine(GetProjectDefaultNamespace());#>
+namespace <#=GetProjectDefaultNamespace()#>
 {
     public static class LocalizedStrings
     {
-        private readonly static ResourceLoader loader = new ResourceLoader();
+        private static readonly ResourceLoader loader = new ResourceLoader();
 <#
             foreach(string name in names)
             {
@@ -67,12 +62,9 @@ namespace <# WriteLine(GetProjectDefaultNamespace());#>
                 {
                     continue;
                 }
-
-                // 将 key 的第一个字母大写，作为属性名。
-                string propertyName = name[0].ToString().ToUpper() + name.Substring(1);
 #>
 
-        public static string <#=propertyName#>
+        public static string <#=name#>
         {
             get;
         } = loader.GetString("<#=name#>"); 

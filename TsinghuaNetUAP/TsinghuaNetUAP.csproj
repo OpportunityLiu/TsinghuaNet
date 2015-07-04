@@ -115,7 +115,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MD5.cs" />
+    <Compile Include="MD5Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DropDialog.xaml.cs">
       <DependentUpon>DropDialog.xaml</DependentUpon>
@@ -138,7 +138,9 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <PRIResource Include="Strings\en\Errors.resw" />
-    <PRIResource Include="Strings\en\Resources.resw" />
+    <PRIResource Include="Strings\en\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Strings\zh-CN\Errors.resw" />
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <None Include="TsinghuaNetUAP_TemporaryKey.pfx" />
@@ -195,12 +197,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tasks\Tasks.csproj">
-      <Project>{325c93ef-3a24-4be4-90b4-528c1197d2ce}</Project>
-      <Name>Tasks</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
