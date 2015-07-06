@@ -4,7 +4,7 @@ using Windows.Security.Cryptography;
 
 namespace TsinghuaNet
 {
-    internal static class MD5Helper
+    internal static class MD5Helper 
     {
         private static HashAlgorithmProvider md5 = HashAlgorithmProvider.OpenAlgorithm("MD5");
 
