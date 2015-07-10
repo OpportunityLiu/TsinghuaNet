@@ -149,7 +149,7 @@ namespace TsinghuaNet
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -158,7 +158,6 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            var t = refresh();
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -188,32 +187,10 @@ namespace TsinghuaNet
             }
             // Ensure the current window is active
             Window.Current.Activate();
-            await t;
         }
 
-        private async void OnResuming(object sender, object e)
+        private void OnResuming(object sender, object e)
         {
-            await refresh();
-        }
-
-        private async Task refresh()
-        {
-            if (WebConnect.Current == null)
-                return;
-            try
-            {
-                await WebConnect.Current.LogOnAsync();
-            }
-            catch (LogOnException)
-            {
-            }
-            try
-            {
-                await WebConnect.Current.RefreshAsync();
-            }
-            catch (LogOnException)
-            {
-            }
         }
 
         /// <summary>

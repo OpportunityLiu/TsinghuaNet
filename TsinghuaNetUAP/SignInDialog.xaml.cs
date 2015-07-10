@@ -24,12 +24,14 @@ namespace TsinghuaNet
                 args.Cancel = true;
                 break;
             case ContentDialogResult.Primary:
+                //验证
                 var d = args.GetDeferral();
                 if(!await SignIn())
                     args.Cancel = true;
                 d.Complete();
                 break;
             case ContentDialogResult.Secondary:
+                //当前未登录且点击取消
                 if(WebConnect.Current == null)
                     App.Current.Exit();
                 break;
@@ -52,7 +54,6 @@ namespace TsinghuaNet
                 textBlockHint.Text = LocalizedStrings.EmptyPassword;
                 return false;
             }
-            //var passMD5 = MD5.MDString(password);
             var passMD5 = MD5Helper.GetMd5Hash(password);
             try
             {

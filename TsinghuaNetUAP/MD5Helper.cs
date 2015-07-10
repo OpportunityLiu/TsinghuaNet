@@ -1,5 +1,5 @@
 ﻿using Windows.Security.Cryptography.Core;
-using Converter = Windows.Security.Cryptography.CryptographicBuffer;
+using static Windows.Security.Cryptography.CryptographicBuffer;
 using Windows.Security.Cryptography;
 
 namespace TsinghuaNet
@@ -10,7 +10,7 @@ namespace TsinghuaNet
 
         public static string GetMd5Hash(string input)
         {
-            return Converter.EncodeToHexString(md5.HashData(Converter.ConvertStringToBinary(input, BinaryStringEncoding.Utf8)));
+            return EncodeToHexString(md5.HashData(ConvertStringToBinary(input, BinaryStringEncoding.Utf8)));
         }
     }
 }
