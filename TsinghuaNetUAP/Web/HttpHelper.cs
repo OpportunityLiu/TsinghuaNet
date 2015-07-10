@@ -4,35 +4,47 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Web.Http;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace TsinghuaNet.Web
 {
     internal static class HttpHelper
     {
-        public static async Task<string> PostStrAsync(this HttpClient httpCilent, Uri uri, string request)
+        public static IAsyncOperation<string> PostStrAsync(this HttpClient httpClient, Uri uri, string request)
         {
-            using(var re = new HttpStringContent(request))
+            return Run(async token =>
             {
-                re.Headers.ContentType = new Windows.Web.Http.Headers.HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
-                using(var get = await httpCilent.PostAsync(uri, re))
+                using(var re = new HttpStringContent(request))
+                {
+                    re.Headers.ContentType = new Windows.Web.Http.Headers.HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
+                    var postTask = httpClient.PostAsync(uri, re);
+                    token.Register(() => postTask.Cancel());
+                    using(var get = await postTask)
+                    {
+                        if(!get.IsSuccessStatusCode)
+                            throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
+                        else
+                            return await get.Content.ReadAsStringAsync();
+                    }
+                }
+            });
+        }
+
+        public static IAsyncOperation<string> GetStrAsync(this HttpClient httpClient, Uri uri)
+        {
+            return Run(async token =>
+            {
+                var postTask = httpClient.PostAsync(uri, null);
+                token.Register(() => postTask.Cancel());
+                using(var get = await postTask)
                 {
                     if(!get.IsSuccessStatusCode)
                         throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
                     else
                         return await get.Content.ReadAsStringAsync();
                 }
-            }
-        }
-
-        public static async Task<string> GetStrAsync(this HttpClient httpClient, Uri uri)
-        {
-            using(var get = await httpClient.PostAsync(uri, null))
-            {
-                if(!get.IsSuccessStatusCode)
-                    throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
-                else
-                    return await get.Content.ReadAsStringAsync();
-            }
+            });
         }
     }
 }

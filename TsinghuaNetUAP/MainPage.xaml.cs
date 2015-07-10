@@ -9,6 +9,10 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.ApplicationModel;
+using System.Globalization;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -22,8 +26,9 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            this.dropDialog = new DropDialog();
-            this.renameDialog = new RenameDialog();
+            var version = Package.Current.Id.Version;
+            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
+            refresh();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -56,9 +61,9 @@ namespace TsinghuaNet
             }
         }
 
-        DropDialog dropDialog;
+        DropDialog dropDialog=new DropDialog();
 
-        RenameDialog renameDialog;
+        RenameDialog renameDialog = new RenameDialog();
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
@@ -75,25 +80,53 @@ namespace TsinghuaNet
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 await selectedDevice.DropAsync();
-                await refresh();
+                refresh();
             }
         }
 
-        private async Task refresh()
+        private IAsyncAction currentAction;
+
+        public void refresh()
         {
-            try
+            if(WebConnect.Current == null)
+                return;
+            if(currentAction?.Status == AsyncStatus.Started)
+                currentAction.Cancel();
+            currentAction = Run(async token =>
             {
-                progressBarUsage.IsIndeterminate = true;
-                await WebConnect.Current.RefreshAsync();
-            }
-            catch(LogOnException)
-            {
-            }
+                //防止进度条闪烁
+                var progressTokens = new System.Threading.CancellationTokenSource();
+                var progress = Task.Run(async () =>
+                {
+                    await Task.Delay(1000);
+                    if(!progressTokens.IsCancellationRequested)
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => progressBarUsage.IsIndeterminate = true);
+                }, progressTokens.Token);
+                IAsyncAction action = null;
+                token.Register(() => action?.Cancel());
+                try
+                {
+                    await WebConnect.Current.LogOnAsync();
+                }
+                catch(LogOnException)
+                {
+                }
+                try
+                {
+                    await WebConnect.Current.RefreshAsync();
+                }
+                catch(LogOnException)
+                {
+                }
+                progressTokens.Cancel();
+                progressBarUsage.IsIndeterminate = false;
+                progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
+            });
         }
 
         private async void appBarButtonAbout_Click(object sender, RoutedEventArgs e)
         {
-            await new AboutDialog().ShowAsync();
+          //  await new AboutDialog().ShowAsync();
         }
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)
@@ -101,19 +134,12 @@ namespace TsinghuaNet
             var signIn = new SignInDialog();
             signIn.Closed += (s, args) => this.DataContext = WebConnect.Current;
             await signIn.ShowAsync();
+            refresh();
         }
 
-        private async void refresh_Click(object sender, RoutedEventArgs e)
+        private void refresh_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                await WebConnect.Current.LogOnAsync();
-            }
-            catch(LogOnException ex)
-            {
-                App.Current.SendToastNotification(LocalizedStrings.ToastFailed, ex.Message);
-            }
-            await refresh();
+            refresh();
         }
 
         private void StackPanel_RightTapped(object sender, RightTappedRoutedEventArgs e)

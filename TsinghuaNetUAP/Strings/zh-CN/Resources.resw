@@ -120,9 +120,6 @@
   <data name="AboutAppButton.Label" xml:space="preserve">
     <value>关于</value>
   </data>
-  <data name="AboutPage.PrimaryButtonText" xml:space="preserve">
-    <value>确定</value>
-  </data>
   <data name="AboutPage.Title" xml:space="preserve">
     <value>关于</value>
   </data>

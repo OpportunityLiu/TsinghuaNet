@@ -44,7 +44,21 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="AboutAppButton"
                               x:Name="appBarButtonAbout"
-                              Click="appBarButtonAbout_Click" />
+                              Click="appBarButtonAbout_Click" >
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <StackPanel Width="240"
+                                        Margin="4,4,4,40">
+                                <TextBlock x:Uid="AppName"
+                                           Style="{StaticResource BodyTextBlockStyle}"/>
+                                <TextBlock x:Uid="AppAuthor"
+                                           Style="{StaticResource BodyTextBlockStyle}" />
+                                <TextBlock x:Name="textBlockVersion"
+                                           Style="{StaticResource BodyTextBlockStyle}" />
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
                 <AppBarButton x:Uid="ChangeUserAppButton"
                               x:Name="appBarButtonChangeUser"
                               Click="changeUser_Click" />
@@ -56,32 +70,31 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid x:Name="gridRoot"
-          Margin="12,0">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="500" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="gridRoot.Margin"
+    <ScrollViewer HorizontalScrollMode="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                     >
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState>
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="500" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="gridRoot.Margin"
                                 Value="24,0" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <TextBlock Margin="0,12"
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="gridRoot" Margin="12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Margin="0,12"
                    Text="{Binding UserName, Mode=OneWay}"
                    Style="{ThemeResource TitleTextBlockStyle}" />
-        <ScrollViewer HorizontalScrollMode="Disabled"
-                      VerticalScrollBarVisibility="Auto"
-                      Grid.Row="1">
-            <Grid>
+            <Grid Grid.Row="1">
                 <Grid.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition />
@@ -127,9 +140,8 @@
                                  Grid.ColumnSpan="5"
                                  Margin="0"
                                  Maximum="55"
-                                 Value="{Binding WebTrafficExact.TotalGB}"
                                  Height="10"
-                                 IsIndeterminate="{Binding FallbackValue=True, TargetNullValue=True}" />
+                                 IsIndeterminate="True" />
                     <TextBlock Text="0"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Grid.Row="1" />
@@ -207,6 +219,6 @@
                     </ListView.Header>
                 </ListView>
             </Grid>
-        </ScrollViewer>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>

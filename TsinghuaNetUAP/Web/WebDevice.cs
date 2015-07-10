@@ -1,12 +1,12 @@
 ﻿using System;
 using Windows.Web.Http;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Storage;
-using Windows.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.UI.Xaml;
 
 namespace TsinghuaNet.Web
 {
@@ -27,7 +27,7 @@ namespace TsinghuaNet.Web
             deviceDictChanged += WebDevice_deviceDictChanged;
         }
 
-        private void WebDevice_deviceDictChanged(object sender, EventArgs e)
+        private void WebDevice_deviceDictChanged()
         {
             this.PropertyChanging("Name");
         }
@@ -98,7 +98,7 @@ namespace TsinghuaNet.Web
             }
         }
 
-        private static event EventHandler deviceDictChanged;
+        private static event Action deviceDictChanged;
 
         private static DeviceNameDictionary deviceDict = initDeviceDict();
 
@@ -125,7 +125,7 @@ namespace TsinghuaNet.Web
                         deviceDict = new DeviceNameDictionary();
                     }
                 if (deviceDictChanged != null)
-                    deviceDictChanged(deviceDict, null);
+                    deviceDictChanged();
             };
             //恢复列表
             if (!ApplicationData.Current.RoamingSettings.Values.ContainsKey("DeviceDict"))
@@ -200,32 +200,48 @@ namespace TsinghuaNet.Web
         /// <returns>
         /// <c>true</c> 表示成功，<c>false</c> 表示失败，请刷新设备列表后再试。
         /// </returns>
-        public async Task<bool> DropAsync()
+        public IAsyncOperation<bool> DropAsync()
         {
-            try
+            return Run(async token =>
             {
-                return await HttpClient.PostStrAsync(dropUri, "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken) == "ok";
-            }
-            catch(Exception)
-            {
-                return false;
-            }
+                try
+                {
+                    var post = HttpClient.PostStrAsync(dropUri, "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken);
+                    token.Register(() => post.Cancel());
+                    return await post == "ok";
+                }
+                catch(OperationCanceledException)
+                {
+                    throw;
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
+            });
         }
 
         #region INotifyPropertyChanged 成员
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void PropertyChanging([CallerMemberName] string propertyName = "")
+        private async void PropertyChanging([CallerMemberName] string propertyName = "")
         {
             if(PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                foreach(var item in PropertyChanged.GetInvocationList())
+                {
+                    var t = item.Target as DependencyObject;
+                    if(t != null)
+                        await t.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged(this, new PropertyChangedEventArgs(propertyName)));
+                    else
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                }
         }
 
         #endregion
 
         #region IDisposable Support
-        
+
         public void Dispose()
         {
             deviceDictChanged -= this.WebDevice_deviceDictChanged;

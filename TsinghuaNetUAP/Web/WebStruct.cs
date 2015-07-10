@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.Storage.Streams;
+using System.Linq;
 
 namespace TsinghuaNet.Web
 {
@@ -31,10 +33,10 @@ namespace TsinghuaNet.Web
         /// <summary>
         /// 将字节数的字符串表示形式转换为它的等效 <see cref="Size"/>。
         /// </summary>
-        /// <param name="sizeString">包含要转换的数字的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的数值或符号等效的 <see cref="Size"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的数字。</exception>
+        /// <param name="value">包含要转换的数字的字符串。</param>
+        /// <returns>与 <paramref name="value"/> 中指定的数值或符号等效的 <see cref="Size"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
+        /// <exception cref="FormatException"><paramref name="value"/> 不表示一个有效格式的数字。</exception>
         public static Size Parse(string value)
         {
             if(value == null)
@@ -265,27 +267,31 @@ namespace TsinghuaNet.Web
 
         private static MacAddress initCurrentMac()
         {
-            var id = Windows.System.Profile.HardwareIdentification.GetPackageSpecificToken(null).Id;
-            var length = id.Length;
-            using(var reader = DataReader.FromBuffer(id))
-            {
-                var temp = new byte[length];
-                reader.ReadBytes(temp);
-                var internetInfo = new List<byte>();
-                for(int i = 0; i < length; i += 4)
-                    if(temp[i] <= 4)
-                    {
-                        internetInfo.Add(temp[i + 2]);
-                        internetInfo.Add(temp[i + 3]);
-                    }
-                internetInfo.Add(0x12);
-                internetInfo.Add(0x34);
-                internetInfo.Add(0x56);
-                internetInfo.Add(0x78);
-                internetInfo.Add(0x90);
-                internetInfo.Add(0xAB);
-                return new MacAddress(internetInfo.GetRange(0, 6).ToArray());
-            }
+            var id = Windows.Networking.Connectivity.NetworkInformation.FindConnectionProfilesAsync(new Windows.Networking.Connectivity.ConnectionProfileFilter() { IsConnected = true }).AsTask().Result;
+            var b = id.First().NetworkAdapter.NetworkAdapterId.ToByteArray();
+            //var length = id.Length;
+            //using(var reader = DataReader.FromBuffer(id))
+            //{
+            //var temp = new byte[length];
+            //reader.ReadBytes(temp);
+            //var internetInfo = new List<byte>();
+            //for(int i = 0; i < length; i += 4)
+            //    if(temp[i] <= 4)
+            //    {
+            //        internetInfo.Add(temp[i + 2]);
+            //        internetInfo.Add(temp[i + 3]);
+            //    }
+            //internetInfo.Add(0x12);
+            //internetInfo.Add(0x34);
+            //internetInfo.Add(0x56);
+            //internetInfo.Add(0x78);
+            //internetInfo.Add(0x90);
+            //internetInfo.Add(0xAB);
+            //return new MacAddress(internetInfo.GetRange(0, 6).ToArray());
+            //}
+            var r = new byte[6];
+            Array.Copy(b, 10, r, 0, 6);
+            return new MacAddress(r);
         }
 
         /// <summary>

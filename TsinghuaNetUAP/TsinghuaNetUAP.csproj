@@ -11,8 +11,8 @@
     <AssemblyName>TsinghuaNet</AssemblyName>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10158.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10158.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10069.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10069.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -149,9 +149,15 @@
     <Content Include="Assets\150x150.scale-100.png" />
     <Content Include="Assets\150x150.scale-140.png" />
     <Content Include="Assets\150x150.scale-180.png" />
+    <Content Include="Assets\310x150.scale-100.png" />
+    <Content Include="Assets\310x150.scale-140.png" />
+    <Content Include="Assets\310x150.scale-180.png" />
     <Content Include="Assets\44x44.scale-100.png" />
     <Content Include="Assets\44x44.scale-140.png" />
     <Content Include="Assets\44x44.scale-240.png" />
+    <Content Include="Assets\71x71.scale-100.png" />
+    <Content Include="Assets\71x71.scale-140.png" />
+    <Content Include="Assets\71x71.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-140.png" />
     <Content Include="Assets\SplashScreen.scale-180.png" />
