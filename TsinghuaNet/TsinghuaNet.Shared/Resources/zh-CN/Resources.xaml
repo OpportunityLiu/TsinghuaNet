@@ -1,0 +1,67 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--zh-CN-->
+    <x:String x:Key="StringLanguage">zh-CN</x:String>
+
+    <x:String x:Key="StringOk">确定</x:String>
+    <x:String x:Key="StringCancel">取消</x:String>
+
+    <x:String x:Key="StringError">错误</x:String>
+    <x:String x:Key="StringErrorUserName">请输入用户名。</x:String>
+    <x:String x:Key="StringErrorPassword">请输入密码。</x:String>
+
+    <x:String x:Key="StringStart">开始使用</x:String>
+    <x:String x:Key="StringStartHint">输入清华大学校园网用户名与密码以开始使用。</x:String>
+    <x:String x:Key="StringUserName">用户名</x:String>
+    <x:String x:Key="StringPassword">密码</x:String>
+    <x:String x:Key="StringSignIn">登陆</x:String>
+
+    <x:String x:Key="StringState">当前状态</x:String>
+    <x:String x:Key="StringTraffic">流量</x:String>
+    <x:String x:Key="StringUpdateTime">更新时间</x:String>
+    <x:String x:Key="StringBalance">余额</x:String>
+    <x:String x:Key="StringYuan">元</x:String>
+    <x:String x:Key="StringOnlineDevices">在线设备</x:String>
+    <x:String x:Key="StringMac">Mac</x:String>
+
+    <x:String x:Key="StringHistory">历史记录</x:String>
+    <x:String x:Key="StringRefreshList">更新列表</x:String>
+
+    <x:String x:Key="StringRefresh">刷新</x:String>
+    <x:String x:Key="StringChangeUser">更换用户</x:String>
+    <x:String x:Key="StringRename">重命名</x:String>
+    <x:String x:Key="StringNewName">新名称</x:String>
+    <x:String x:Key="StringDrop">下线</x:String>
+    <x:String x:Key="StringDropHint">选定的设备将被强制下线。</x:String>
+
+    <x:String x:Key="StringPrivacy">隐私策略</x:String>
+    <x:String x:Key="StringAbout">关于</x:String>
+    <x:String x:Key="StringVersion">版本 {0}.{1}.{2}.{3}</x:String>
+
+    <x:String x:Key="StringUnknown">(未知设备)</x:String>
+    <x:String x:Key="StringCurrent">(本机)</x:String>
+
+    <x:String x:Key="StringConnectError">连接错误。</x:String>
+    <x:String x:Key="StringUserNameError">用户名错误。</x:String>
+    <x:String x:Key="StringPasswordError">密码错误。</x:String>
+    <x:String x:Key="StringUserTabError">认证程序未启动。</x:String>
+    <x:String x:Key="StringUserGroupError">您的计费组信息不正确。</x:String>
+    <x:String x:Key="StringNonAuthError">您无须认证，可直接上网。</x:String>
+    <x:String x:Key="StringBalanceError">用户已欠费，请尽快充值。</x:String>
+    <x:String x:Key="StringUnavailableError">您的帐号已停用。</x:String>
+    <x:String x:Key="StringDeletedError">您的帐号已删除。</x:String>
+    <x:String x:Key="StringIPExistError">IP已存在，请稍后再试。</x:String>
+    <x:String x:Key="StringUserCountError">用户数已达上限。</x:String>
+    <x:String x:Key="StringOnlineCountError">该帐号的登录人数已超过限额。</x:String>
+    <x:String x:Key="StringModeError">系统已禁止WEB方式登录，请使用客户端。</x:String>
+    <x:String x:Key="StringTimePolicyError">当前时段不允许连接。</x:String>
+    <x:String x:Key="StringTimeSpanLengthError">您的时长已超支。</x:String>
+    <x:String x:Key="StringIPError">您的 IP 地址不合法。</x:String>
+    <x:String x:Key="StringMacAddressError">您的 MAC 地址不合法。</x:String>
+    <x:String x:Key="StringSyncError">您的资料已修改，正在等待同步，请 2 分钟后再试。</x:String>
+    <x:String x:Key="StringIPAllocError">您不是这个地址的合法拥有者，IP 地址已经分配给其它用户。</x:String>
+    <x:String x:Key="StringIPInvalidError">您是区内地址，无法使用。</x:String>
+    <x:String x:Key="StringUnknownError">未知错误。</x:String>
+
+    <x:String x:Key="StringLogOnSucessful">登陆成功</x:String>
+    <x:String x:Key="StringLogOnFailed">登陆失败</x:String>
+</ResourceDictionary>
