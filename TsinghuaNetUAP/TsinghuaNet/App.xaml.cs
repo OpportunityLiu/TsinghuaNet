@@ -44,7 +44,7 @@ namespace TsinghuaNet
             this.Resuming += this.OnResuming;
             Current = this;
 
-            // TODO
+            // TODO: background task
             //注册后台任务
             //IBackgroundTaskRegistration task = null;
             //foreach (var cur in BackgroundTaskRegistration.AllTasks)
@@ -96,6 +96,7 @@ namespace TsinghuaNet
 
         private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            // TODO: new tile
             if(e.PropertyName != "UpdateTime")
                 return;
             await Task.Run(() =>
@@ -180,10 +181,10 @@ namespace TsinghuaNet
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: Load state from previously suspended application
-                }
+                //if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                //{
+                //    // Load state from previously suspended application
+                //}
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -223,9 +224,6 @@ namespace TsinghuaNet
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
         }
     }
 }
