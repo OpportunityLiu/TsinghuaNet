@@ -140,6 +140,7 @@
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\en\Errors.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
+    <None Include="project.lock.json" />
     <None Include="TsinghuaNet_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
