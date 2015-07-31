@@ -206,8 +206,8 @@ namespace TsinghuaNet.Web
                         ex.Data.Add("HtmlResponse", res1);
                         throw ex;
                     }
-                    WebTraffic = new Size(ulong.Parse(info1[1].Value, System.Globalization.CultureInfo.InvariantCulture));
-                    Balance = decimal.Parse(info1[2].Value, System.Globalization.CultureInfo.InvariantCulture);
+                    WebTraffic = new Size(ulong.Parse(info1[1].Value, CultureInfo.InvariantCulture));
+                    Balance = decimal.Parse(info1[2].Value, CultureInfo.InvariantCulture);
                     //获取登录信息
                     var res2 = await http.GetStrAsync(new Uri("https://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
@@ -388,15 +388,7 @@ namespace TsinghuaNet.Web
         /// <param name="propertyName">更改的属性名，默认值表示调用方名称。</param>
         private async void propertyChanging([CallerMemberName] string propertyName = "")
         {
-            if(PropertyChanged != null)
-                foreach(var item in PropertyChanged.GetInvocationList())
-                {
-                    var t = item.Target as DependencyObject;
-                    if(t != null)
-                        await t.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged(this, new PropertyChangedEventArgs(propertyName)));
-                    else
-                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                }
+            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
         }
 
         #endregion

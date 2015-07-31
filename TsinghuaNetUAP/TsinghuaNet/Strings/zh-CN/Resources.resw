@@ -231,6 +231,12 @@
   <data name="ThemeLight.Content" xml:space="preserve">
     <value>浅色</value>
   </data>
+  <data name="TileNoDevices" xml:space="preserve">
+    <value>当前没有设备在线。</value>
+  </data>
+  <data name="TileUsage" xml:space="preserve">
+    <value>已用流量：</value>
+  </data>
   <data name="ToastFailed" xml:space="preserve">
     <value>登陆失败</value>
   </data>

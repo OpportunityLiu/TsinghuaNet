@@ -269,26 +269,6 @@ namespace TsinghuaNet.Web
         {
             var id = Windows.Networking.Connectivity.NetworkInformation.FindConnectionProfilesAsync(new Windows.Networking.Connectivity.ConnectionProfileFilter() { IsConnected = true }).AsTask().Result;
             var b = id.First().NetworkAdapter.NetworkAdapterId.ToByteArray();
-            //var length = id.Length;
-            //using(var reader = DataReader.FromBuffer(id))
-            //{
-            //var temp = new byte[length];
-            //reader.ReadBytes(temp);
-            //var internetInfo = new List<byte>();
-            //for(int i = 0; i < length; i += 4)
-            //    if(temp[i] <= 4)
-            //    {
-            //        internetInfo.Add(temp[i + 2]);
-            //        internetInfo.Add(temp[i + 3]);
-            //    }
-            //internetInfo.Add(0x12);
-            //internetInfo.Add(0x34);
-            //internetInfo.Add(0x56);
-            //internetInfo.Add(0x78);
-            //internetInfo.Add(0x90);
-            //internetInfo.Add(0xAB);
-            //return new MacAddress(internetInfo.GetRange(0, 6).ToArray());
-            //}
             var r = new byte[6];
             Array.Copy(b, 10, r, 0, 6);
             return new MacAddress(r);

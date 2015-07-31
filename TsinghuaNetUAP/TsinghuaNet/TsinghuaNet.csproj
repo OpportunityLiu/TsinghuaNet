@@ -143,19 +143,46 @@
     <None Include="TsinghuaNet_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\150x150.scale-100.png" />
+    <Content Include="Assets\150x150.scale-125.png" />
+    <Content Include="Assets\150x150.scale-150.png" />
+    <Content Include="Assets\150x150.scale-200.png" />
+    <Content Include="Assets\150x150.scale-400.png" />
+    <Content Include="Assets\310x150.scale-100.png" />
+    <Content Include="Assets\310x150.scale-125.png" />
+    <Content Include="Assets\310x150.scale-150.png" />
+    <Content Include="Assets\310x150.scale-200.png" />
+    <Content Include="Assets\310x150.scale-400.png" />
+    <Content Include="Assets\44x44.scale-100.png" />
+    <Content Include="Assets\44x44.scale-125.png" />
+    <Content Include="Assets\44x44.scale-150.png" />
+    <Content Include="Assets\44x44.scale-200.png" />
+    <Content Include="Assets\44x44.scale-400.png" />
+    <Content Include="Assets\44x44.targetsize-16_altform-unplated.png" />
+    <Content Include="Assets\44x44.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\44x44.targetsize-256_altform-unplated.png" />
+    <Content Include="Assets\44x44.targetsize-48_altform-unplated.png" />
+    <Content Include="Assets\71x71.scale-100.png" />
+    <Content Include="Assets\71x71.scale-125.png" />
+    <Content Include="Assets\71x71.scale-150.png" />
+    <Content Include="Assets\71x71.scale-200.png" />
+    <Content Include="Assets\71x71.scale-400.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="LocalizedStrings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LocalizedStrings.cs</LastGenOutput>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -193,6 +220,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BackgroundLogOnTask\BackgroundLogOnTask.csproj">
+      <Project>{c0117ecf-6dc4-4b31-a677-bdbc5f602e00}</Project>
+      <Name>BackgroundLogOnTask</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
