@@ -96,7 +96,7 @@ namespace TsinghuaNet.Web
                          };
                     if(await check("action=check_online"))
                         return;
-                    if(await check("username=" + userName + "&password=" + passwordMd5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100"))
+                    if(await check($"username={userName}&password={passwordMd5}&mac={MacAddress.Current}&drop=0&type=1&n=100"))
                         return;
                     this.IsOnline = false;
                     if((Regex.IsMatch(res, @"^password_error@\d+")))

@@ -130,7 +130,6 @@ namespace BackgroundLogOnTask
     /// </summary>
     internal struct MacAddress
     {
-
         /// <summary>
         /// 表示本机的 <see cref="MacAddress"/> 对象。
         /// 此字段为只读。

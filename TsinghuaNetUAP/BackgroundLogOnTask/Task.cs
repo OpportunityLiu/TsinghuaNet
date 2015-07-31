@@ -59,7 +59,7 @@ namespace BackgroundLogOnTask
                 };
                 if(await check("action=check_online"))
                     return false;
-                return await check("username=" + userName + "&password=" + passwordMD5 + "&mac=" + MacAddress.Current + "&drop=0&type=1&n=100");
+                return await check($"username={userName}&password={passwordMD5}&mac={MacAddress.Current}&drop=0&type=1&n=100");
             }
         }
 
