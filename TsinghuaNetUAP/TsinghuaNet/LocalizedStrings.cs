@@ -56,6 +56,16 @@ namespace TsinghuaNet
             get;
         } = loader.GetString("PackageName"); 
 
+        public static string TileNoDevices
+        {
+            get;
+        } = loader.GetString("TileNoDevices"); 
+
+        public static string TileUsage
+        {
+            get;
+        } = loader.GetString("TileUsage"); 
+
         public static string ToastFailed
         {
             get;

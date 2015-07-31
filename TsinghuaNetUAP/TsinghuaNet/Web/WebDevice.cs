@@ -227,15 +227,7 @@ namespace TsinghuaNet.Web
 
         private async void PropertyChanging([CallerMemberName] string propertyName = "")
         {
-            if(PropertyChanged != null)
-                foreach(var item in PropertyChanged.GetInvocationList())
-                {
-                    var t = item.Target as DependencyObject;
-                    if(t != null)
-                        await t.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged(this, new PropertyChangedEventArgs(propertyName)));
-                    else
-                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                }
+            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
         }
 
         #endregion

@@ -46,23 +46,23 @@ namespace TsinghuaNet
 
             // TODO: background task
             //注册后台任务
-            //IBackgroundTaskRegistration task = null;
-            //foreach (var cur in BackgroundTaskRegistration.AllTasks)
-            //{
-            //    if (cur.Value.Name == "RefreshBackgroundTask")
-            //    {
-            //        task = cur.Value;
-            //        break;
-            //    }
-            //}
-            //if (task == null)
-            //{
-            //    var builder = new BackgroundTaskBuilder();
-            //    builder.Name = "RefreshBackgroundTask";
-            //    builder.TaskEntryPoint = "Tasks.RefreshBackgroundTask";
-            //    builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
-            //    task = builder.Register();
-            //}
+            IBackgroundTaskRegistration task = null;
+            foreach(var cur in BackgroundTaskRegistration.AllTasks)
+            {
+                if(cur.Value.Name == "BackgroundLogOnTask")
+                {
+                    task = cur.Value;
+                    break;
+                }
+            }
+            if(task == null)
+            {
+                var builder = new BackgroundTaskBuilder();
+                builder.Name = "BackgroundLogOnTask";
+                builder.TaskEntryPoint = "BackgroundLogOnTask.Task";
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
+                task = builder.Register();
+            }
 
             //初始化信息存储区
             try
@@ -84,20 +84,11 @@ namespace TsinghuaNet
             catch(Exception ex) when (ex.HResult == -2147023728)
             {
             }
-
-            // 准备Toast通知
-            toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-            toastTitle = toastXml.CreateTextNode("");
-            toastText = toastXml.CreateTextNode("");
-            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
-            stringElements[0].AppendChild(toastTitle);
-            stringElements[1].AppendChild(toastText);
         }
 
         private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            // TODO: new tile
-            if(e.PropertyName != "UpdateTime")
+            if(e.PropertyName != nameof(WebConnect.UpdateTime))
                 return;
             await Task.Run(() =>
             {
@@ -105,27 +96,49 @@ namespace TsinghuaNet
                 var manager = TileUpdateManager.CreateTileUpdaterForApplication();
                 manager.Clear();
                 manager.EnableNotificationQueue(true);
-
-                var squareTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
-                var longTile = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWide310x150Text01);
-                var node = squareTile.ImportNode(longTile.GetElementsByTagName("binding").Item(0), true);
-                squareTile.GetElementsByTagName("visual").Item(0).AppendChild(node);
-                var bindings = squareTile.GetElementsByTagName("binding");
-                ((XmlElement)bindings[0]).SetAttribute("branding", "name");
-                ((XmlElement)bindings[1]).SetAttribute("branding", "name");
-                var tileTexts = squareTile.GetElementsByTagName("text");
-                tileTexts[0].InnerText = text;
-                tileTexts[4].InnerText = string.Format("已用流量：{0}", text);
-                var devices = new WebDevice[5];
-                WebConnect.Current.DeviceList.CopyTo(devices, 0);
+                var devices = WebConnect.Current.DeviceList.ToArray();
+                if(devices.Length==0)
+                {
+                    XmlDocument tile = new XmlDocument();
+                    tile.LoadXml($@"
+<tile>
+    <visual branding='name'>
+        <binding template='TileMedium'>
+            <text hint-style='body'>{text}</text>
+            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.TileNoDevices}</text>
+        </binding>
+        <binding template='TileWide'>
+            <text hint-style='body'>{LocalizedStrings.TileUsage}{text}</text>
+            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.TileNoDevices}</text>
+        </binding>
+    </visual>
+</tile>");
+                    var tileNotification = new TileNotification(tile);
+                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
+                    manager.Update(tileNotification);
+                    return;
+                }
                 foreach(var item in devices)
                 {
-                    if(item == null)
-                        break;
-                    tileTexts[1].InnerText = tileTexts[5].InnerText = item.Name;
-                    tileTexts[2].InnerText = tileTexts[6].InnerText = item.IPAddress.ToString();
-                    tileTexts[3].InnerText = tileTexts[7].InnerText = item.LogOnDateTime.ToString();
-                    var tileNotification = new TileNotification(squareTile);
+                    XmlDocument tile = new XmlDocument();
+                    tile.LoadXml($@"
+<tile>
+    <visual branding='name'>
+        <binding template='TileMedium'>
+            <text hint-style='body'>{text}</text>
+            <text hint-style='caption'>{item.Name}</text>
+            <text hint-style='captionsubtle'>{item.LogOnDateTime.TimeOfDay}</text>
+            <text hint-style='captionsubtle'>{item.IPAddress}</text>
+        </binding>
+        <binding template='TileWide'>
+            <text hint-style='body'>{LocalizedStrings.TileUsage}{text}</text>
+            <text hint-style='caption'>{item.Name}</text>
+            <text hint-style='captionsubtle'>{item.LogOnDateTime}</text>
+            <text hint-style='captionsubtle'>{item.IPAddress}</text>
+        </binding>
+    </visual>
+</tile>");
+                    var tileNotification = new TileNotification(tile);
                     tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
                     manager.Update(tileNotification);
                 }
@@ -137,22 +150,6 @@ namespace TsinghuaNet
             get;
             private set;
         }
-
-        /// <summary>
-        /// 发送 Toast 通知。
-        /// </summary>
-        /// <param name="title">标题，加粗显示。</param>
-        /// <param name="content">内容。</param>
-        public void SendToastNotification(string title, string content)
-        {
-            toastTitle.NodeValue = title;
-            toastText.NodeValue = content;
-            notifier.Show(new ToastNotification(toastXml));
-        }
-
-        private XmlDocument toastXml;
-        private XmlText toastTitle, toastText;
-        private ToastNotifier notifier = ToastNotificationManager.CreateToastNotifier();
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
