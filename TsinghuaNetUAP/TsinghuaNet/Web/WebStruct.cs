@@ -267,11 +267,19 @@ namespace TsinghuaNet.Web
 
         private static MacAddress initCurrentMac()
         {
-            var id = Windows.Networking.Connectivity.NetworkInformation.FindConnectionProfilesAsync(new Windows.Networking.Connectivity.ConnectionProfileFilter() { IsConnected = true }).AsTask().Result;
-            var b = id.First().NetworkAdapter.NetworkAdapterId.ToByteArray();
-            var r = new byte[6];
-            Array.Copy(b, 10, r, 0, 6);
-            return new MacAddress(r);
+            object mac;
+            if(Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue("Mac", out mac))
+            {
+                return Parse(mac.ToString());
+            }
+            else
+            {
+                var bytes = new byte[6];
+                new Random().NextBytes(bytes);
+                var re = new MacAddress(bytes);
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values.Add("Mac", re.ToString());
+                return re;
+            }
         }
 
         /// <summary>

@@ -28,6 +28,7 @@ namespace TsinghuaNet
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
             textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
+            App.Current.Resuming += (sender, e) => refresh();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
