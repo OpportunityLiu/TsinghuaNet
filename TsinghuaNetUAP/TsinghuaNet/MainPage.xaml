@@ -7,7 +7,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       NavigationCacheMode="Required">
     <Page.Resources>
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
@@ -23,7 +22,7 @@
                     <MenuFlyout>
                         <MenuFlyoutItem x:Uid="RenameMenu"
                                         Click="Rename_Click"
-                                        IsEnabled="{x:Bind CanRename}" />
+                                        IsEnabled="{x:Bind CanRename, Mode=OneWay}" />
                         <MenuFlyoutItem x:Uid="DropMenu"
                                         Click="Drop_Click" />
                     </MenuFlyout>
@@ -43,13 +42,13 @@
         <CommandBar x:Name="commandBar">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="AboutAppButton"
-                              x:Name="appBarButtonAbout" >
+                              x:Name="appBarButtonAbout">
                     <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel Width="240"
                                         Margin="4,4,4,40">
                                 <TextBlock x:Uid="AppName"
-                                           Style="{StaticResource BodyTextBlockStyle}"/>
+                                           Style="{StaticResource BodyTextBlockStyle}" />
                                 <TextBlock x:Uid="AppAuthor"
                                            Style="{StaticResource BodyTextBlockStyle}" />
                                 <TextBlock x:Name="textBlockVersion"
@@ -70,154 +69,155 @@
     </Page.BottomAppBar>
 
     <ScrollViewer HorizontalScrollMode="Disabled"
-                      VerticalScrollBarVisibility="Auto"
-                     >
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup>
-                    <VisualState>
-                        <VisualState.StateTriggers>
-                            <AdaptiveTrigger MinWindowWidth="500" />
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter Target="gridRoot.Margin"
+                  VerticalScrollBarVisibility="Auto"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="gridRoot.Margin"
                                 Value="24,0" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-        <Grid x:Name="gridRoot" Margin="12,0">
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="gridRoot"
+              Margin="12,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock Margin="0,12"
-                   Text="{Binding UserName, Mode=OneWay}"
-                   Style="{ThemeResource TitleTextBlockStyle}" />
-            <Grid Grid.Row="1">
-                <Grid.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition />
-                    </TransitionCollection>
-                </Grid.ChildrenTransitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True" />
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
+            <TextBlock Grid.ColumnSpan="3"
+                       Margin="0,12"
+                       Text="{Binding UserName, Mode=OneWay}"
+                       Style="{ThemeResource TitleTextBlockStyle}" />
+            <TextBlock x:Uid="Usage"
+                       Text="Usage"
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="1" />
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="1"
+                       Grid.Column="2"
+                       Text="{Binding WebTrafficExact}"
+                       FontWeight="SemiBold" />
+            <Grid Margin="0,4"
+                  Grid.Row="2"
+                  Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <TextBlock x:Uid="Usage"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4,20,4"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20*" />
+                    <ColumnDefinition Width="10*" />
+                    <ColumnDefinition Width="10*" />
+                    <ColumnDefinition Width="10*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <ProgressBar x:Name="progressBarUsage"
+                             Grid.ColumnSpan="5"
+                             Margin="0"
+                             Maximum="55"
+                             Height="10"
+                             IsIndeterminate="True" />
+                <TextBlock Text="0"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
                            Grid.Row="1" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
+                <TextBlock Text="20"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
                            Grid.Row="1"
-                           Grid.Column="1"
-                           Text="{Binding WebTrafficExact}"
-                           FontWeight="SemiBold" />
-                <Grid Margin="0,4"
-                      Grid.Row="2"
-                      Grid.ColumnSpan="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="5*" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar x:Name="progressBarUsage"
-                                 Grid.ColumnSpan="5"
-                                 Margin="0"
-                                 Maximum="55"
-                                 Height="10"
-                                 IsIndeterminate="True" />
-                    <TextBlock Text="0"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1" />
-                    <TextBlock Text="20"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="1" />
-                    <TextBlock Text="30"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="2" />
-                    <TextBlock Text="40"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="3" />
-                    <TextBlock Text="50"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="4" />
-                </Grid>
-                <TextBlock x:Uid="Balance"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4,20,4"
-                           Grid.Row="3" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="3"
-                           Grid.Column="1"
-                           FontWeight="SemiBold">
-					<Run Text="{Binding Balance}" />
-					<Run x:Uid="Yuan" />
-                </TextBlock>
-                <TextBlock x:Uid="UpdateTime"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4,20,4"
-                           Grid.Row="4" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="4"
-                           Grid.Column="1"
-                           Text="{Binding UpdateTime}"
-                           FontWeight="SemiBold" />
-                <ListView x:Name="listViewOnlineDevices"
-                          Margin="0,0,0,8"
-                          Grid.Row="5"
-                          Grid.ColumnSpan="2"
-                          ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
-                          ItemsSource="{Binding DeviceList}"
-                          SelectionMode="None">
-                    <ListView.Template>
-                        <ControlTemplate TargetType="ListView">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Background="{TemplateBinding Background}">
-                                <ItemsPresenter FooterTransitions="{TemplateBinding FooterTransitions}"
-                                                FooterTemplate="{TemplateBinding FooterTemplate}"
-                                                Footer="{TemplateBinding Footer}"
-                                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                                Header="{TemplateBinding Header}"
-                                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
-                                                Padding="{TemplateBinding Padding}" />
-                            </Border>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment"
-                                    Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Header>
-                        <TextBlock x:Uid="OnlineDevices"
-                                   Style="{ThemeResource BodyTextBlockStyle}"
-                                   Margin="0,4" />
-                    </ListView.Header>
-                </ListView>
+                           Grid.Column="1" />
+                <TextBlock Text="30"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Grid.Row="1"
+                           Grid.Column="2" />
+                <TextBlock Text="40"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Grid.Row="1"
+                           Grid.Column="3" />
+                <TextBlock Text="50"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Grid.Row="1"
+                           Grid.Column="4" />
             </Grid>
+            <TextBlock x:Uid="Balance"
+                       Text="Balance"
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="3" />
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="3"
+                       Grid.Column="2"
+                       FontWeight="SemiBold">
+					<Run Text="{Binding Balance}" />
+					<Run x:Uid="Yuan"
+                         Text="Yuan" />
+            </TextBlock>
+            <TextBlock x:Uid="UpdateTime"
+                       Text="UpdateTime"
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="4" />
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4"
+                       Grid.Row="4"
+                       Grid.Column="2"
+                       Text="{Binding UpdateTime}"
+                       FontWeight="SemiBold" />
+            <ListView x:Name="listViewOnlineDevices"
+                      Grid.Row="5"
+                      Grid.ColumnSpan="3"
+                      ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
+                      ItemsSource="{Binding DeviceList}"
+                      SelectionMode="None">
+                <ListView.Template>
+                    <ControlTemplate TargetType="ListView">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}">
+                            <ItemsPresenter FooterTransitions="{TemplateBinding FooterTransitions}"
+                                            FooterTemplate="{TemplateBinding FooterTemplate}"
+                                            Footer="{TemplateBinding Footer}"
+                                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                            Header="{TemplateBinding Header}"
+                                            HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                                            Padding="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </ListView.Template>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment"
+                                Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Header>
+                    <TextBlock x:Uid="OnlineDevices"
+                               Text="OnlineDevices"
+                               Style="{ThemeResource BodyTextBlockStyle}"
+                               Margin="0,4" />
+                </ListView.Header>
+            </ListView>
         </Grid>
     </ScrollViewer>
 </Page>

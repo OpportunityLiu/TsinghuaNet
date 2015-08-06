@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,13 +39,12 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
-            Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(Microsoft.ApplicationInsights.WindowsCollectors.Metadata | Microsoft.ApplicationInsights.WindowsCollectors.Session);
+            WindowsAppInitializer.InitializeAsync(WindowsCollectors.Metadata | WindowsCollectors.Session | WindowsCollectors.UnhandledException);
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             Current = this;
-
-            // TODO: background task
+            
             //注册后台任务
             IBackgroundTaskRegistration task = null;
             foreach(var cur in BackgroundTaskRegistration.AllTasks)

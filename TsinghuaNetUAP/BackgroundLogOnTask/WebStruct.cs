@@ -130,6 +130,36 @@ namespace BackgroundLogOnTask
     /// </summary>
     internal struct MacAddress
     {
+
+        private static readonly char[] splitChars = ":. ".ToCharArray();
+
+        /// <summary>
+        /// 将 Mac 地址的字符串表示形式转换为它的等效 <see cref="MacAddress"/>。
+        /// </summary>
+        /// <param name="sizeString">包含要转换的 Mac 地址的字符串。</param>
+        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="MacAddress"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的 Mac 地址。</exception>
+        public static MacAddress Parse(string value)
+        {
+            if(string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException("value");
+            var mac = value.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
+            if(mac.Length != 6)
+                throw new FormatException("字符串格式有误。");
+            var result = new MacAddress();
+            try
+            {
+                for(int i = 0; i < 6; i++)
+                    result[i] = byte.Parse(mac[i], NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+            }
+            catch(Exception ex)
+            {
+                throw new FormatException("字符串格式有误。", ex);
+            }
+            return result;
+        }
+
         /// <summary>
         /// 表示本机的 <see cref="MacAddress"/> 对象。
         /// 此字段为只读。
@@ -138,11 +168,19 @@ namespace BackgroundLogOnTask
 
         private static MacAddress initCurrentMac()
         {
-            var id = Windows.Networking.Connectivity.NetworkInformation.FindConnectionProfilesAsync(new Windows.Networking.Connectivity.ConnectionProfileFilter() { IsConnected = true }).AsTask().Result;
-            var b = id.First().NetworkAdapter.NetworkAdapterId.ToByteArray();
-            var r = new byte[6];
-            Array.Copy(b, 10, r, 0, 6);
-            return new MacAddress(r);
+            object mac;
+            if(Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue("Mac", out mac))
+            {
+                return Parse(mac.ToString());
+            }
+            else
+            {
+                var bytes = new byte[6];
+                new Random().NextBytes(bytes);
+                var re = new MacAddress(bytes);
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values.Add("Mac", re.ToString());
+                return re;
+            }
         }
 
         /// <summary>
