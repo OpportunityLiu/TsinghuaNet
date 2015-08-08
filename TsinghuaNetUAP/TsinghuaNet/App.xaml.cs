@@ -165,7 +165,10 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(320, 500));
+            var view = ApplicationView.GetForCurrentView();
+            view.SetPreferredMinSize(new Windows.Foundation.Size(320, 500));
+            if(e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
+                view.TryResizeView(new Windows.Foundation.Size(320, 600));
 
             Frame rootFrame = Window.Current.Content as Frame;
 

@@ -7,7 +7,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Required">
+      NavigationCacheMode="Required"
+      DataContextChanged="Page_DataContextChanged">
     <Page.Resources>
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
                       x:DataType="web:WebDevice">
@@ -189,7 +190,8 @@
                       Grid.ColumnSpan="3"
                       ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
                       ItemsSource="{Binding DeviceList}"
-                      SelectionMode="None">
+                      SelectionMode="None"
+                      VerticalAlignment="Top">
                 <ListView.Template>
                     <ControlTemplate TargetType="ListView">
                         <Border BorderBrush="{TemplateBinding BorderBrush}"
@@ -217,6 +219,14 @@
                                Style="{ThemeResource BodyTextBlockStyle}"
                                Margin="0,4" />
                 </ListView.Header>
+                <ListView.Footer>
+                    <TextBlock x:Uid="NoDevices"
+                               x:Name="textBlockNoDevices"
+                               Text="No online devices."
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               HorizontalAlignment="Center" Margin="8"
+                               Visibility="Collapsed"/>
+                </ListView.Footer>
             </ListView>
         </Grid>
     </ScrollViewer>

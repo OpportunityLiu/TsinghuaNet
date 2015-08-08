@@ -45,11 +45,11 @@ namespace TsinghuaNet.Web
             {
                 if(value == null)
                     throw new ArgumentNullException("value");
-                WebConnect.current = value;
+                current = value;
             }
             get
             {
-                return WebConnect.current;
+                return current;
             }
         }
 
@@ -116,7 +116,7 @@ namespace TsinghuaNet.Web
                 token.Register(() => postAction?.Cancel());
                 Func<Task> signIn = async () =>
                     {
-                        postAction = http.PostStrAsync(new Uri("https://usereg.tsinghua.edu.cn/do.php"), "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
+                        postAction = http.PostStrAsync(new Uri("http://usereg.tsinghua.edu.cn/do.php"), "action=login&user_login_name=" + userName + "&user_password=" + passwordMd5);
                         var logOnRes = await postAction;
                         switch(logOnRes)
                         {
@@ -197,7 +197,7 @@ namespace TsinghuaNet.Web
                     act = signInUsereg(http);
                     await act;
                     //获取用户信息
-                    ope = http.GetStrAsync(new Uri("https://usereg.tsinghua.edu.cn/user_info.php"));
+                    ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
                     var res1 = await ope;
                     var info1 = Regex.Match(res1, "使用流量\\(IPV4\\).+?(\\d+?)\\(byte\\).+?帐户余额.+?([0-9.]+)\\(元\\)", RegexOptions.Singleline).Groups;
                     if(info1.Count != 3)
@@ -209,7 +209,7 @@ namespace TsinghuaNet.Web
                     WebTraffic = new Size(ulong.Parse(info1[1].Value, CultureInfo.InvariantCulture));
                     Balance = decimal.Parse(info1[2].Value, CultureInfo.InvariantCulture);
                     //获取登录信息
-                    var res2 = await http.GetStrAsync(new Uri("https://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
+                    var res2 = await http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
                     var devices = (from Match r in info2
                                    let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")

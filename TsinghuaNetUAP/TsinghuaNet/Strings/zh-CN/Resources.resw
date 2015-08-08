@@ -171,6 +171,9 @@
   <data name="Mac.Text" xml:space="preserve">
     <value>MAC</value>
   </data>
+  <data name="NoDevices.Text" xml:space="preserve">
+    <value>当前没有设备在线。</value>
+  </data>
   <data name="Ok" xml:space="preserve">
     <value>确定</value>
   </data>
