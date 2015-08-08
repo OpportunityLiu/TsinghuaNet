@@ -13,6 +13,8 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.ApplicationModel;
 using System.Globalization;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -169,6 +171,21 @@ namespace TsinghuaNet
                 ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s,p);
                 break;
             }
+        }
+
+        private void Page_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if(args.NewValue != null)
+            {
+                var dList=((WebConnect)args.NewValue).DeviceList;
+                ((INotifyPropertyChanged)dList).PropertyChanged += deviceListChanged;
+                deviceListChanged(dList, new PropertyChangedEventArgs(null));
+            }
+        }
+
+        private void deviceListChanged(object sender, PropertyChangedEventArgs e)
+        {
+            textBlockNoDevices.Visibility = ((IList<WebDevice>)sender).Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

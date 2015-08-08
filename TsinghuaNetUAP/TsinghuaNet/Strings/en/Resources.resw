@@ -171,6 +171,9 @@
   <data name="Mac.Text" xml:space="preserve">
     <value>Mac</value>
   </data>
+  <data name="NoDevices.Text" xml:space="preserve">
+    <value>No online devices.</value>
+  </data>
   <data name="Ok" xml:space="preserve">
     <value>OK</value>
   </data>
