@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using Windows.Web.Http.Headers;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
@@ -55,12 +56,12 @@ namespace TsinghuaNet.Web
 
         private readonly string userName, passwordMd5;
 
-        private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/cgi-bin/do_login");
+        private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
 
         /// <summary>
         /// 异步登陆网络。
         /// </summary>
-        /// <exception cref="TsinghuaNet.WebConnect.LogOnException">在登陆过程中发生错误。</exception>
+        /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
         public IAsyncAction LogOnAsync()
         {
             return Run(async token =>
@@ -70,39 +71,63 @@ namespace TsinghuaNet.Web
                 token.Register(() => post?.Cancel());
                 using(var http = new HttpClient())
                 {
-                    Func<string, Task<bool>> check = async toPost =>
-                         {
-                             try
-                             {
-                                 post = http.PostStrAsync(logOnUri, toPost);
-                                 res = await post;
-                             }
-                             catch(OperationCanceledException)
-                             {
-                                 return true;
-                             }
-                             catch(Exception ex)
-                             {
-                                 throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                             }
-                             if(Regex.IsMatch(res, @"^\d+,"))
-                             {
-                                 var a = res.Split(',');
-                                 this.WebTraffic = new Size(ulong.Parse(a[2], CultureInfo.InvariantCulture));
-                                 this.IsOnline = true;
-                                 return true;
-                             }
-                             return false;
-                         };
-                    if(await check("action=check_online"))
+                    http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
+                    http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
+                    if(await http.CheckLinkAvailable())
                         return;
-                    if(await check($"username={userName}&password={passwordMd5}&mac={MacAddress.Current}&drop=0&type=1&n=100"))
+                    Func<Task<bool>> check = async () =>
+                            {
+                                try
+                                {
+                                    post = http.PostStrAsync(logOnUri, "action=check_online");
+                                    return "online" == await post;
+                                }
+                                catch(OperationCanceledException)
+                                {
+                                    throw;
+                                }
+                                catch(Exception ex)
+                                {
+                                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                                }
+                            };
+                    Func<Task<bool>> logOn = async () =>
+                    {
+                        try
+                        {
+                            
+                            post = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
+                            res = await post;
+                            if(!res.StartsWith("E"))
+                                return true;
+                            else
+                                throw LogOnException.GetByErrorString(res);
+                        }
+                        catch(OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch(LogOnException)
+                        {
+                            throw;
+                        }
+                        catch(Exception ex)
+                        {
+                            throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                        }
+                    };
+                    try
+                    {
+                        if(this.IsOnline = await check())
+                            return;
+                        if(this.IsOnline = await logOn())
+                            return;
+                        this.IsOnline = false;
+                    }
+                    catch(OperationCanceledException)
+                    {
                         return;
-                    this.IsOnline = false;
-                    if((Regex.IsMatch(res, @"^password_error@\d+")))
-                        throw new LogOnException(LogOnExceptionType.PasswordError);
-                    else
-                        throw LogOnException.GetByErrorString(res);
+                    }
                 }
             });
         }
@@ -212,13 +237,13 @@ namespace TsinghuaNet.Web
                     var res2 = await http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
                     var devices = (from Match r in info2
-                                   let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.+?)(?=\\</td\\>)")
-                                   select new WebDevice(Ipv4Address.Parse(details[3].Value),
-                                                       MacAddress.Parse(details[17].Value))
+                                   let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.*?)(?=\\</td\\>)")
+                                   select new WebDevice(Ipv4Address.Parse(details[0].Value),
+                                                       MacAddress.Parse(details[6].Value))
                                    {
-                                       WebTraffic = Size.Parse(details[4].Value),
-                                       LogOnDateTime = DateTime.ParseExact(details[14].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                                       DropToken = Regex.Match(r.Value, "(?<=drop\\('" + details[3].Value + "',')(.+?)(?='\\))").Value,
+                                       WebTraffic = Size.Parse(details[2].Value),
+                                       LogOnDateTime = DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                                       DropToken = Regex.Match(r.Value, @"(?<=value="")(\d+)(?="")").Value,
                                        HttpClient = http
                                    }).ToArray();
                     var t = deviceList.FirstOrDefault();
@@ -388,7 +413,7 @@ namespace TsinghuaNet.Web
         /// <param name="propertyName">更改的属性名，默认值表示调用方名称。</param>
         private async void propertyChanging([CallerMemberName] string propertyName = "")
         {
-            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
+            await DispatcherHelper.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
         }
 
         #endregion

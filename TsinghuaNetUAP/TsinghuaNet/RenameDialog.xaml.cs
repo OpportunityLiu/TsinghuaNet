@@ -1,5 +1,5 @@
 ﻿using System;
-using TsinghuaNet.Web;
+using Web;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;

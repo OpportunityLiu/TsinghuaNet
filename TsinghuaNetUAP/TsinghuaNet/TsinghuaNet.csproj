@@ -126,12 +126,6 @@
     <Compile Include="SignInDialog.xaml.cs">
       <DependentUpon>SignInDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Web\DeviceNameDictionary.cs" />
-    <Compile Include="Web\HttpHelper.cs" />
-    <Compile Include="Web\LogOnException.cs" />
-    <Compile Include="Web\WebConnect.cs" />
-    <Compile Include="Web\WebDevice.cs" />
-    <Compile Include="Web\WebStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -227,6 +221,10 @@
     <ProjectReference Include="..\BackgroundLogOnTask\BackgroundLogOnTask.csproj">
       <Project>{c0117ecf-6dc4-4b31-a677-bdbc5f602e00}</Project>
       <Name>BackgroundLogOnTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web\Web.csproj">
+      <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>
+      <Name>Web</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

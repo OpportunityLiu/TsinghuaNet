@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using System.Linq;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 表示一定的字节数。
@@ -41,7 +41,7 @@ namespace TsinghuaNet.Web
         {
             if(value == null)
                 throw new ArgumentNullException("value");
-            if(string.IsNullOrWhiteSpace(value) || value.Length == 1)
+            if(string.IsNullOrWhiteSpace(value))
                 throw new FormatException("字符串格式错误。");
             switch(value[value.Length - 1])
             {
@@ -58,7 +58,7 @@ namespace TsinghuaNet.Web
             case 'B':
                 return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture)));
             default:
-                throw new FormatException("字符串格式错误。");
+                return new Size((ulong)(double.Parse(value, CultureInfo.InvariantCulture)));
             }
         }
 
@@ -242,7 +242,7 @@ namespace TsinghuaNet.Web
         public static MacAddress Parse(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("value");
+                return Unknown;
             var mac = value.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
             if(mac.Length != 6)
                 throw new FormatException("字符串格式有误。");
@@ -383,7 +383,7 @@ namespace TsinghuaNet.Web
         /// <returns>当前 <see cref="MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
         public override string ToString()
         {
-            return $"{value0:X2}:{value1:X2}:{value2:X2}:{value3:X2}:{value4:X2}:{value5:X2}";
+            return $"{value0:x2}:{value1:x2}:{value2:x2}:{value3:x2}:{value4:x2}:{value5:x2}";
         }
 
         /// <summary>
