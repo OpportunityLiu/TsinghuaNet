@@ -122,13 +122,29 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\NavigationHelper.cs" />
+    <Compile Include="Common\ObservableDictionary.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Common\SerializableList.cs" />
+    <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Conventers.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MD5.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Web\DeviceNameDictionary.cs" />
+    <Compile Include="Web\HttpGB2312.cs" />
+    <Compile Include="Web\LogOnException.cs" />
+    <Compile Include="Web\WebConnect.cs" />
+    <Compile Include="Web\WebDevice.cs" />
+    <Compile Include="Web\WebStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -137,6 +153,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.StoreAssociation.xml" />
+    <PRIResource Include="Resources\en\Errors.resw" />
+    <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\zh-CN\Errors.resw" />
+    <PRIResource Include="Resources\zh-CN\Resources.resw" />
     <None Include="TsinghuaNet.Windows_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +164,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ThemeDark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ThemeHighContrast.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ThemeLight.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -160,6 +195,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\150x150.scale-100.png" />
+    <Content Include="Assets\150x150.scale-140.png" />
+    <Content Include="Assets\150x150.scale-180.png" />
     <Content Include="Assets\150x150.scale-80.png" />
     <Content Include="Assets\30x30.scale-100.png" />
     <Content Include="Assets\30x30.scale-140.png" />
@@ -169,6 +207,9 @@
     <Content Include="Assets\30x30.targetsize-256.png" />
     <Content Include="Assets\30x30.targetsize-32.png" />
     <Content Include="Assets\30x30.targetsize-48.png" />
+    <Content Include="Assets\310x150.scale-100.png" />
+    <Content Include="Assets\310x150.scale-140.png" />
+    <Content Include="Assets\310x150.scale-180.png" />
     <Content Include="Assets\310x150.scale-80.png" />
     <Content Include="Assets\70x70.scale-100.png" />
     <Content Include="Assets\70x70.scale-140.png" />
@@ -177,6 +218,16 @@
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-140.png" />
     <Content Include="Assets\SplashScreen.scale-180.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-140.png" />
+    <Content Include="Assets\StoreLogo.scale-180.png" />
+    <Content Include="Resources\HeaderDark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\HeaderLight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Common\ReadMe.txt" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
@@ -188,7 +239,6 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <Import Project="..\TsinghuaNet.Shared\TsinghuaNet.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
