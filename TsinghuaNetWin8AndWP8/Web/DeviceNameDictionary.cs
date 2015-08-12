@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Data.Json;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 可序列化的设备 Mac 和名称的词典。
@@ -11,7 +11,7 @@ namespace TsinghuaNet.Web
     public class DeviceNameDictionary : Dictionary<MacAddress, string>
     {
         /// <summary>
-        /// 初始化 <see cref="TsinghuaNet.DeviceNameDictionary"/> 的新实例。
+        /// 初始化 <see cref="DeviceNameDictionary"/> 的新实例。
         /// </summary>
         public DeviceNameDictionary()
             : base()
@@ -19,7 +19,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 使用序列化字符串初始化 <see cref="TsinghuaNet.DeviceNameDictionary"/> 的新实例。
+        /// 使用序列化字符串初始化 <see cref="DeviceNameDictionary"/> 的新实例。
         /// </summary>
         /// <param name="jsonInput">保存有字典信息的 json 序列化字符串。</param>
         /// <exception cref="System.ArgumentException">输入字符串有误，无法进行反序列化。</exception>

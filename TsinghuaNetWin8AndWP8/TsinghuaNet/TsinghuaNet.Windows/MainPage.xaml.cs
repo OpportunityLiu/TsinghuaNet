@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TsinghuaNet.Web;
+using Web;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
@@ -63,7 +63,7 @@ namespace TsinghuaNet
                 await emptyPassword.ShowAsync();
                 return;
             }
-            var passMD5 = MD5.MDString(password);
+            var passMD5 = MD5Helper.GetMd5Hash(password);
             LogOnException excep = null;
             try
             {

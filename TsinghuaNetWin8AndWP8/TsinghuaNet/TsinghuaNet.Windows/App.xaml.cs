@@ -10,10 +10,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using TsinghuaNet.Web;
+using Web;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.System.Threading;
+using System.Linq;
 
 // 有关“空白应用程序”模板的信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -24,20 +25,6 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class App : Application
     {
-
-#if WINDOWS_PHONE_APP
-        private TransitionCollection transitions;
-        private Windows.UI.ViewManagement.StatusBar statusBar;
-
-        public Windows.UI.ViewManagement.StatusBar StatusBar
-        {
-            get
-            {
-                return statusBar;
-            }
-        }
-#endif
-
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 逻辑上等同于 main() 或 WinMain()。
@@ -47,7 +34,7 @@ namespace TsinghuaNet
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
-            App.Current = this;
+            Current = this;
 
             //注册后台任务
             IBackgroundTaskRegistration task = null;
@@ -67,13 +54,15 @@ namespace TsinghuaNet
                 builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
                 task = builder.Register();
             }
-
+            
             //初始化信息存储区
-            var settings = ApplicationData.Current.RoamingSettings.Values;
-            if(settings.ContainsKey("UserName") && settings.ContainsKey("PasswordMD5"))
+            try
             {
-                var userName = (string)settings["UserName"];
-                var passwordMD5 = (string)settings["PasswordMD5"];
+                var passVault = new Windows.Security.Credentials.PasswordVault();
+                var pass = passVault.FindAllByResource("TsinghuaAccount").First();
+                pass.RetrievePassword();
+                var userName = pass.UserName;
+                var passwordMD5 = pass.Password;
                 //已经添加字段
                 if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
                 {
@@ -81,6 +70,10 @@ namespace TsinghuaNet
                     //准备磁贴更新
                     WebConnect.Current.PropertyChanged += UpdeteTile;
                 }
+            }
+            // 未找到储存的密码
+            catch(Exception ex) when (ex.HResult == -2147023728)
+            {
             }
 
             // 准备Toast通知
@@ -182,22 +175,7 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-#if WINDOWS_PHONE_APP
-            //高对比度设置变化时更改状态栏透明度
-            statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            accessibilitySettings.HighContrastChanged += (sender, args) =>
-            {
-                App.DispatcherRunAnsyc(() =>
-                {
-                    if(sender.HighContrast)
-                        statusBar.BackgroundOpacity = 0;
-                    else
-                        statusBar.BackgroundOpacity = 1;
-                });
-            };
-#endif
-
-#if WINDOWS_APP
+            
             //注册设置项
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {
@@ -205,7 +183,6 @@ namespace TsinghuaNet
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(1, resource.GetString("AboutMenu"), a => new About().Show()));
                 arg.Request.ApplicationCommands.Add(new Windows.UI.ApplicationSettings.SettingsCommand(2, resource.GetString("SettingsMenu"), a => new Settings().Show()));
             };
-#endif
 
             Frame rootFrame = Window.Current.Content as Frame;
             currentDispatcher = Window.Current.Dispatcher;
@@ -229,21 +206,6 @@ namespace TsinghuaNet
 
             if(rootFrame.Content == null)
             {
-#if WINDOWS_PHONE_APP
-                // 删除用于启动的旋转门导航。
-                if (rootFrame.ContentTransitions != null)
-                {
-                    this.transitions = new TransitionCollection();
-                    foreach (var c in rootFrame.ContentTransitions)
-                    {
-                        this.transitions.Add(c);
-                    }
-                }
-
-                rootFrame.ContentTransitions = null;
-                rootFrame.Navigated += this.RootFrame_FirstNavigated;
-#endif
-
                 // 当未还原导航堆栈时，导航到第一页，
                 // 并通过将所需信息作为导航参数传入来配置
                 // 参数
@@ -256,20 +218,7 @@ namespace TsinghuaNet
             Window.Current.Activate();
             await refresh();
         }
-
-#if WINDOWS_PHONE_APP
-        /// <summary>
-        /// 启动应用程序后还原内容转换。
-        /// </summary>
-        /// <param name="sender">附加了处理程序的对象。</param>
-        /// <param name="e">有关导航事件的详细信息。</param>
-        private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
-        {
-            var rootFrame = sender as Frame;
-            rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection() { new NavigationThemeTransition() };
-            rootFrame.Navigated -= this.RootFrame_FirstNavigated;
-        }
-#endif
+        
 
         /// <summary>
         /// 在将要挂起应用程序执行时调用。    将保存应用程序状态

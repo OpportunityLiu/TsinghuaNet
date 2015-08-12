@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.Storage.Streams;
+using System.Linq;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 表示一定的字节数。
     /// </summary>
-    public struct Size
+    public struct Size : IComparable<Size>, IEquatable<Size>
     {
         /// <summary>
-        /// 表示 <see cref="TsinghuaNet.Size"/> 的最小可能值。
+        /// 表示 <see cref="Size"/> 的最小可能值。
         /// 此字段为只读。
         /// </summary>
         public static readonly Size MinValue = new Size(ulong.MinValue);
 
         /// <summary>
-        /// 表示 <see cref="TsinghuaNet.Size"/> 的最大可能值。
+        /// 表示 <see cref="Size"/> 的最大可能值。
         /// 此字段为只读。
         /// </summary>
         public static readonly Size MaxValue = new Size(ulong.MaxValue);
@@ -29,17 +31,17 @@ namespace TsinghuaNet.Web
         private const double pb = 1e15;
 
         /// <summary>
-        /// 将字节数的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.Size"/>。
+        /// 将字节数的字符串表示形式转换为它的等效 <see cref="Size"/>。
         /// </summary>
-        /// <param name="sizeString">包含要转换的数字的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的数值或符号等效的 <see cref="TsinghuaNet.Size"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
-        /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的数字。</exception>
+        /// <param name="value">包含要转换的数字的字符串。</param>
+        /// <returns>与 <paramref name="value"/> 中指定的数值或符号等效的 <see cref="Size"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
+        /// <exception cref="FormatException"><paramref name="value"/> 不表示一个有效格式的数字。</exception>
         public static Size Parse(string value)
         {
             if(value == null)
                 throw new ArgumentNullException("value");
-            if(string.IsNullOrWhiteSpace(value) || value.Length == 1)
+            if(string.IsNullOrWhiteSpace(value))
                 throw new FormatException("字符串格式错误。");
             switch(value[value.Length - 1])
             {
@@ -56,7 +58,7 @@ namespace TsinghuaNet.Web
             case 'B':
                 return new Size((ulong)(double.Parse(value.Substring(0, value.Length - 1), CultureInfo.InvariantCulture)));
             default:
-                throw new FormatException("字符串格式错误。");
+                return new Size((ulong)(double.Parse(value, CultureInfo.InvariantCulture)));
             }
         }
 
@@ -122,7 +124,7 @@ namespace TsinghuaNet.Web
         public override bool Equals(object obj)
         {
             if(obj is Size)
-                return this == (Size)obj;
+                return this.Equals((Size)obj);
             else
                 return false;
         }
@@ -137,7 +139,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 两个指定的 <see cref="TsinghuaNet.Size"/> 值相加。
+        /// 两个指定的 <see cref="Size"/> 值相加。
         /// </summary>
         /// <param name="size1">要相加的第一个值。</param>
         /// <param name="size2">要相加的第二个值。</param>
@@ -148,7 +150,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 从一个 <see cref="TsinghuaNet.Size"/> 值中减去指定的另一个这种类型的值。
+        /// 从一个 <see cref="Size"/> 值中减去指定的另一个这种类型的值。
         /// </summary>
         /// <param name="size1">被减数。</param>
         /// <param name="size2">减数。</param>
@@ -160,38 +162,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 比较指定的两个 <see cref="TsinghuaNet.Size"/> 值。
-        /// </summary>
-        /// <param name="size1">要比较的第一个值。</param>
-        /// <param name="size2">要比较的第二个值。</param>
-        /// <returns>
-        /// 有 <see cref="TsinghuaNet.Size"/>，指示 <paramref name="size1"/> 和 <paramref name="size2"/> 的相对值。 
-        /// <list type="table">
-        /// <listheader>
-        /// <term>返回值</term>
-        /// <description>含义</description>
-        /// </listheader>
-        /// <item>
-        /// <term>小于零</term>
-        /// <description><paramref name="size1"/> 小于 <paramref name="size2"/>。</description>
-        /// </item>
-        /// <item>
-        /// <term>零</term>
-        /// <description><paramref name="size1"/> 等于 <paramref name="size2"/>。</description>
-        /// </item>
-        /// <item>
-        /// <term>大于零</term>
-        /// <description><paramref name="size1"/> 大于 <paramref name="size2"/>。</description>
-        /// </item>
-        /// </list>
-        /// </returns>
-        public static double Compare(Size size1, Size size2)
-        {
-            return size1.Value - size2.Value;
-        }
-
-        /// <summary>
-        /// 创建 <see cref="TsinghuaNet.Size"/> 的新实例。
+        /// 创建 <see cref="Size"/> 的新实例。
         /// </summary>
         /// <param name="sizeString">要存储的字节数。</param>
         public Size(ulong value)
@@ -223,7 +194,7 @@ namespace TsinghuaNet.Web
         /// <returns>当前对象的字符串形式。</returns>
         public override string ToString()
         {
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var culture = CultureInfo.CurrentCulture;
             var ds = culture.NumberFormat.NumberDecimalSeparator;
             var va = Value;
             Func<double, string> format = value =>
@@ -242,25 +213,37 @@ namespace TsinghuaNet.Web
                 return format(va / tb) + " TB";
             return format(va / pb) + " PB";
         }
+
+        public int CompareTo(Size other)
+        {
+            return Value.CompareTo(other.Value);
+        }
+
+        public bool Equals(Size other)
+        {
+            return this == other;
+        }
     }
 
     /// <summary>
     /// 表示特定的 Mac 地址。
     /// </summary>
-    public struct MacAddress
+    public struct MacAddress : IEquatable<MacAddress>
     {
+        private static readonly char[] splitChars = ":. ".ToCharArray();
+
         /// <summary>
-        /// 将 Mac 地址的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.MacAddress"/>。
+        /// 将 Mac 地址的字符串表示形式转换为它的等效 <see cref="MacAddress"/>。
         /// </summary>
         /// <param name="sizeString">包含要转换的 Mac 地址的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="TsinghuaNet.MacAddress"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="MacAddress"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
         /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的 Mac 地址。</exception>
         public static MacAddress Parse(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException("value");
-            var mac = value.Split(":. ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                return Unknown;
+            var mac = value.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
             if(mac.Length != 6)
                 throw new FormatException("字符串格式有误。");
             var result = new MacAddress();
@@ -277,47 +260,39 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 表示本机的 <see cref="TsinghuaNet.MacAddress"/> 对象。
+        /// 表示本机的 <see cref="MacAddress"/> 对象。
         /// 此字段为只读。
         /// </summary>
         public static readonly MacAddress Current = initCurrentMac();
 
         private static MacAddress initCurrentMac()
         {
-            var id = Windows.System.Profile.HardwareIdentification.GetPackageSpecificToken(null).Id;
-            var length = id.Length;
-            using(var reader = DataReader.FromBuffer(id))
+            object mac;
+            if(Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue("Mac", out mac))
             {
-                var temp = new byte[length];
-                reader.ReadBytes(temp);
-                var internetInfo = new List<byte>();
-                for(int i = 0; i < length; i += 4)
-                    if(temp[i] <= 4)
-                    {
-                        internetInfo.Add(temp[i + 2]);
-                        internetInfo.Add(temp[i + 3]);
-                    }
-                internetInfo.Add(0x12);
-                internetInfo.Add(0x34);
-                internetInfo.Add(0x56);
-                internetInfo.Add(0x78);
-                internetInfo.Add(0x90);
-                internetInfo.Add(0xAB);
-                return new MacAddress(internetInfo.GetRange(0, 6).ToArray());
+                return Parse(mac.ToString());
+            }
+            else
+            {
+                var bytes = new byte[6];
+                new Random().NextBytes(bytes);
+                var re = new MacAddress(bytes);
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values.Add("Mac", re.ToString());
+                return re;
             }
         }
 
         /// <summary>
-        /// 表示未知的 <see cref="TsinghuaNet.MacAddress"/>。
+        /// 表示未知的 <see cref="MacAddress"/>。
         /// 此字段为只读。
         /// </summary>
         public static readonly MacAddress Unknown = new MacAddress();
 
         /// <summary>
-        /// 通过字节数组创建 <see cref="TsinghuaNet.MacAddress"/> 的新实例。
+        /// 通过字节数组创建 <see cref="MacAddress"/> 的新实例。
         /// </summary>
         /// <param name="sizeString">长度为 6 的 <see cref="System.Byte[]"/>，表示一个 Mac 地址。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
         /// <exception cref="System.ArgumentException"><paramref name="sizeString"/> 长度不为 6。</exception>
         public MacAddress(params byte[] value)
         {
@@ -334,10 +309,10 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 获取或设置 <see cref="TsinghuaNet.MacAddress"/> 的值。
+        /// 获取或设置 <see cref="MacAddress"/> 的值。
         /// </summary>
         /// <param name="index">索引，0~5。</param>
-        /// <returns><see cref="TsinghuaNet.MacAddress"/> 相应位的值。</returns>
+        /// <returns><see cref="MacAddress"/> 相应位的值。</returns>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="index"/> 超出索引范围。</exception>
         public byte this[int index]
         {
@@ -345,46 +320,46 @@ namespace TsinghuaNet.Web
             {
                 switch(index)
                 {
-                    case 0:
-                        return value0;
-                    case 1:
-                        return value1;
-                    case 2:
-                        return value2;
-                    case 3:
-                        return value3;
-                    case 4:
-                        return value4;
-                    case 5:
-                        return value5;
-                    default:
-                        throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
+                case 0:
+                    return value0;
+                case 1:
+                    return value1;
+                case 2:
+                    return value2;
+                case 3:
+                    return value3;
+                case 4:
+                    return value4;
+                case 5:
+                    return value5;
+                default:
+                    throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
                 }
             }
-            set
+            private set
             {
                 switch(index)
                 {
-                    case 0:
-                        value0 = value;
-                        break;
-                    case 1:
-                        value1 = value;
-                        break;
-                    case 2:
-                        value2 = value;
-                        break;
-                    case 3:
-                        value3 = value;
-                        break;
-                    case 4:
-                        value4 = value;
-                        break;
-                    case 5:
-                        value5 = value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
+                case 0:
+                    value0 = value;
+                    break;
+                case 1:
+                    value1 = value;
+                    break;
+                case 2:
+                    value2 = value;
+                    break;
+                case 3:
+                    value3 = value;
+                    break;
+                case 4:
+                    value4 = value;
+                    break;
+                case 5:
+                    value5 = value;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
                 }
             }
         }
@@ -392,7 +367,7 @@ namespace TsinghuaNet.Web
         private byte value0, value1, value2, value3, value4, value5;
 
         /// <summary>
-        /// 获取一个值，指示当前 <see cref="TsinghuaNet.MacAddress"/> 是否与 <see cref="TsinghuaNet.MacAddress.Current"/> 相等。
+        /// 获取一个值，指示当前 <see cref="MacAddress"/> 是否与 <see cref="MacAddress.Current"/> 相等。
         /// </summary>
         public bool IsCurrent
         {
@@ -403,12 +378,12 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 返回当前 <see cref="TsinghuaNet.MacAddress"/> 的字符串形式。
+        /// 返回当前 <see cref="MacAddress"/> 的字符串形式。
         /// </summary>
-        /// <returns>当前 <see cref="TsinghuaNet.MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
+        /// <returns>当前 <see cref="MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
         public override string ToString()
         {
-            return string.Join(":", value0.ToString("X2", CultureInfo.InvariantCulture), value1.ToString("X2", CultureInfo.InvariantCulture), value2.ToString("X2", CultureInfo.InvariantCulture), value3.ToString("X2", CultureInfo.InvariantCulture), value4.ToString("X2", CultureInfo.InvariantCulture), value5.ToString("X2", CultureInfo.InvariantCulture));
+            return $"{value0:x2}:{value1:x2}:{value2:x2}:{value3:x2}:{value4:x2}:{value5:x2}";
         }
 
         /// <summary>
@@ -421,19 +396,7 @@ namespace TsinghuaNet.Web
         public override bool Equals(object obj)
         {
             if(obj is MacAddress)
-            {
-                var value = (MacAddress)obj;
-                var flag = true;
-                for(int i = 0; i < 6; i++)
-                {
-                    if(this[i] != value[i])
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-                return flag;
-            }
+                return this.Equals((MacAddress)obj);
             else
                 return false;
         }
@@ -447,6 +410,11 @@ namespace TsinghuaNet.Web
             int re = (((value2 << 8) + value3 << 8) + value4 << 8) + value5;
             int re2 = value0 + (value1 << 8);
             return re ^ re2;
+        }
+
+        public bool Equals(MacAddress other)
+        {
+            return value0 == other.value0 && value1 == other.value1 && value2 == other.value2 && value3 == other.value3 && value4 == other.value4 && value5 == other.value5;
         }
 
         public static bool operator ==(MacAddress mac1, MacAddress mac2)
@@ -463,20 +431,22 @@ namespace TsinghuaNet.Web
     /// <summary>
     /// 表示特定的 Ipv4 地址。
     /// </summary>
-    public struct Ipv4Address
+    public struct Ipv4Address : IEquatable<Ipv4Address>
     {
+        private static readonly char[] splitChars = ".: ".ToCharArray();
+
         /// <summary>
-        /// 将 IP 地址的字符串表示形式转换为它的等效 <see cref="TsinghuaNet.Ipv4Address"/>。
+        /// 将 IP 地址的字符串表示形式转换为它的等效 <see cref="Ipv4Address"/>。
         /// </summary>
         /// <param name="sizeString">包含要转换的 IP 地址的字符串。</param>
-        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="TsinghuaNet.Ipv4Address"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <returns>与 <paramref name="sizeString"/> 中指定的 <see cref="Ipv4Address"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
         /// <exception cref="System.FormatException"><paramref name="sizeString"/> 不表示一个有效格式的 IP 地址。</exception>
         public static Ipv4Address Parse(string value)
         {
             if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException("value");
-            var ip = value.Split(":. ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var ip = value.Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
             if(ip.Length != 4)
                 throw new FormatException("字符串格式有误。");
             var result = new Ipv4Address();
@@ -493,10 +463,10 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 通过字节数组创建 <see cref="TsinghuaNet.Ipv4Address"/> 的新实例。
+        /// 通过字节数组创建 <see cref="Ipv4Address"/> 的新实例。
         /// </summary>
-        /// <param name="sizeString">长度为 4 的 <see cref="System.Byte[]"/>，表示一个 IP 地址。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
+        /// <param name="sizeString">长度为 4 的 <see cref="byte[]"/>，表示一个 IP 地址。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="sizeString"/> 为 <c>null</c>。</exception>
         /// <exception cref="System.ArgumentException"><paramref name="sizeString"/> 长度不为 4。</exception>
         public Ipv4Address(params byte[] value)
         {
@@ -511,10 +481,10 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 获取或设置 <see cref="TsinghuaNet.Ipv4Address"/> 的值。
+        /// 获取或设置 <see cref="Ipv4Address"/> 的值。
         /// </summary>
         /// <param name="index">索引，0~3。</param>
-        /// <returns><see cref="TsinghuaNet.Ipv4Address"/> 相应位的值。</returns>
+        /// <returns><see cref="Ipv4Address"/> 相应位的值。</returns>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="index"/> 超出索引范围。</exception>
         public byte this[int index]
         {
@@ -522,36 +492,36 @@ namespace TsinghuaNet.Web
             {
                 switch(index)
                 {
-                    case 0:
-                        return value0;
-                    case 1:
-                        return value1;
-                    case 2:
-                        return value2;
-                    case 3:
-                        return value3;
-                    default:
-                        throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
+                case 0:
+                    return value0;
+                case 1:
+                    return value1;
+                case 2:
+                    return value2;
+                case 3:
+                    return value3;
+                default:
+                    throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
                 }
             }
-            set
+            private set
             {
                 switch(index)
                 {
-                    case 0:
-                        value0 = value;
-                        break;
-                    case 1:
-                        value1 = value;
-                        break;
-                    case 2:
-                        value2 = value;
-                        break;
-                    case 3:
-                        value3 = value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
+                case 0:
+                    value0 = value;
+                    break;
+                case 1:
+                    value1 = value;
+                    break;
+                case 2:
+                    value2 = value;
+                    break;
+                case 3:
+                    value3 = value;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
                 }
             }
         }
@@ -559,9 +529,9 @@ namespace TsinghuaNet.Web
         private byte value0, value1, value2, value3;
 
         /// <summary>
-        /// 返回当前 <see cref="TsinghuaNet.Ipv4Address"/> 的字符串形式。
+        /// 返回当前 <see cref="Ipv4Address"/> 的字符串形式。
         /// </summary>
-        /// <returns>当前 <see cref="TsinghuaNet.Ipv4Address"/> 的字符串形式，以 "." 分隔。</returns>
+        /// <returns>当前 <see cref="Ipv4Address"/> 的字符串形式，以 "." 分隔。</returns>
         public override string ToString()
         {
             return string.Join(".", value0.ToString(CultureInfo.InvariantCulture), value1.ToString(CultureInfo.InvariantCulture), value2.ToString(CultureInfo.InvariantCulture), value3.ToString(CultureInfo.InvariantCulture));
@@ -577,21 +547,14 @@ namespace TsinghuaNet.Web
         public override bool Equals(object obj)
         {
             if(obj is Ipv4Address)
-            {
-                var value = (Ipv4Address)obj;
-                var flag = true;
-                for(int i = 0; i < 4; i++)
-                {
-                    if(this[i] != value[i])
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-                return flag;
-            }
+                return this.Equals((Ipv4Address)obj);
             else
                 return false;
+        }
+
+        public bool Equals(Ipv4Address other)
+        {
+            return value0 == other.value0 && value1 == other.value1 && value2 == other.value2 && value3 == other.value3;
         }
 
         /// <summary>
