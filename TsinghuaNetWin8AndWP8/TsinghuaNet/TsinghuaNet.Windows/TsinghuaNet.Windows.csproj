@@ -134,17 +134,11 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MD5.cs" />
+    <Compile Include="MD5Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Web\DeviceNameDictionary.cs" />
-    <Compile Include="Web\HttpGB2312.cs" />
-    <Compile Include="Web\LogOnException.cs" />
-    <Compile Include="Web\WebConnect.cs" />
-    <Compile Include="Web\WebDevice.cs" />
-    <Compile Include="Web\WebStruct.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -192,6 +186,10 @@
     <ProjectReference Include="..\..\Tasks\Tasks.csproj">
       <Project>{325c93ef-3a24-4be4-90b4-528c1197d2ce}</Project>
       <Name>Tasks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Web.csproj">
+      <Project>{b6f804bc-ecc8-4907-a068-60dfc45ca122}</Project>
+      <Name>Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
