@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TsinghuaNet.Web;
+using Web;
 using Windows.ApplicationModel.Resources;
 using Windows.UI.Input;
 using Windows.UI.Popups;

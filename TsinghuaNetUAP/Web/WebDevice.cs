@@ -7,8 +7,9 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
+using Windows.ApplicationModel.Resources;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 表示连入网络的设备。
@@ -16,7 +17,7 @@ namespace TsinghuaNet.Web
     public sealed class WebDevice : INotifyPropertyChanged,IDisposable
     {
         /// <summary>
-        /// 初始化 <see cref="TsinghuaNet.WebDevice"/> 的实例并设置相关信息。
+        /// 初始化 <see cref="WebDevice"/> 的实例并设置相关信息。
         /// </summary>
         /// <param name="ip">IP 地址。</param>
         /// <param name="mac">Mac 地址。</param>
@@ -104,13 +105,10 @@ namespace TsinghuaNet.Web
 
         private static DeviceNameDictionary initDeviceDict()
         {
-            //挂起时保存列表
-            App.Current.Suspending += (sender, e) =>
-                ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Serialize();
             //同步时更新列表，并通知所有实例更新 Name 属性。
             ApplicationData.Current.DataChanged += (sender, args) =>
             {
-                if (!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
+                if(!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
                 {
                     sender.RoamingSettings.Values.Add("DeviceDict", "");
                     deviceDict = new DeviceNameDictionary();
@@ -144,6 +142,15 @@ namespace TsinghuaNet.Web
                 }
         }
 
+        private static void saveDeviceList()
+        {
+            ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Serialize();
+        }
+
+        private static readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Web/Resources");
+        private static string unknownDevice = loader.GetString("UnknownDevice");
+        private static string currentDevice = loader.GetString("CurrentDevice");
+
         /// <summary>
         /// 获取或设置当前设备的名称。
         /// </summary>
@@ -153,14 +160,14 @@ namespace TsinghuaNet.Web
             get
             {
                 if(this.Mac == MacAddress.Unknown)
-                    return LocalizedStrings.UnknownDevice;
+                    return unknownDevice;
                 else
                 {
                     string r;
                     if(deviceDict.TryGetValue(this.Mac,out r))
                         return r;
                     else if(this.Mac.IsCurrent)
-                        return LocalizedStrings.CurrentDevice;
+                        return currentDevice;
                     else
                         return this.Mac.ToString();
                 }
@@ -177,6 +184,7 @@ namespace TsinghuaNet.Web
                 {
                     deviceDict[this.Mac] = value;
                 }
+                saveDeviceList();
                 this.PropertyChanging();
             }
         }
@@ -192,7 +200,7 @@ namespace TsinghuaNet.Web
             }
         }
 
-        private static readonly Uri dropUri = new Uri("https://usereg.tsinghua.edu.cn/online_user_ipv4.php");
+        private static readonly Uri dropUri = new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php");
 
         /// <summary>
         /// 异步执行使该设备下线的操作。
@@ -206,7 +214,7 @@ namespace TsinghuaNet.Web
             {
                 try
                 {
-                    var post = HttpClient.PostStrAsync(dropUri, "action=drop&user_ip=" + IPAddress + "&checksum=" + DropToken);
+                    var post = HttpClient.PostStrAsync(dropUri, $"action=drops&user_ip={DropToken}");
                     token.Register(() => post.Cancel());
                     return await post == "ok";
                 }
@@ -227,7 +235,7 @@ namespace TsinghuaNet.Web
 
         private async void PropertyChanging([CallerMemberName] string propertyName = "")
         {
-            await Window.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
+            await DispatcherHelper.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
         }
 
         #endregion

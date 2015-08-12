@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsinghuaNet", "TsinghuaNet\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundLogOnTask", "BackgroundLogOnTask\BackgroundLogOnTask.csproj", "{C0117ECF-6DC4-4B31-A677-BDBC5F602E00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,12 +57,28 @@ Global
 		{C0117ECF-6DC4-4B31-A677-BDBC5F602E00}.Release|x64.Build.0 = Release|x64
 		{C0117ECF-6DC4-4B31-A677-BDBC5F602E00}.Release|x86.ActiveCfg = Release|x86
 		{C0117ECF-6DC4-4B31-A677-BDBC5F602E00}.Release|x86.Build.0 = Release|x86
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|ARM.Build.0 = Debug|ARM
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|x64.ActiveCfg = Debug|x64
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|x64.Build.0 = Debug|x64
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|x86.ActiveCfg = Debug|x86
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Debug|x86.Build.0 = Debug|x86
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|ARM.ActiveCfg = Release|ARM
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|ARM.Build.0 = Release|ARM
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|x64.ActiveCfg = Release|x64
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|x64.Build.0 = Release|x64
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|x86.ActiveCfg = Release|x86
+		{F6A4B63E-1BBC-491F-8AB9-3415DF88FDD8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://liuzhengyuan13.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -70,5 +88,8 @@ Global
 		SccProjectUniqueName2 = BackgroundLogOnTask\\BackgroundLogOnTask.csproj
 		SccProjectName2 = BackgroundLogOnTask
 		SccLocalPath2 = BackgroundLogOnTask
+		SccProjectUniqueName3 = Web\\Web.csproj
+		SccProjectName3 = Web
+		SccLocalPath3 = Web
 	EndGlobalSection
 EndGlobal

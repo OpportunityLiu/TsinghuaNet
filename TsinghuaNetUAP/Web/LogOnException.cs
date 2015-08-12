@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Resources;
 
-namespace TsinghuaNet.Web
+namespace Web
 {
     /// <summary>
     /// 表示在登陆过程中发生的错误。
@@ -11,14 +11,14 @@ namespace TsinghuaNet.Web
     public class LogOnException : Exception
     {
         /// <summary>
-        /// 初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
+        /// 初始化 <see cref="LogOnException"/> 类的新实例。
         /// </summary>
         public LogOnException()
         {
         }
 
         /// <summary>
-        /// 使用指定的错误类型初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
+        /// 使用指定的错误类型初始化 <see cref="LogOnException"/> 类的新实例。
         /// </summary>
         /// <param name="exceptionType">描述错误的类型。</param>
         public LogOnException(LogOnExceptionType exceptionType)
@@ -28,7 +28,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 使用指定的错误类型初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
+        /// 使用指定的错误类型初始化 <see cref="LogOnException"/> 类的新实例。
         /// </summary>
         /// <param name="exceptionType">描述错误的类型。</param>
         /// <param name="inner">
@@ -41,7 +41,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 使用指定的错误信息初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
+        /// 使用指定的错误信息初始化 <see cref="LogOnException"/> 类的新实例。
         /// </summary>
         /// <param name="message">描述错误的消息。</param>
         public LogOnException(string message)
@@ -50,7 +50,7 @@ namespace TsinghuaNet.Web
         }
 
         /// <summary>
-        /// 使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="TsinghuaNet.LogOnException"/> 类的新实例。
+        /// 使用指定错误消息和对作为此异常原因的内部异常的引用来初始化 <see cref="LogOnException"/> 类的新实例。
         /// </summary>
         /// <param name="message">解释异常原因的错误信息。</param>
         /// <param name="inner">

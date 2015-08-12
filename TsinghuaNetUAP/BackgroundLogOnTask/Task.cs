@@ -25,46 +25,6 @@ namespace BackgroundLogOnTask
 
         private readonly bool run;
 
-        /// <summary>
-        /// 登陆网络。
-        /// </summary>
-        /// <exception cref="System.InvalidOperationException">在登陆过程中发生错误。</exception>
-        /// <returns>是否发生登陆。</returns>
-        private async Task<bool> logOn()
-        {
-            using(var http = new HttpClient())
-            {
-                string res = null;
-                Func<string, Task<bool>> check = async toPost =>
-                {
-                    try
-                    {
-                        res = await http.PostStrAsync(new Uri("http://net.tsinghua.edu.cn/cgi-bin/do_login"), toPost);
-                    }
-                    catch(Exception ex) when (ex.HResult == -2147012867)
-                    {
-                        throw new InvalidOperationException();
-                    }
-                    catch(Exception)
-                    {
-                        return false;
-                    }
-                    if(Regex.IsMatch(res, @"^\d+,"))
-                    {
-                        var a = res.Split(',');
-                        traffic = new Size(ulong.Parse(a[2], CultureInfo.InvariantCulture));
-                        return true;
-                    }
-                    return false;
-                };
-                if(await check("action=check_online"))
-                    return false;
-                return await check($"username={userName}&password={passwordMD5}&mac={MacAddress.Current}&drop=0&type=1&n=100");
-            }
-        }
-
-        private Size traffic;
-
         public Task()
         {
             //加载资源
@@ -101,10 +61,14 @@ namespace BackgroundLogOnTask
             if(connection.IsWwanConnectionProfile)
                 return;
             var d = taskInstance.GetDeferral();
+            var client = new Web.WebConnect(userName, passwordMD5);
             try
             {
-                if(await logOn())
-                    SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, traffic));
+                await client.LogOnAsync();
+                await client.RefreshAsync();
+                if(!client.IsOnline)
+                    return;
+                SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));
             }
             finally
             {
@@ -131,7 +95,8 @@ namespace BackgroundLogOnTask
         </binding>
     </visual>
 </toast>");
-           ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(toast));
+            ToastNotificationManager.History.Clear();
+            ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(toast));
         }
     }
 }
