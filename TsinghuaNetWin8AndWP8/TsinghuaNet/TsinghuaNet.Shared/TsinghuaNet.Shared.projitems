@@ -69,15 +69,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\150x150.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\30x30.targetsize-16.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\30x30.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\310x150.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\70x70&amp;71x71.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\LogoResources.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\SplashScreen.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\SplashScreenPhone.psd" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\Original\StoreLogo.psd" />
     <None Include="$(MSBuildThisFileDirectory)Common\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
