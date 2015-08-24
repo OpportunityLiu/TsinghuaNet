@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C0117ECF-6DC4-4B31-A677-BDBC5F602E00}</ProjectGuid>
-    <OutputType>winmdobj</OutputType>
+    <ProjectGuid>{A91027A4-1B91-4228-98F2-759E3CD1F9C7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BackgroundLogOnTask</RootNamespace>
-    <AssemblyName>BackgroundLogOnTask</AssemblyName>
+    <RootNamespace>TileUpdater</RootNamespace>
+    <AssemblyName>TileUpdater</AssemblyName>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
@@ -16,7 +16,6 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <AllowCrossPlatformRetargeting>false</AllowCrossPlatformRetargeting>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -116,19 +115,15 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <None Include="project.lock.json" />
     <PRIResource Include="Strings\zh-cn\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Task.cs" />
+    <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Properties\TileUpdater.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TileUpdater\TileUpdater.csproj">
-      <Project>{a91027a4-1b91-4228-98f2-759e3cd1f9c7}</Project>
-      <Name>TileUpdater</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Web\Web.csproj">
       <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>
       <Name>Web</Name>

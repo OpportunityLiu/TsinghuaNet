@@ -44,7 +44,7 @@ namespace TsinghuaNet
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             Current = this;
-            
+
             //注册后台任务
             IBackgroundTaskRegistration task = null;
             foreach(var cur in BackgroundTaskRegistration.AllTasks)
@@ -63,86 +63,6 @@ namespace TsinghuaNet
                 builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
                 task = builder.Register();
             }
-
-            //初始化信息存储区
-            try
-            {
-                var passVault = new Windows.Security.Credentials.PasswordVault();
-                var pass = passVault.FindAllByResource("TsinghuaAccount").First();
-                pass.RetrievePassword();
-                var userName = pass.UserName;
-                var passwordMD5 = pass.Password;
-                //已经添加字段
-                if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
-                {
-                    WebConnect.Current = new WebConnect(userName, passwordMD5);
-                    //准备磁贴更新
-                    WebConnect.Current.PropertyChanged += UpdeteTile;
-                }
-            }
-            // 未找到储存的密码
-            catch(Exception ex) when (ex.HResult == -2147023728)
-            {
-            }
-        }
-
-        private async void UpdeteTile(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName != nameof(WebConnect.UpdateTime))
-                return;
-            await Task.Run(() =>
-            {
-                var text = WebConnect.Current.WebTrafficExact.ToString();
-                var manager = TileUpdateManager.CreateTileUpdaterForApplication();
-                manager.Clear();
-                manager.EnableNotificationQueue(true);
-                var devices = WebConnect.Current.DeviceList.ToArray();
-                if(devices.Length==0)
-                {
-                    XmlDocument tile = new XmlDocument();
-                    tile.LoadXml($@"
-<tile>
-    <visual branding='name'>
-        <binding template='TileMedium'>
-            <text hint-style='body'>{text}</text>
-            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.TileNoDevices}</text>
-        </binding>
-        <binding template='TileWide'>
-            <text hint-style='body'>{LocalizedStrings.TileUsage}{text}</text>
-            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.TileNoDevices}</text>
-        </binding>
-    </visual>
-</tile>");
-                    var tileNotification = new TileNotification(tile);
-                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
-                    manager.Update(tileNotification);
-                    return;
-                }
-                foreach(var item in devices)
-                {
-                    XmlDocument tile = new XmlDocument();
-                    tile.LoadXml($@"
-<tile>
-    <visual branding='name'>
-        <binding template='TileMedium'>
-            <text hint-style='body'>{text}</text>
-            <text hint-style='caption'>{item.Name}</text>
-            <text hint-style='captionsubtle'>{item.LogOnDateTime.TimeOfDay}</text>
-            <text hint-style='captionsubtle'>{item.IPAddress}</text>
-        </binding>
-        <binding template='TileWide'>
-            <text hint-style='body'>{LocalizedStrings.TileUsage}{text}</text>
-            <text hint-style='caption'>{item.Name}</text>
-            <text hint-style='captionsubtle'>{item.LogOnDateTime}</text>
-            <text hint-style='captionsubtle'>{item.IPAddress}</text>
-        </binding>
-    </visual>
-</tile>");
-                    var tileNotification = new TileNotification(tile);
-                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
-                    manager.Update(tileNotification);
-                }
-            });
         }
 
         public static new App Current
@@ -156,7 +76,7 @@ namespace TsinghuaNet
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -165,8 +85,36 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            var connect = Task.Run(() =>
+            {
+                //初始化信息存储区
+                try
+                {
+                    var passVault = new Windows.Security.Credentials.PasswordVault();
+                    var pass = passVault.FindAllByResource("TsinghuaAccount").First();
+                    pass.RetrievePassword();
+                    var userName = pass.UserName;
+                    var passwordMD5 = pass.Password;
+                    //已经添加字段
+                    if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
+                    {
+                        WebConnect.Current = new WebConnect(userName, passwordMD5);
+                        //准备磁贴更新
+                        WebConnect.Current.PropertyChanged += async (sender, args) =>
+                        {
+                            if(args.PropertyName != nameof(WebConnect.UpdateTime))
+                                return;
+                            await TileUpdater.Updater.UpdateTile((WebConnect)sender);
+                        };
+                    }
+                }
+                // 未找到储存的密码
+                catch(Exception ex) when (ex.HResult == -2147023728)
+                {
+                }
+            });
             var view = ApplicationView.GetForCurrentView();
-            view.SetPreferredMinSize(new Windows.Foundation.Size(320, 500));
+            view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
             if(e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
                 view.TryResizeView(new Windows.Foundation.Size(320, 600));
 
@@ -199,6 +147,7 @@ namespace TsinghuaNet
             }
             // Ensure the current window is active
             Window.Current.Activate();
+            await connect;
         }
 
         private void OnResuming(object sender, object e)

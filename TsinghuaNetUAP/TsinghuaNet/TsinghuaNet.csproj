@@ -222,6 +222,10 @@
       <Project>{c0117ecf-6dc4-4b31-a677-bdbc5f602e00}</Project>
       <Name>BackgroundLogOnTask</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TileUpdater\TileUpdater.csproj">
+      <Project>{a91027a4-1b91-4228-98f2-759e3cd1f9c7}</Project>
+      <Name>TileUpdater</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web\Web.csproj">
       <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>
       <Name>Web</Name>
