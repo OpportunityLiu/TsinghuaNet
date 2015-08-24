@@ -66,6 +66,7 @@ namespace BackgroundLogOnTask
             {
                 await client.LogOnAsync();
                 await client.RefreshAsync();
+                await TileUpdater.Updater.UpdateTile(client);
                 if(!client.IsOnline)
                     return;
                 SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));

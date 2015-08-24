@@ -73,7 +73,14 @@ namespace TsinghuaNet
                 }
                 var pass = new Windows.Security.Credentials.PasswordCredential("TsinghuaAccount", userName, passMD5);
                 passVault.Add(pass);
+
                 WebConnect.Current = connect;
+                WebConnect.Current.PropertyChanged += async (sender, e) =>
+                {
+                    if(e.PropertyName != nameof(WebConnect.UpdateTime))
+                        return;
+                    await TileUpdater.Updater.UpdateTile((WebConnect)sender);
+                };
                 return true;
             }
             catch(LogOnException excep)

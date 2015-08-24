@@ -54,7 +54,7 @@ namespace <#=GetProjectDefaultNamespace()#>
 {
     public static class LocalizedStrings
     {
-        private static readonly ResourceLoader loader = new ResourceLoader();
+        private static readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse();
 <#
             foreach(string name in names)
             {

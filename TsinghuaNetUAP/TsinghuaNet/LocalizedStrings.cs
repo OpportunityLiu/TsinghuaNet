@@ -4,7 +4,7 @@ namespace TsinghuaNet
 {
     public static class LocalizedStrings
     {
-        private static readonly ResourceLoader loader = new ResourceLoader();
+        private static readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse();
 
         public static string AppVersionFormat
         {
@@ -15,11 +15,6 @@ namespace TsinghuaNet
         {
             get;
         } = loader.GetString("Cancel"); 
-
-        public static string CurrentDevice
-        {
-            get;
-        } = loader.GetString("CurrentDevice"); 
 
         public static string EmptyPassword
         {
@@ -56,16 +51,6 @@ namespace TsinghuaNet
             get;
         } = loader.GetString("PackageName"); 
 
-        public static string TileNoDevices
-        {
-            get;
-        } = loader.GetString("TileNoDevices"); 
-
-        public static string TileUsage
-        {
-            get;
-        } = loader.GetString("TileUsage"); 
-
         public static string ToastFailed
         {
             get;
@@ -75,10 +60,5 @@ namespace TsinghuaNet
         {
             get;
         } = loader.GetString("ToastSuccess"); 
-
-        public static string UnknownDevice
-        {
-            get;
-        } = loader.GetString("UnknownDevice"); 
     }
 }
