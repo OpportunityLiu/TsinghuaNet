@@ -192,6 +192,9 @@
   <data name="Password.PlaceholderText" xml:space="preserve">
     <value>密码</value>
   </data>
+  <data name="RateLink.Text" xml:space="preserve">
+    <value>打分和评价</value>
+  </data>
   <data name="RefreshAppButton.Label" xml:space="preserve">
     <value>刷新</value>
   </data>

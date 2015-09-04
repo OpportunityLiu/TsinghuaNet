@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using System.Threading;
 
 namespace Web
 {
-    internal static class HttpHelper
+    public static class HttpHelper
     {
         private static readonly Uri generate204 = new Uri("http://www.v2ex.com/generate_204");
 
@@ -17,12 +18,28 @@ namespace Web
         {
             return Run(async token =>
             {
-                var postTask = httpClient.GetAsync(generate204, HttpCompletionOption.ResponseHeadersRead);
-                token.Register(() => postTask.Cancel());
-                using(var get = await postTask)
+                var post = Task.Run(async () =>
                 {
-                    return get.StatusCode == HttpStatusCode.NoContent || (get.IsSuccessStatusCode && get.Content.Headers.ContentLength == 0);
-                }
+                    var postTask = httpClient.GetAsync(generate204, HttpCompletionOption.ResponseHeadersRead);
+                    token.Register(() => postTask.Cancel());
+                    try
+                    {
+                        using(var get = await postTask)
+                        {
+                            return get.StatusCode == HttpStatusCode.NoContent || (get.IsSuccessStatusCode && get.Content.Headers.ContentLength == 0);
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        return false;
+                    }
+                });
+                var timeOut = Task.Delay(2500);
+                var fin = await Task.WhenAny(timeOut, post) as Task<bool>;
+                if(fin == null)
+                    return false;
+                else
+                    return fin.Result;
             });
         }
 

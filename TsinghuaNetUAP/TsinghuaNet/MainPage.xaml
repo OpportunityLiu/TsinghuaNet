@@ -43,28 +43,55 @@
         <CommandBar x:Name="commandBar">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="AboutAppButton"
-                              x:Name="appBarButtonAbout">
+                              x:Name="appBarButtonAbout"
+                              Label="About">
                     <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel Width="240"
-                                        Margin="4,4,4,40">
+                                        Margin="4">
                                 <TextBlock x:Uid="AppName"
+                                           Text="Tsinghua Net"
                                            Style="{StaticResource BodyTextBlockStyle}" />
                                 <TextBlock x:Uid="AppAuthor"
+                                           Text="Opportuntiy"
                                            Style="{StaticResource BodyTextBlockStyle}" />
                                 <TextBlock x:Name="textBlockVersion"
+                                           Text="Version x.x.x.x"
                                            Style="{StaticResource BodyTextBlockStyle}" />
+                                <TextBlock Style="{StaticResource BodyTextBlockStyle}"
+                                           Margin="0,24">
+                                    <Hyperlink Click="Hyperlink_Click">
+                                        <Run x:Uid="RateLink"
+                                             Text="Rate and review" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </StackPanel>
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <AppBarButton x:Uid="ChangeUserAppButton"
                               x:Name="appBarButtonChangeUser"
+                              Label="ChangeUser"
                               Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
+            <AppBarButton x:Name="appBarButtonSites"
+                          Icon="Favorite"
+                          Label="Sites">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Web learning"
+                                        Click="l_webLearning_Click" />
+                        <MenuFlyoutItem Text="Web learning(new)"
+                                        Click="l_webLearningNew_Click" />
+                        <MenuFlyoutItem Text="info"
+                                        Click="l_info_Click" />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarButton x:Uid="RefreshAppButton"
                           x:Name="appBarButtonRefresh"
                           Icon="Refresh"
+                          Label="Refresh"
                           Click="refresh_Click" />
         </CommandBar>
     </Page.BottomAppBar>
@@ -138,8 +165,7 @@
                              Grid.ColumnSpan="5"
                              Margin="0"
                              Maximum="55"
-                             Height="10"
-                             IsIndeterminate="True" />
+                             Height="10"/>
                 <TextBlock Text="0"
                            Style="{ThemeResource CaptionTextBlockStyle}"
                            Grid.Row="1" />

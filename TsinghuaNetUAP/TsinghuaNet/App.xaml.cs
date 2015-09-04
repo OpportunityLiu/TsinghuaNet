@@ -1,27 +1,15 @@
 ﻿using Microsoft.ApplicationInsights;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Web;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
-using Windows.Data.Xml.Dom;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
-using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -71,12 +59,7 @@ namespace TsinghuaNet
             private set;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        private void launch(IActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -85,34 +68,28 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            var connect = Task.Run(() =>
+            if(WebConnect.Current == null)
             {
                 //初始化信息存储区
                 try
                 {
                     var passVault = new Windows.Security.Credentials.PasswordVault();
-                    var pass = passVault.FindAllByResource("TsinghuaAccount").First();
-                    pass.RetrievePassword();
-                    var userName = pass.UserName;
-                    var passwordMD5 = pass.Password;
+                    var pass = passVault.FindAllByResource("TsinghuaAllInOne").First();
                     //已经添加字段
-                    if(!string.IsNullOrEmpty(userName) && !string.IsNullOrWhiteSpace(passwordMD5))
+                    WebConnect.Current = new WebConnect(pass);
+                    //准备磁贴更新
+                    WebConnect.Current.PropertyChanged += async (sender, args) =>
                     {
-                        WebConnect.Current = new WebConnect(userName, passwordMD5);
-                        //准备磁贴更新
-                        WebConnect.Current.PropertyChanged += async (sender, args) =>
-                        {
-                            if(args.PropertyName != nameof(WebConnect.UpdateTime))
-                                return;
-                            await TileUpdater.Updater.UpdateTile((WebConnect)sender);
-                        };
-                    }
+                        if(args.PropertyName != nameof(WebConnect.UpdateTime))
+                            return;
+                        await TileUpdater.Updater.UpdateTile((WebConnect)sender);
+                    };
                 }
                 // 未找到储存的密码
                 catch(Exception ex) when (ex.HResult == -2147023728)
                 {
                 }
-            });
+            }
             var view = ApplicationView.GetForCurrentView();
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
             if(e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
@@ -143,11 +120,26 @@ namespace TsinghuaNet
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(MainPage));
             }
             // Ensure the current window is active
             Window.Current.Activate();
-            await connect;
+            ((MainPage)rootFrame.Content).refresh();
+        }
+
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="e">Details about the launch request and process.</param>
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        {
+            launch(e);
+        }
+
+        protected override void OnActivated(IActivatedEventArgs e)
+        {
+            launch(e);
         }
 
         private void OnResuming(object sender, object e)
@@ -173,6 +165,9 @@ namespace TsinghuaNet
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            var size = Window.Current.Bounds;
+            var s = new Windows.Foundation.Size(size.Width, size.Height);
+            ApplicationData.Current.LocalSettings.Values["MainViewSize"] = s;
         }
     }
 }

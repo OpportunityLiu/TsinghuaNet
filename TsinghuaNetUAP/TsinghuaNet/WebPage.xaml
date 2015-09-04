@@ -1,0 +1,48 @@
+﻿<Page x:Class="TsinghuaNet.WebPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TsinghuaNet"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      NavigationCacheMode="Required">
+    <Page.Resources>
+        <DataTemplate x:Key="webPageTemplate"
+                      xmlns:sys="using:System"
+                      x:DataType="sys:Uri">
+            <WebView x:Name="webView"
+                     Source="{x:Bind Mode=TwoWay}" />
+        </DataTemplate>
+    </Page.Resources>
+    <RelativePanel x:Name="root"
+                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SizeChanged="root_SizeChanged">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="stackPanelLable.(RelativePanel.Below)"
+                                Value="webViewPlaceholder" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="webViewPlaceholder.(RelativePanel.Below)"
+                                Value="stackPanelLable" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <StackPanel x:Name="stackPanelLable"
+                    Height="40"
+                    Orientation="Horizontal"
+                    Background="AliceBlue" />
+        <Viewbox x:Name="webViewPlaceholder"/>
+    </RelativePanel>
+
+</Page>

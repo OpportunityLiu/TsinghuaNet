@@ -12,18 +12,15 @@ using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.Web.Http;
 using Windows.Networking.Connectivity;
+using Windows.Security.Credentials;
+using Web;
 
 namespace BackgroundLogOnTask
 {
     public sealed class Task : IBackgroundTask
     {
-        private readonly string userName;
-        private readonly string passwordMD5;
-
         private readonly string logOnSucessful;
         private readonly string used;
-
-        private readonly bool run;
 
         public Task()
         {
@@ -31,39 +28,39 @@ namespace BackgroundLogOnTask
             var l = ResourceLoader.GetForViewIndependentUse("BackgroundLogOnTask/Resources");
             used = l.GetString("Used");
             logOnSucessful = l.GetString("LogOnSucessful");
-
-            //初始化信息存储区
-            try
-            {
-                var passVault = new Windows.Security.Credentials.PasswordVault();
-                var pass = passVault.FindAllByResource("TsinghuaAccount").First();
-                pass.RetrievePassword();
-                userName = pass.UserName;
-                passwordMD5 = pass.Password;
-                run = true;
-            }
-            // 未找到储存的密码
-            catch(Exception ex) when (ex.HResult == -2147023728)
-            {
-                run = false;
-            }
         }
 
         #region IBackgroundTask 成员
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            if(!run)
+            PasswordCredential account;
+            //初始化信息存储区
+            try
+            {
+                var passVault = new PasswordVault();
+                account = passVault.FindAllByResource("TsinghuaAllInOne").First();
+            }
+            // 未找到储存的密码
+            catch(Exception ex) when (ex.HResult == -2147023728)
+            {
                 return;
+            }
             var connection = NetworkInformation.GetInternetConnectionProfile();
             if(connection == null)
                 return;
             if(connection.IsWwanConnectionProfile)
                 return;
             var d = taskInstance.GetDeferral();
-            var client = new Web.WebConnect(userName, passwordMD5);
             try
             {
+                var http = new HttpClient();
+                if(await http.CheckLinkAvailable())
+                {
+                    d.Complete();
+                    return;
+                }
+                var client = new WebConnect(account);
                 await client.LogOnAsync();
                 await client.RefreshAsync();
                 await TileUpdater.Updater.UpdateTile(client);
