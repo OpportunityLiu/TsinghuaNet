@@ -2,7 +2,7 @@
 using static Windows.Security.Cryptography.CryptographicBuffer;
 using Windows.Security.Cryptography;
 
-namespace TsinghuaNet
+namespace Web
 {
     internal static class MD5Helper 
     {

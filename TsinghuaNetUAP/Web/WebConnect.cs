@@ -10,8 +10,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Foundation;
-using Windows.UI.Xaml;
 using Windows.Web.Http.Headers;
+using Windows.Security.Credentials;
 
 namespace Web
 {
@@ -24,19 +24,34 @@ namespace Web
         /// 使用用户名和加密后的密码创建新实例。
         /// </summary>
         /// <param name="userName">用户名</param>
-        /// <param name="passwordMD5">MD5 加密后的密码，请使用 <see cref="MD5Helper.GetMd5Hash(string)"/> 方法进行加密。</param>
+        /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
-        public WebConnect(string userName, string passwordMD5)
+        public WebConnect(string userName, string password) 
+            : this(new PasswordCredential("TsinghuaAllInOne", userName, password))
         {
-            if(string.IsNullOrEmpty(userName))
-                throw new ArgumentNullException("userName");
-            if(string.IsNullOrEmpty(passwordMD5))
-                throw new ArgumentNullException("passwordMD5");
-            this.userName = userName;
-            this.passwordMd5 = passwordMD5;
+        }
+
+        /// <summary>
+        /// 使用凭据创建实例。
+        /// </summary>
+        /// <param name="account">帐户凭据</param>
+        /// <exception cref="ArgumentNullException">参数为 <c>null</c>。</exception>
+        /// <exception cref="ArgumentException">参数错误。</exception>
+        public WebConnect(PasswordCredential account)
+        {
+            if(account == null)
+                throw new ArgumentNullException(nameof(account));
+            if(string.IsNullOrEmpty(account.UserName))
+                throw new ArgumentException(nameof(account));
+            this.userName = account.UserName;
+            account.RetrievePassword();
+            this.password = account.Password;
+            this.passwordMd5 = MD5Helper.GetMd5Hash(password);
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
         }
+
+        public PasswordCredential Account => new PasswordCredential("TsinghuaAllInOne", userName, password);
 
         private static WebConnect current;
 
@@ -54,7 +69,7 @@ namespace Web
             }
         }
 
-        private readonly string userName, passwordMd5;
+        private readonly string userName, password, passwordMd5;
 
         private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
 
@@ -95,8 +110,8 @@ namespace Web
                     {
                         try
                         {
-                            
                             post = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
+                            //post = http.PostStrAsync(new Uri("http://166.111.204.120:69/cgi-bin/srun_portal"), $"action=login&username={userName}&password={passwordMd5}&drop=0&pop=0&type=2&n=117&mbytes=0&minutes=0&ac_id=1&mac={MacAddress.Current}&chap=1");
                             res = await post;
                             if(!res.StartsWith("E"))
                                 return true;

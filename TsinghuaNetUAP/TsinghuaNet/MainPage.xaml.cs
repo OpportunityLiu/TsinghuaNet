@@ -15,6 +15,8 @@ using Windows.ApplicationModel;
 using System.Globalization;
 using System.ComponentModel;
 using System.Collections.Generic;
+using Windows.System;
+using Windows.UI.ViewManagement;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -91,7 +93,7 @@ namespace TsinghuaNet
 
         public void refresh()
         {
-            if(WebConnect.Current == null)
+            if((this.DataContext = WebConnect.Current) == null)
                 return;
             if(currentAction?.Status == AsyncStatus.Started)
                 currentAction.Cancel();
@@ -99,12 +101,13 @@ namespace TsinghuaNet
             {
                 //防止进度条闪烁
                 var progressTokens = new System.Threading.CancellationTokenSource();
+                var finished = false;
                 var progress = Task.Run(async () =>
                 {
                     await Task.Delay(1000);
-                    if(!progressTokens.IsCancellationRequested)
+                    if(!finished)
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => progressBarUsage.IsIndeterminate = true);
-                }, progressTokens.Token);
+                });
                 IAsyncAction action = null;
                 token.Register(() => action?.Cancel());
                 try
@@ -121,7 +124,7 @@ namespace TsinghuaNet
                 catch(LogOnException)
                 {
                 }
-                progressTokens.Cancel();
+                finished = true;
                 progressBarUsage.IsIndeterminate = false;
                 progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
             });
@@ -132,12 +135,11 @@ namespace TsinghuaNet
             var signIn = new SignInDialog();
             signIn.Closed += (s, args) =>
             {
-                this.DataContext = WebConnect.Current;
                 if(WebConnect.Current != null)
                     this.appBarButtonChangeUser.Visibility = Visibility.Visible;
+                refresh();
             };
             await signIn.ShowAsync();
-            refresh();
         }
 
         private void refresh_Click(object sender, RoutedEventArgs e)
@@ -175,17 +177,36 @@ namespace TsinghuaNet
 
         private void Page_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if(args.NewValue != null)
-            {
-                var dList=((WebConnect)args.NewValue).DeviceList;
-                ((INotifyPropertyChanged)dList).PropertyChanged += deviceListChanged;
-                deviceListChanged(dList, new PropertyChangedEventArgs(null));
-            }
+            if(args.NewValue == null)
+                return;
+            var dList = ((WebConnect)args.NewValue).DeviceList;
+            ((INotifyPropertyChanged)dList).PropertyChanged += deviceListChanged;
+            deviceListChanged(dList, null);
         }
 
         private void deviceListChanged(object sender, PropertyChangedEventArgs e)
         {
             textBlockNoDevices.Visibility = ((IList<WebDevice>)sender).Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private async void Hyperlink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
+        }
+
+        private async void l_webLearning_Click(object sender, RoutedEventArgs e)
+        {
+            await SiteLauncher.LanunchWebLearning(WebConnect.Current.Account);
+        }
+
+        private async void l_webLearningNew_Click(object sender, RoutedEventArgs e)
+        {
+            await SiteLauncher.LanunchNewWebLearning(WebConnect.Current.Account);
+        }
+
+        private async void l_info_Click(object sender, RoutedEventArgs e)
+        {
+            await SiteLauncher.LanunchInfo(WebConnect.Current.Account);
         }
     }
 }

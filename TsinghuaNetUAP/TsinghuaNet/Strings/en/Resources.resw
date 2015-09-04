@@ -192,6 +192,9 @@
   <data name="Password.PlaceholderText" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="RateLink.Text" xml:space="preserve">
+    <value>Rate and review</value>
+  </data>
   <data name="RefreshAppButton.Label" xml:space="preserve">
     <value>Refresh</value>
   </data>

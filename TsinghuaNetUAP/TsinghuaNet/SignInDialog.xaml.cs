@@ -55,23 +55,22 @@ namespace TsinghuaNet
                 textBlockHint.Text = LocalizedStrings.EmptyPassword;
                 return false;
             }
-            var passMD5 = MD5Helper.GetMd5Hash(password);
             try
             {
                 progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                var connect = new WebConnect(userName, passMD5);
+                var connect = new WebConnect(userName, password);
                 await connect.RefreshAsync();
                 var passVault = new Windows.Security.Credentials.PasswordVault();
                 try
                 {
-                    var oldPass = passVault.FindAllByResource("TsinghuaAccount").First();
+                    var oldPass = passVault.FindAllByResource("TsinghuaAllInOne").First();
                     passVault.Remove(oldPass);
                 }
                 // 未找到储存的密码
                 catch(Exception ex) when (ex.HResult == -2147023728)
                 {
                 }
-                var pass = new Windows.Security.Credentials.PasswordCredential("TsinghuaAccount", userName, passMD5);
+                var pass = new Windows.Security.Credentials.PasswordCredential("TsinghuaAllInOne", userName, password);
                 passVault.Add(pass);
 
                 WebConnect.Current = connect;
