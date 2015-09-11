@@ -35,7 +35,7 @@ namespace TsinghuaNet
             App.Current.Resuming += (sender, e) => refresh();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if(e.NavigationMode == NavigationMode.New)
             {
@@ -46,8 +46,15 @@ namespace TsinghuaNet
                 }
                 else
                 {
-                    this.DataContext = WebConnect.Current;
+                    var t = WebConnect.Current.LoadCache();
                     refresh();
+                    try
+                    {
+                        await t;
+                    }
+                    catch(Exception)
+                    {
+                    }
                 }
             }
         }
@@ -93,11 +100,13 @@ namespace TsinghuaNet
 
         public void refresh()
         {
-            if((this.DataContext = WebConnect.Current) == null)
+            var current = WebConnect.Current;
+            this.DataContext = current;
+            if(current == null)
                 return;
             if(currentAction?.Status == AsyncStatus.Started)
                 currentAction.Cancel();
-            currentAction = Run(async token =>
+            this.currentAction = Run(async token =>
             {
                 //防止进度条闪烁
                 var progressTokens = new System.Threading.CancellationTokenSource();
@@ -106,27 +115,27 @@ namespace TsinghuaNet
                 {
                     await Task.Delay(1000);
                     if(!finished)
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => progressBarUsage.IsIndeterminate = true);
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => this.progressBarUsage.IsIndeterminate = true);
                 });
                 IAsyncAction action = null;
                 token.Register(() => action?.Cancel());
                 try
                 {
-                    await WebConnect.Current.LogOnAsync();
+                    await current.LogOnAsync();
                 }
                 catch(LogOnException)
                 {
                 }
                 try
                 {
-                    await WebConnect.Current.RefreshAsync();
+                    await current.RefreshAsync();
                 }
                 catch(LogOnException)
                 {
                 }
                 finished = true;
-                progressBarUsage.IsIndeterminate = false;
-                progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
+                this.progressBarUsage.IsIndeterminate = false;
+                this.progressBarUsage.Value = current.WebTrafficExact.TotalGB;
             });
         }
 
@@ -147,7 +156,7 @@ namespace TsinghuaNet
             refresh();
         }
 
-        private void StackPanel_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        private void TextBlock_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             if(e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
                 return;
@@ -158,7 +167,7 @@ namespace TsinghuaNet
             ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
         }
 
-        private void StackPanel_Holding(object sender, HoldingRoutedEventArgs e)
+        private void TextBlock_Holding(object sender, HoldingRoutedEventArgs e)
         {
             switch(e.HoldingState)
             {
@@ -175,38 +184,27 @@ namespace TsinghuaNet
             }
         }
 
-        private void Page_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            if(args.NewValue == null)
-                return;
-            var dList = ((WebConnect)args.NewValue).DeviceList;
-            ((INotifyPropertyChanged)dList).PropertyChanged += deviceListChanged;
-            deviceListChanged(dList, null);
-        }
-
-        private void deviceListChanged(object sender, PropertyChangedEventArgs e)
-        {
-            textBlockNoDevices.Visibility = ((IList<WebDevice>)sender).Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         private async void Hyperlink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
         {
             await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
         }
 
-        private async void l_webLearning_Click(object sender, RoutedEventArgs e)
+        private async void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
-            await SiteLauncher.LanunchWebLearning(WebConnect.Current.Account);
+            await WebPage.Launch();
+        }
+    }
+
+    class NumberVisbilityConverter : Windows.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return ((int)value) > 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private async void l_webLearningNew_Click(object sender, RoutedEventArgs e)
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            await SiteLauncher.LanunchNewWebLearning(WebConnect.Current.Account);
-        }
-
-        private async void l_info_Click(object sender, RoutedEventArgs e)
-        {
-            await SiteLauncher.LanunchInfo(WebConnect.Current.Account);
+            throw new NotImplementedException();
         }
     }
 }

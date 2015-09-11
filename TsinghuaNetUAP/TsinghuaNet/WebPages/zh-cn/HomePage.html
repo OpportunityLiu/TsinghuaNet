@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>新标签页</title>
+</head>
+<body>
+    <a id="learning">网络学堂</a>
+    <a id="learning">网络学堂（新版）</a>
+    <a id="info">信息门户</a>
+    <script language=javascript>
+        <!--
+        var LocString = String(window.document.location.href);
+        function getQueryStr(str)
+        {
+            var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
+            if (tmp = rs)
+            {
+                return tmp[2];
+            }
+            // parameter cannot be found
+            return "";
+        }
+        var id = getQueryStr("id");
+        var pw = getQueryStr("pw");
+        document.getElementById("learning").href = "https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid=" + id + "&userpass=" + pw;
+        document.getElementById("info").href = "https://info.tsinghua.edu.cn:443/Login?userName=" + id +"&password=" + pw;
+        //-->
+    </script>
+
+</body>
+</html>

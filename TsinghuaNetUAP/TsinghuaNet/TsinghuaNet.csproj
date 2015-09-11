@@ -101,6 +101,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebPages\zh-cn\HomePage.html" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +127,7 @@
       <DependentUpon>SignInDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SiteLanucher.cs" />
+    <Compile Include="WebContent.cs" />
     <Compile Include="WebPage.xaml.cs">
       <DependentUpon>WebPage.xaml</DependentUpon>
     </Compile>

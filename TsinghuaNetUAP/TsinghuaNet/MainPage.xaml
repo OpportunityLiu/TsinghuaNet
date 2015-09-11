@@ -7,17 +7,19 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Required"
-      DataContextChanged="Page_DataContextChanged">
+      NavigationCacheMode="Required">
     <Page.Resources>
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
                       x:DataType="web:WebDevice">
-            <StackPanel x:Name="stackPanel"
-                        Holding="StackPanel_Holding"
-                        RightTapped="StackPanel_RightTapped"
-                        Margin="0,8">
+            <TextBlock x:Name="textBlock"
+                       Holding="TextBlock_Holding"
+                       RightTapped="TextBlock_RightTapped"
+                       Style="{StaticResource BodyTextBlockStyle}"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       Padding="8">
                 <ToolTipService.ToolTip>
-                    <TextBlock Text="{x:Bind Mac}" />
+                    <ToolTip Content="{x:Bind Mac}" />
                 </ToolTipService.ToolTip>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout>
@@ -28,16 +30,19 @@
                                         Click="Drop_Click" />
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
-                <TextBlock Text="{x:Bind Name, Mode=OneWay}"
-                           Style="{ThemeResource BodyTextBlockStyle}" />
-                <TextBlock Text="{x:Bind WebTraffic, Mode=OneWay}"
-                           Style="{ThemeResource CaptionTextBlockStyle}" />
-                <TextBlock Text="{x:Bind IPAddress}"
-                           Style="{ThemeResource CaptionTextBlockStyle}" />
-                <TextBlock Text="{x:Bind LogOnDateTime, Mode=OneWay}"
-                           Style="{ThemeResource CaptionTextBlockStyle}" />
-            </StackPanel>
+                <Run Text="{x:Bind Name, Mode=OneWay}"/>
+                <LineBreak/>
+                <Run Text="{x:Bind WebTraffic, Mode=OneWay}"
+                     FontSize="12" />
+                <LineBreak />
+                <Run Text="{x:Bind IPAddress}"
+                     FontSize="12" />
+                <LineBreak />
+                <Run Text="{x:Bind LogOnDateTime, Mode=OneWay}"
+                     FontSize="12" />
+            </TextBlock>
         </DataTemplate>
+        <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter"/>
     </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar x:Name="commandBar">
@@ -47,25 +52,27 @@
                               Label="About">
                     <AppBarButton.Flyout>
                         <Flyout>
-                            <StackPanel Width="240"
-                                        Margin="4">
-                                <TextBlock x:Uid="AppName"
-                                           Text="Tsinghua Net"
-                                           Style="{StaticResource BodyTextBlockStyle}" />
-                                <TextBlock x:Uid="AppAuthor"
-                                           Text="Opportuntiy"
-                                           Style="{StaticResource BodyTextBlockStyle}" />
-                                <TextBlock x:Name="textBlockVersion"
-                                           Text="Version x.x.x.x"
-                                           Style="{StaticResource BodyTextBlockStyle}" />
-                                <TextBlock Style="{StaticResource BodyTextBlockStyle}"
-                                           Margin="0,24">
-                                    <Hyperlink Click="Hyperlink_Click">
-                                        <Run x:Uid="RateLink"
-                                             Text="Rate and review" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </StackPanel>
+                            <TextBlock Width="240"
+                                       Style="{StaticResource BodyTextBlockStyle}"
+                                       Margin="4"
+                                       LineHeight="16">
+                                <Run x:Uid="AppName"
+                                     Text="Tsinghua Net"
+                                     FontSize="16" />
+                                <LineBreak />
+                                <Run x:Uid="AppAuthor"
+                                     Text="Opportuntiy" />
+                                <LineBreak />
+                                <Run x:Name="textBlockVersion"
+                                     Text="Version x.x.x.x" />
+                                <LineBreak />
+                                <LineBreak />
+                                <Hyperlink Click="Hyperlink_Click">
+                                    <Run x:Uid="RateLink"
+                                         Text="Rate and review" />
+                                </Hyperlink>
+                                <LineBreak />
+                            </TextBlock>
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
@@ -76,18 +83,8 @@
             </CommandBar.SecondaryCommands>
             <AppBarButton x:Name="appBarButtonSites"
                           Icon="Favorite"
-                          Label="Sites">
-                <AppBarButton.Flyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem Text="Web learning"
-                                        Click="l_webLearning_Click" />
-                        <MenuFlyoutItem Text="Web learning(new)"
-                                        Click="l_webLearningNew_Click" />
-                        <MenuFlyoutItem Text="info"
-                                        Click="l_info_Click" />
-                    </MenuFlyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
+                          Label="Sites"
+                          Click="appBarButtonSites_Click" />
             <AppBarButton x:Uid="RefreshAppButton"
                           x:Name="appBarButtonRefresh"
                           Icon="Refresh"
@@ -127,11 +124,11 @@
                 <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Grid.ChildrenTransitions>
+            <Grid.Transitions>
                 <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True" />
+                    <EntranceThemeTransition/>
                 </TransitionCollection>
-            </Grid.ChildrenTransitions>
+            </Grid.Transitions>
             <TextBlock Grid.ColumnSpan="3"
                        Margin="0,12"
                        Text="{Binding UserName, Mode=OneWay}"
@@ -237,6 +234,8 @@
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment"
                                 Value="Stretch" />
+                        <Setter Property="Padding"
+                                Value="0"/>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.Header>
@@ -251,7 +250,7 @@
                                Text="No online devices."
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                HorizontalAlignment="Center" Margin="8"
-                               Visibility="Collapsed"/>
+                               Visibility="{Binding ElementName=listViewOnlineDevices, Path=ItemsSource.Count, Converter={StaticResource NumberVisbilityConverter}}"/>
                 </ListView.Footer>
             </ListView>
         </Grid>

@@ -12,6 +12,9 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Foundation;
 using Windows.Web.Http.Headers;
 using Windows.Security.Credentials;
+using Windows.Storage;
+using Windows.Data.Json;
+using System.IO;
 
 namespace Web
 {
@@ -26,7 +29,7 @@ namespace Web
         /// <param name="userName">用户名</param>
         /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
-        public WebConnect(string userName, string password) 
+        public WebConnect(string userName, string password)
             : this(new PasswordCredential("TsinghuaAllInOne", userName, password))
         {
         }
@@ -69,6 +72,81 @@ namespace Web
             }
         }
 
+        public IAsyncAction LoadCache()
+        {
+            return Run(async token =>
+            {
+                var cacheFolder = ApplicationData.Current.LocalCacheFolder;
+                try
+                {
+                    using(var stream = await cacheFolder.OpenStreamForReadAsync("WebConnectCache.json"))
+                    using(var reader = new StreamReader(stream))
+                    {
+                        var dataStr = reader.ReadToEnd();
+                        if(string.IsNullOrWhiteSpace(dataStr))
+                            return;
+                        JsonObject data;
+                        if(!JsonObject.TryParse(dataStr, out data))
+                            return;
+                        Balance = (decimal)data[nameof(Balance)].GetNumber();
+                        UpdateTime = DateTime.FromBinary((long)data[nameof(UpdateTime)].GetNumber());
+                        WebTraffic = new Size((ulong)data[nameof(WebTraffic)].GetNumber());
+                        var devices = from item in data[nameof(DeviceList)].GetArray()
+                                      let device = item.GetObject()
+                                      let ip = Ipv4Address.Parse(device[nameof(WebDevice.IPAddress)].GetString())
+                                      let mac = MacAddress.Parse(device[nameof(WebDevice.Mac)].GetString())
+                                      let deTraffic = new Size((ulong)device[nameof(WebDevice.WebTraffic)].GetNumber())
+                                      let deTime = DateTime.FromBinary((long)device[nameof(WebDevice.LogOnDateTime)].GetNumber())
+                                      select new WebDevice(ip, mac)
+                                      {
+                                          WebTraffic = deTraffic,
+                                          LogOnDateTime = deTime
+                                      };
+                        deviceList.FirstOrDefault()?.HttpClient?.Dispose();
+                        foreach(var item in deviceList)
+                        {
+                            item.Dispose();
+                        }
+                        deviceList.Clear();
+                        foreach(var item in devices)
+                        {
+                            deviceList.Add(item);
+                        }
+                    }
+                }
+                catch(IOException) { return; }
+            });
+        }
+
+        public IAsyncAction SaveCache()
+        {
+            return Run(async token =>
+            {
+                var data = new JsonObject();
+                data[nameof(Balance)] = JsonValue.CreateNumberValue((double)this.balance);
+                data[nameof(UpdateTime)] = JsonValue.CreateNumberValue(this.updateTime.ToBinary());
+                data[nameof(WebTraffic)] = JsonValue.CreateNumberValue(this.webTraffic.Value);
+                var devices = new JsonArray();
+                foreach(var item in this.deviceList)
+                {
+                    var device = new JsonObject();
+                    device[nameof(WebDevice.IPAddress)] = JsonValue.CreateStringValue(item.IPAddress.ToString());
+                    device[nameof(WebDevice.Mac)] = JsonValue.CreateStringValue(item.Mac.ToString());
+                    device[nameof(WebDevice.WebTraffic)] = JsonValue.CreateNumberValue(item.WebTraffic.Value);
+                    device[nameof(WebDevice.LogOnDateTime)] = JsonValue.CreateNumberValue(item.LogOnDateTime.ToBinary());
+                    devices.Add(device);
+                }
+                data[nameof(DeviceList)] = devices;
+                var cacheFolder = ApplicationData.Current.LocalCacheFolder;
+                var cacheFile = await cacheFolder.CreateFileAsync("WebConnectCache.json", CreationCollisionOption.ReplaceExisting);
+                using(var stream = await cacheFile.OpenStreamForWriteAsync())
+                using(var writer = new StreamWriter(stream))
+                {
+                    writer.Write(data.Stringify());
+                }
+            });
+        }
+
         private readonly string userName, password, passwordMd5;
 
         private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
@@ -79,6 +157,16 @@ namespace Web
         /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
         public IAsyncAction LogOnAsync()
         {
+            return LogOnAsync(true);
+        }
+
+        /// <summary>
+        /// 异步登陆网络。
+        /// </summary>
+        /// <param name="checkIfOnline">是否检查链接可用性。</param>
+        /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
+        public IAsyncAction LogOnAsync(bool checkIfOnline)
+        {
             return Run(async token =>
             {
                 string res = null;
@@ -88,7 +176,7 @@ namespace Web
                 {
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                    if(await http.CheckLinkAvailable())
+                    if(checkIfOnline && await http.CheckLinkAvailable())
                         return;
                     Func<Task<bool>> check = async () =>
                             {
@@ -253,17 +341,19 @@ namespace Web
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
                     var devices = (from Match r in info2
                                    let details = Regex.Matches(r.Value, "(?<=\\<td class=\"maintd\"\\>)(.*?)(?=\\</td\\>)")
-                                   select new WebDevice(Ipv4Address.Parse(details[0].Value),
-                                                       MacAddress.Parse(details[6].Value))
+                                   let ip = Ipv4Address.Parse(details[0].Value)
+                                   let mac = MacAddress.Parse(details[6].Value)
+                                   let tra = Size.Parse(details[2].Value)
+                                   let logOnTime = DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                                   let devToken = Regex.Match(r.Value, @"(?<=value="")(\d+)(?="")").Value
+                                   select new WebDevice(ip, mac)
                                    {
-                                       WebTraffic = Size.Parse(details[2].Value),
-                                       LogOnDateTime = DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                                       DropToken = Regex.Match(r.Value, @"(?<=value="")(\d+)(?="")").Value,
+                                       WebTraffic = tra,
+                                       LogOnDateTime = logOnTime,
+                                       DropToken = devToken,
                                        HttpClient = http
                                    }).ToArray();
-                    var t = deviceList.FirstOrDefault();
-                    if(t != null)
-                        t.HttpClient.Dispose();
+                    deviceList.FirstOrDefault()?.HttpClient?.Dispose();
                     var common = devices.Join(deviceList, n => n, o => o, (n, o) =>
                     {
                         o.DropToken = n.DropToken;
@@ -320,7 +410,7 @@ namespace Web
             }
         }
 
-        private readonly ObservableCollection<WebDevice> deviceList;
+        private ObservableCollection<WebDevice> deviceList;
 
         /// <summary>
         /// 使用该账户的设备列表。
@@ -392,7 +482,10 @@ namespace Web
         {
             get
             {
-                return deviceList.Aggregate(webTraffic, (sum, item) => sum + item.WebTraffic);
+                if(deviceList == null || deviceList.Count == 0)
+                    return webTraffic;
+                else
+                    return deviceList.Aggregate(webTraffic, (sum, item) => sum + item.WebTraffic);
             }
         }
 
