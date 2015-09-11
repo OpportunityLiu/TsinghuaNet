@@ -212,6 +212,8 @@ namespace Web
         {
             return Run(async token =>
             {
+                if(HttpClient == null)
+                    return false;
                 try
                 {
                     var post = HttpClient.PostStrAsync(dropUri, $"action=drops&user_ip={DropToken}");

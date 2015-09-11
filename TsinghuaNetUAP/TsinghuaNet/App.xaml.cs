@@ -124,7 +124,6 @@ namespace TsinghuaNet
             }
             // Ensure the current window is active
             Window.Current.Activate();
-            ((MainPage)rootFrame.Content).refresh();
         }
 
         /// <summary>
@@ -163,11 +162,15 @@ namespace TsinghuaNet
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            var def = e.SuspendingOperation.GetDeferral();
             var size = Window.Current.Bounds;
             var s = new Windows.Foundation.Size(size.Width, size.Height);
             ApplicationData.Current.LocalSettings.Values["MainViewSize"] = s;
+
+            await WebConnect.Current.SaveCache();
+            def.Complete();
         }
     }
 }

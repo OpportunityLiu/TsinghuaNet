@@ -56,17 +56,16 @@ namespace BackgroundLogOnTask
             {
                 var http = new HttpClient();
                 if(await http.CheckLinkAvailable())
-                {
-                    d.Complete();
                     return;
-                }
                 var client = new WebConnect(account);
-                await client.LogOnAsync();
+                await client.LogOnAsync(false);
                 await client.RefreshAsync();
-                await TileUpdater.Updater.UpdateTile(client);
-                if(!client.IsOnline)
-                    return;
-                SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));
+                var tileTask = TileUpdater.Updater.UpdateTile(client);
+                var cacheTask = client.SaveCache();
+                if(client.IsOnline)
+                    SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));
+                await tileTask;
+                await cacheTask;
             }
             finally
             {

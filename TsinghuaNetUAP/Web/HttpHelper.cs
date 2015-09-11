@@ -18,28 +18,23 @@ namespace Web
         {
             return Run(async token =>
             {
-                var post = Task.Run(async () =>
+                var postTask = httpClient.GetAsync(generate204, HttpCompletionOption.ResponseHeadersRead);
+                var cancel = Task.Delay(2000).ContinueWith(task =>
                 {
-                    var postTask = httpClient.GetAsync(generate204, HttpCompletionOption.ResponseHeadersRead);
-                    token.Register(() => postTask.Cancel());
-                    try
-                    {
-                        using(var get = await postTask)
-                        {
-                            return get.StatusCode == HttpStatusCode.NoContent || (get.IsSuccessStatusCode && get.Content.Headers.ContentLength == 0);
-                        }
-                    }
-                    catch(Exception)
-                    {
-                        return false;
-                    }
+                    postTask.Cancel();
                 });
-                var timeOut = Task.Delay(2500);
-                var fin = await Task.WhenAny(timeOut, post) as Task<bool>;
-                if(fin == null)
+                token.Register(() => postTask.Cancel());
+                try
+                {
+                    using(var get = await postTask)
+                    {
+                        return get.StatusCode == HttpStatusCode.NoContent || (get.IsSuccessStatusCode && get.Content.Headers.ContentLength == 0);
+                    }
+                }
+                catch(Exception)
+                {
                     return false;
-                else
-                    return fin.Result;
+                }
             });
         }
 
