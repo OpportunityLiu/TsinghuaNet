@@ -45,14 +45,14 @@ namespace TsinghuaNet
             if(string.IsNullOrEmpty(userName))
             {
                 textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.EmptyUserName;
+                textBlockHint.Text = Strings.Resources.EmptyUserName;
                 return false;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
                 passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.EmptyPassword;
+                textBlockHint.Text = Strings.Resources.EmptyPassword;
                 return false;
             }
             try
@@ -78,7 +78,7 @@ namespace TsinghuaNet
                 {
                     if(e.PropertyName != nameof(WebConnect.UpdateTime))
                         return;
-                    await TileUpdater.Updater.UpdateTile((WebConnect)sender);
+                    await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
                 };
                 return true;
             }

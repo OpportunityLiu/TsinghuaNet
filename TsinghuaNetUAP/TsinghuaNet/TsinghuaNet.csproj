@@ -101,6 +101,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Strings\Strings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Strings.cs</LastGenOutput>
+    </Content>
     <Content Include="WebPages\zh-cn\HomePage.html" />
     <None Include="project.json" />
   </ItemGroup>
@@ -110,11 +114,6 @@
     </Compile>
     <Compile Include="DropDialog.xaml.cs">
       <DependentUpon>DropDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LocalizedStrings.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalizedStrings.tt</DependentUpon>
     </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -127,6 +126,11 @@
       <DependentUpon>SignInDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SiteLanucher.cs" />
+    <Compile Include="Strings\Strings.cs">
+      <DependentUpon>Strings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="WebContent.cs" />
     <Compile Include="WebPage.xaml.cs">
       <DependentUpon>WebPage.xaml</DependentUpon>
@@ -136,9 +140,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <PRIResource Include="Strings\zh-CN\Errors.resw" />
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
-    <PRIResource Include="Strings\en\Errors.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
     <None Include="project.lock.json" />
     <None Include="TsinghuaNet_StoreKey.pfx" />
@@ -178,10 +180,6 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
-    <Content Include="LocalizedStrings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LocalizedStrings.cs</LastGenOutput>
-    </Content>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
@@ -231,9 +229,9 @@
       <Project>{c0117ecf-6dc4-4b31-a677-bdbc5f602e00}</Project>
       <Name>BackgroundLogOnTask</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TileUpdater\TileUpdater.csproj">
-      <Project>{a91027a4-1b91-4228-98f2-759e3cd1f9c7}</Project>
-      <Name>TileUpdater</Name>
+    <ProjectReference Include="..\NotificationService\NotificationService.csproj">
+      <Project>{b856c287-9a19-445e-b6da-b3a2579be646}</Project>
+      <Name>NotificationService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Web\Web.csproj">
       <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>

@@ -82,7 +82,7 @@ namespace TsinghuaNet
                     {
                         if(args.PropertyName != nameof(WebConnect.UpdateTime))
                             return;
-                        await TileUpdater.Updater.UpdateTile((WebConnect)sender);
+                        await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
                     };
                 }
                 // 未找到储存的密码

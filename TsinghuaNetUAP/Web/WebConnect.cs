@@ -157,50 +157,38 @@ namespace Web
         /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
         public IAsyncAction LogOnAsync()
         {
-            return LogOnAsync(true);
-        }
-
-        /// <summary>
-        /// 异步登陆网络。
-        /// </summary>
-        /// <param name="checkIfOnline">是否检查链接可用性。</param>
-        /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
-        public IAsyncAction LogOnAsync(bool checkIfOnline)
-        {
             return Run(async token =>
             {
                 string res = null;
-                IAsyncOperation<string> post = null;
-                token.Register(() => post?.Cancel());
+                IAsyncInfo action = null;
+                token.Register(() => action?.Cancel());
                 using(var http = new HttpClient())
                 {
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                    if(checkIfOnline && await http.CheckLinkAvailable())
-                        return;
                     Func<Task<bool>> check = async () =>
-                            {
-                                try
-                                {
-                                    post = http.PostStrAsync(logOnUri, "action=check_online");
-                                    return "online" == await post;
-                                }
-                                catch(OperationCanceledException)
-                                {
-                                    throw;
-                                }
-                                catch(Exception ex)
-                                {
-                                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                                }
-                            };
+                    {
+                        try
+                        {
+                            action = http.PostStrAsync(logOnUri, "action=check_online");
+                            return "online" == await (IAsyncOperation<string>)action;
+                        }
+                        catch(OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch(Exception ex)
+                        {
+                            throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                        }
+                    };
                     Func<Task<bool>> logOn = async () =>
                     {
                         try
                         {
-                            post = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
+                            action = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
                             //post = http.PostStrAsync(new Uri("http://166.111.204.120:69/cgi-bin/srun_portal"), $"action=login&username={userName}&password={passwordMd5}&drop=0&pop=0&type=2&n=117&mbytes=0&minutes=0&ac_id=1&mac={MacAddress.Current}&chap=1");
-                            res = await post;
+                            res = await (IAsyncOperation<string>)action;
                             if(!res.StartsWith("E"))
                                 return true;
                             else
