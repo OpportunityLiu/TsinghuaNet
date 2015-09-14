@@ -14,22 +14,12 @@ using Windows.Web.Http;
 using Windows.Networking.Connectivity;
 using Windows.Security.Credentials;
 using Web;
+using static NotificationService.NotificationService;
 
 namespace BackgroundLogOnTask
 {
     public sealed class Task : IBackgroundTask
     {
-        private readonly string logOnSucessful;
-        private readonly string used;
-
-        public Task()
-        {
-            //加载资源
-            var l = ResourceLoader.GetForViewIndependentUse("BackgroundLogOnTask/Resources");
-            used = l.GetString("Used");
-            logOnSucessful = l.GetString("LogOnSucessful");
-        }
-
         #region IBackgroundTask 成员
 
         public async void Run(IBackgroundTaskInstance taskInstance)
@@ -54,16 +44,13 @@ namespace BackgroundLogOnTask
             var d = taskInstance.GetDeferral();
             try
             {
-                var http = new HttpClient();
-                if(await http.CheckLinkAvailable())
-                    return;
                 var client = new WebConnect(account);
-                await client.LogOnAsync(false);
+                await client.LogOnAsync();
                 await client.RefreshAsync();
-                var tileTask = TileUpdater.Updater.UpdateTile(client);
+                var tileTask = UpdateTile(client);
                 var cacheTask = client.SaveCache();
                 if(client.IsOnline)
-                    SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));
+                    SendToastNotification(LocalizedStrings.Resources.LogOnSucessful, string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Used, client.WebTrafficExact));
                 await tileTask;
                 await cacheTask;
             }
@@ -74,26 +61,5 @@ namespace BackgroundLogOnTask
         }
 
         #endregion
-
-        /// <summary>
-        /// 发送 Toast 通知。
-        /// </summary>
-        /// <param name="title">标题，加粗显示。</param>
-        /// <param name="text">内容。</param>
-        internal void SendToastNotification(string title, string text)
-        {
-            XmlDocument toast = new XmlDocument();
-            toast.LoadXml($@"
-<toast>
-    <visual>
-        <binding template='ToastGeneric'>
-            <text>{title}</text>
-            <text>{text}</text>
-        </binding>
-    </visual>
-</toast>");
-            ToastNotificationManager.History.Clear();
-            ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(toast));
-        }
     }
 }

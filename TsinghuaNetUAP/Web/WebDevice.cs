@@ -147,10 +147,6 @@ namespace Web
             ApplicationData.Current.RoamingSettings.Values["DeviceDict"] = deviceDict.Serialize();
         }
 
-        private static readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Web/Resources");
-        private static string unknownDevice = loader.GetString("UnknownDevice");
-        private static string currentDevice = loader.GetString("CurrentDevice");
-
         /// <summary>
         /// 获取或设置当前设备的名称。
         /// </summary>
@@ -160,14 +156,14 @@ namespace Web
             get
             {
                 if(this.Mac == MacAddress.Unknown)
-                    return unknownDevice;
+                    return LocalizedStrings.Resources.UnknownDevice;
                 else
                 {
                     string r;
                     if(deviceDict.TryGetValue(this.Mac,out r))
                         return r;
                     else if(this.Mac.IsCurrent)
-                        return currentDevice;
+                        return LocalizedStrings.Resources.CurrentDevice;
                     else
                         return this.Mac.ToString();
                 }

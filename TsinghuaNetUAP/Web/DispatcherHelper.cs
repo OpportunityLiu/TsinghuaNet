@@ -14,14 +14,14 @@ namespace Web
     {
         private static CoreDispatcher dispatcher = Window.Current?.Dispatcher;
 
-        public static IAsyncAction Run(Action action)
+        public static IAsyncAction Run(DispatchedHandler action)
         {
             return AsyncInfo.Run(async token =>
             {
                 if(dispatcher == null)
                     action();
                 else
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, action);
             });
         }
     }

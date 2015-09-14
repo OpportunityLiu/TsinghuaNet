@@ -31,49 +31,33 @@ namespace TsinghuaNet
         {
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
-            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
+            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, Strings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
             App.Current.Resuming += (sender, e) => refresh();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(e.NavigationMode == NavigationMode.New)
+            if(WebConnect.Current == null)
             {
-                if(WebConnect.Current == null)
-                {
-                    this.appBarButtonChangeUser.Visibility = Visibility.Collapsed;
-                    changeUser_Click(this, new RoutedEventArgs());
-                }
-                else
-                {
-                    var t = WebConnect.Current.LoadCache();
-                    refresh();
-                    try
-                    {
-                        await t;
-                    }
-                    catch(Exception)
-                    {
-                    }
-                }
+                this.appBarButtonChangeUser.Visibility = Visibility.Collapsed;
+                changeUser_Click(this, new RoutedEventArgs());
+                return;
             }
+            this.DataContext = WebConnect.Current;
+            try
+            {
+                await WebConnect.Current.LoadCache();
+                this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
+            }
+            catch(Exception)
+            {
+            }
+            refresh();
         }
 
         private WebDevice selectedDevice;
 
-        private async void drop_Confirmed(IUICommand sender)
-        {
-            await selectedDevice.DropAsync();
-            try
-            {
-                await WebConnect.Current.RefreshAsync();
-            }
-            catch(LogOnException)
-            {
-            }
-        }
-
-        DropDialog dropDialog=new DropDialog();
+        DropDialog dropDialog = new DropDialog();
 
         RenameDialog renameDialog = new RenameDialog();
 
@@ -92,48 +76,54 @@ namespace TsinghuaNet
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 await selectedDevice.DropAsync();
-                refresh();
+                refresh(false);
             }
         }
 
         private IAsyncAction currentAction;
 
-        public void refresh()
+        public void refresh(bool logOn = true)
         {
             var current = WebConnect.Current;
             this.DataContext = current;
             if(current == null)
                 return;
-            if(currentAction?.Status == AsyncStatus.Started)
-                currentAction.Cancel();
+            currentAction?.Cancel();
             this.currentAction = Run(async token =>
             {
                 //防止进度条闪烁
                 var progressTokens = new System.Threading.CancellationTokenSource();
-                var finished = false;
+                var progressToken = progressTokens.Token;
                 var progress = Task.Run(async () =>
                 {
                     await Task.Delay(1000);
-                    if(!finished)
+                    if(!progressToken.IsCancellationRequested)
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => this.progressBarUsage.IsIndeterminate = true);
-                });
+                }, progressToken);
                 IAsyncAction action = null;
                 token.Register(() => action?.Cancel());
+                if(logOn)
+                {
+                    action = current.LogOnAsync();
+                    try
+                    {
+                        await action;
+                    }
+                    catch(LogOnException ex)
+                    {
+                        sendHint(ex.Message);
+                    }
+                }
+                action = current.RefreshAsync();
                 try
                 {
-                    await current.LogOnAsync();
+                    await action;
                 }
-                catch(LogOnException)
+                catch(LogOnException ex)
                 {
+                    sendHint(ex.Message);
                 }
-                try
-                {
-                    await current.RefreshAsync();
-                }
-                catch(LogOnException)
-                {
-                }
-                finished = true;
+                progressTokens.Cancel();
                 this.progressBarUsage.IsIndeterminate = false;
                 this.progressBarUsage.Value = current.WebTrafficExact.TotalGB;
             });
@@ -179,7 +169,7 @@ namespace TsinghuaNet
                 selectedDevice = (WebDevice)s.DataContext;
                 var p = e.GetPosition(s);
                 p.Y = s.ActualHeight;
-                ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s,p);
+                ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
                 break;
             }
         }
@@ -192,6 +182,12 @@ namespace TsinghuaNet
         private async void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
             await WebPage.Launch();
+        }
+
+        private void sendHint(string message)
+        {
+            textBlockHint.Text = message ?? "";
+            showHint.Begin();
         }
     }
 
