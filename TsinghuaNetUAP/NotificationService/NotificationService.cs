@@ -27,7 +27,7 @@ namespace NotificationService
                 var devices = connect.DeviceList.ToArray();
                 if(devices.Length == 0)
                 {
-                    XmlDocument tile = new XmlDocument();
+                    var tile = new XmlDocument();
                     tile.LoadXml($@"
 <tile>
     <visual branding='name'>
@@ -48,7 +48,7 @@ namespace NotificationService
                 }
                 foreach(var item in devices)
                 {
-                    XmlDocument tile = new XmlDocument();
+                    var tile = new XmlDocument();
                     tile.LoadXml($@"
 <tile>
     <visual branding='name'>
@@ -80,7 +80,7 @@ namespace NotificationService
         /// <param name="text">内容。</param>
         public static void SendToastNotification(string title, string text)
         {
-            XmlDocument toast = new XmlDocument();
+            var toast = new XmlDocument();
             toast.LoadXml($@"
 <toast>
     <visual>
