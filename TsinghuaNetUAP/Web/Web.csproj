@@ -125,6 +125,7 @@
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionHelper.cs" />
     <Compile Include="DeviceNameDictionary.cs" />
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="HttpHelper.cs" />

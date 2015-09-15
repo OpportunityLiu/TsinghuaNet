@@ -246,7 +246,21 @@ namespace Web
             return Run(async token =>
             {
                 IAsyncOperation<bool> action = null;
-                token.Register(() => action?.Cancel());
+                var check = ConnectionHelper.CheckConnection("net.tsinghua.edu.cn", 2500);
+                token.Register(() =>
+                {
+                    action?.Cancel();
+                    check.Cancel();
+                });
+                try
+                {
+                    await check;
+                }
+                catch(Exception ex)
+                {
+                    IsOnline = false;
+                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                }
                 using(var http = new HttpClient())
                 {
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
