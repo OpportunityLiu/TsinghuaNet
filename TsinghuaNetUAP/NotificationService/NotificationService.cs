@@ -33,11 +33,11 @@ namespace NotificationService
     <visual branding='name'>
         <binding template='TileMedium'>
             <text hint-style='body'>{usage}</text>
-            <text hint-style='caption' hint-wrap='true'>{Strings.Resources.NoDevices}</text>
+            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.Resources.NoDevices}</text>
         </binding>
         <binding template='TileWide'>
-            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, Strings.Resources.Usage, usage)}</text>
-            <text hint-style='caption' hint-wrap='true'>{Strings.Resources.NoDevices}</text>
+            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}</text>
+            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.Resources.NoDevices}</text>
         </binding>
     </visual>
 </tile>");
@@ -59,7 +59,7 @@ namespace NotificationService
             <text hint-style='captionsubtle'>{item.IPAddress}</text>
         </binding>
         <binding template='TileWide'>
-            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, Strings.Resources.Usage, usage)}</text>
+            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}</text>
             <text hint-style='caption'>{item.Name}</text>
             <text hint-style='captionsubtle'>{item.LogOnDateTime}</text>
             <text hint-style='captionsubtle'>{item.IPAddress}</text>

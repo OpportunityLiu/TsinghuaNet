@@ -1,12 +1,13 @@
-﻿<Page x:Uid="MainPage"
-      x:Class="TsinghuaNet.MainPage"
+﻿<Page x:Class="TsinghuaNet.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:TsinghuaNet"
-      xmlns:web="using:Web"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="using:TsinghuaNet"
+      xmlns:web="using:Web"
       mc:Ignorable="d"
+      Loaded="Page_Loaded"
+      Loading="Page_Loading"
       NavigationCacheMode="Required">
     <Page.Resources>
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
@@ -72,8 +73,10 @@
                               x:Name="appBarButtonAbout"
                               Label="About">
                     <AppBarButton.Flyout>
-                        <Flyout>
-                            <TextBlock Width="240"
+                        <Flyout Opening="Flyout_Opening">
+                            <TextBlock x:Name="textBlockAbout"
+                                       x:DeferLoadStrategy="Lazy"
+                                       Width="240"
                                        Style="{StaticResource BodyTextBlockStyle}"
                                        Margin="4"
                                        LineHeight="16">
@@ -84,7 +87,7 @@
                                 <Run x:Uid="AppAuthor"
                                      Text="Opportuntiy" />
                                 <LineBreak />
-                                <Run x:Name="textBlockVersion"
+                                <Run x:Name="runVersion"
                                      Text="Version x.x.x.x" />
                                 <LineBreak />
                                 <LineBreak />
@@ -181,7 +184,7 @@
                     </Grid.ColumnDefinitions>
                     <ProgressBar x:Name="progressBarUsage"
                                  Grid.ColumnSpan="5"
-                                 Margin="0"
+                                 Value="{Binding WebTrafficExact.Value}"
                                  Maximum="55"
                                  Height="10" />
                     <TextBlock Text="0"
@@ -278,12 +281,12 @@
             </Grid>
         </ScrollViewer>
         <Border x:Name="borderHint"
+                x:DeferLoadStrategy="Lazy"
                 Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
                 VerticalAlignment="Bottom"
                 Opacity="0"
                 Padding="16,8">
             <TextBlock x:Name="textBlockHint"
-                       Text="This is a HINT."
                        Style="{StaticResource BodyTextBlockStyle}" />
         </Border>
     </Grid>

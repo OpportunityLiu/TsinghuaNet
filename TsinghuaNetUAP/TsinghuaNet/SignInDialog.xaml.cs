@@ -45,14 +45,14 @@ namespace TsinghuaNet
             if(string.IsNullOrEmpty(userName))
             {
                 textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = Strings.Resources.EmptyUserName;
+                textBlockHint.Text = LocalizedStrings.Resources.EmptyUserName;
                 return false;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
                 passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = Strings.Resources.EmptyPassword;
+                textBlockHint.Text = LocalizedStrings.Resources.EmptyPassword;
                 return false;
             }
             try
