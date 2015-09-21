@@ -155,7 +155,8 @@ namespace Web
                     {
                         var action = http.PostStrAsync(logOnUri, "action=check_online");
                         token.Register(action.Cancel);
-                        return "online" == await action;
+                        var result = await action;
+                        return "online" == result;
                     }
                     catch(OperationCanceledException) { throw; }
                     catch(Exception ex)
@@ -241,7 +242,10 @@ namespace Web
         /// 异步登陆网络。
         /// </summary>
         /// <exception cref="WebConnect.LogOnException">在登陆过程中发生错误。</exception>
-        public IAsyncAction LogOnAsync()
+        /// <returns>
+        /// 成功返回 true，已经在线返回 false。
+        /// </returns>
+        public IAsyncOperation<bool> LogOnAsync()
         {
             return Run(async token =>
             {
@@ -258,26 +262,19 @@ namespace Web
                 }
                 catch(Exception ex)
                 {
-                    IsOnline = false;
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
                 using(var http = new HttpClient())
                 {
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                    try
-                    {
-                        action = logOnHelper.CheckOnline(http);
-                        if(this.IsOnline = await action)
-                            return;
-                        action = logOnHelper.LogOn(http, userName, passwordMd5);
-                        if(this.IsOnline = await action)
-                            return;
-                        this.IsOnline = false;
-                    }
-                    catch(OperationCanceledException)
-                    {
-                    }
+                    action = logOnHelper.CheckOnline(http);
+                    if(await action)
+                        return false;
+                    action = logOnHelper.LogOn(http, userName, passwordMd5);
+                    if(await action)
+                        return true;
+                    throw new LogOnException(LogOnExceptionType.UnknownError);
                 }
             });
         }
@@ -408,24 +405,6 @@ namespace Web
             get;
             private set;
         }
-
-        /// <summary>
-        /// 当前连接的状态。
-        /// </summary>
-        public bool IsOnline
-        {
-            get
-            {
-                return isOnline;
-            }
-            private set
-            {
-                isOnline = value;
-                propertyChanging();
-            }
-        }
-
-        private bool isOnline = false;
 
         /// <summary>
         /// 当前账户余额。

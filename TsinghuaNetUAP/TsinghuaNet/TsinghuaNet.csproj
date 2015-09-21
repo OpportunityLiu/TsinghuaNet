@@ -106,7 +106,6 @@
       <LastGenOutput>Strings.cs</LastGenOutput>
     </Content>
     <Content Include="WebPages\zh-cn\HomePage.html" />
-    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -142,7 +141,7 @@
     </AppxManifest>
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
-    <None Include="project.lock.json" />
+    <None Include="project.json" />
     <None Include="TsinghuaNet_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -181,7 +180,9 @@
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
-    <Content Include="Properties\Default.rd.xml" />
+    <Content Include="Properties\Default.rd.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

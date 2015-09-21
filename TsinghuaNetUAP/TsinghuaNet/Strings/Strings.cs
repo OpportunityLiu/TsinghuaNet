@@ -1,100 +1,144 @@
-﻿using Windows.ApplicationModel.Resources;
-
-namespace TsinghuaNet.Strings
+﻿namespace TsinghuaNet.LocalizedStrings
 {    
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
     public static class Resources
     {
-        private static readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("/Resources");
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+            = new global::System.Collections.Generic.Dictionary<string, string>();
 
-        public static string GetString(string resourceKey) => loader.GetString(resourceKey);
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+            = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("/Resources");
+
+        public static string GetString(string resourceKey)
+        {
+            string value = null;
+            if(cache.TryGetValue(resourceKey, out value))
+                return value;
+            else
+                return cache[resourceKey] = loader.GetString(resourceKey);
+        }
 
         /// <summary>
         /// 版本 {0}.{1}.{2}.{3}
         /// </summary>
         public static string AppVersionFormat
         {
-            get;
-        } = loader.GetString("AppVersionFormat"); 
+            get
+            {
+                return GetString("AppVersionFormat");
+            }
+        }
 
         /// <summary>
         /// 取消
         /// </summary>
         public static string Cancel
         {
-            get;
-        } = loader.GetString("Cancel"); 
+            get
+            {
+                return GetString("Cancel");
+            }
+        }
 
         /// <summary>
         /// 请输入密码。
         /// </summary>
         public static string EmptyPassword
         {
-            get;
-        } = loader.GetString("EmptyPassword"); 
+            get
+            {
+                return GetString("EmptyPassword");
+            }
+        }
 
         /// <summary>
         /// 请输入用户名。
         /// </summary>
         public static string EmptyUserName
         {
-            get;
-        } = loader.GetString("EmptyUserName"); 
+            get
+            {
+                return GetString("EmptyUserName");
+            }
+        }
 
         /// <summary>
         /// 错误
         /// </summary>
         public static string Error
         {
-            get;
-        } = loader.GetString("Error"); 
+            get
+            {
+                return GetString("Error");
+            }
+        }
 
         /// <summary>
         /// 确定
         /// </summary>
         public static string Ok
         {
-            get;
-        } = loader.GetString("Ok"); 
+            get
+            {
+                return GetString("Ok");
+            }
+        }
 
         /// <summary>
         /// Opportunity
         /// </summary>
         public static string PackageAuthor
         {
-            get;
-        } = loader.GetString("PackageAuthor"); 
+            get
+            {
+                return GetString("PackageAuthor");
+            }
+        }
 
         /// <summary>
         /// Tsinghua Net 是一个第三方的清华大学校园网认证客户端。
         /// </summary>
         public static string PackageDescription
         {
-            get;
-        } = loader.GetString("PackageDescription"); 
+            get
+            {
+                return GetString("PackageDescription");
+            }
+        }
 
         /// <summary>
         /// Tsinghua Net
         /// </summary>
         public static string PackageName
         {
-            get;
-        } = loader.GetString("PackageName"); 
+            get
+            {
+                return GetString("PackageName");
+            }
+        }
 
         /// <summary>
         /// 登陆失败
         /// </summary>
         public static string ToastFailed
         {
-            get;
-        } = loader.GetString("ToastFailed"); 
+            get
+            {
+                return GetString("ToastFailed");
+            }
+        }
 
         /// <summary>
         /// 登陆成功
         /// </summary>
         public static string ToastSuccess
         {
-            get;
-        } = loader.GetString("ToastSuccess"); 
+            get
+            {
+                return GetString("ToastSuccess");
+            }
+        }
     }
 
 }

@@ -45,11 +45,11 @@ namespace BackgroundLogOnTask
             try
             {
                 var client = new WebConnect(account);
-                await client.LogOnAsync();
+                var logOn = await client.LogOnAsync();
                 await client.RefreshAsync();
                 var tileTask = UpdateTile(client);
                 var cacheTask = client.SaveCache();
-                if(client.IsOnline)
+                if(logOn)
                     SendToastNotification(LocalizedStrings.Resources.LogOnSucessful, string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Used, client.WebTrafficExact));
                 await tileTask;
                 await cacheTask;

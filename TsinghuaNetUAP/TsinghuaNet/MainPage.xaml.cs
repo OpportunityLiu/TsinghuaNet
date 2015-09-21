@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.ViewManagement;
+using System.Threading;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -30,17 +31,13 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            var version = Package.Current.Id.Version;
-            textBlockVersion.Text = string.Format(CultureInfo.CurrentCulture, Strings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
-            App.Current.Resuming += (sender, e) => refresh();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        private async void Page_Loading(FrameworkElement sender, object args)
         {
             if(WebConnect.Current == null)
             {
-                this.appBarButtonChangeUser.Visibility = Visibility.Collapsed;
-                changeUser_Click(this, new RoutedEventArgs());
+                changeUser_Click(null, null);
                 return;
             }
             this.DataContext = WebConnect.Current;
@@ -52,17 +49,25 @@ namespace TsinghuaNet
             catch(Exception)
             {
             }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
             refresh();
+            App.Current.Resuming += (s, args) => refresh();
         }
 
         private WebDevice selectedDevice;
 
-        DropDialog dropDialog = new DropDialog();
+        DropDialog dropDialog;
 
-        RenameDialog renameDialog = new RenameDialog();
+        RenameDialog renameDialog;
+
+        SignInDialog signInDialog;
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
+            var renameDialog = LazyInitializer.EnsureInitialized(ref this.renameDialog);
             renameDialog.NewName = selectedDevice.Name;
             if(await renameDialog.ShowAsync() == ContentDialogResult.Primary)
             {
@@ -72,6 +77,7 @@ namespace TsinghuaNet
 
         private async void Drop_Click(object sender, RoutedEventArgs e)
         {
+            var dropDialog = LazyInitializer.EnsureInitialized(ref this.dropDialog);
             dropDialog.Title = selectedDevice.Name;
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
@@ -94,20 +100,28 @@ namespace TsinghuaNet
                 //防止进度条闪烁
                 var progressTokens = new System.Threading.CancellationTokenSource();
                 var progressToken = progressTokens.Token;
-                var progress = Task.Run(async () =>
+                var progress = Task.Delay(1000, progressToken).ContinueWith(async task =>
                 {
-                    await Task.Delay(1000);
-                    if(!progressToken.IsCancellationRequested)
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => this.progressBarUsage.IsIndeterminate = true);
+                    if(!progressToken.IsCancellationRequested && currentAction?.Status != AsyncStatus.Completed)
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                        {
+                            if(!progressToken.IsCancellationRequested && currentAction?.Status != AsyncStatus.Completed)
+                                this.progressBarUsage.IsIndeterminate = true;
+                        });
                 }, progressToken);
-                IAsyncAction action = null;
-                token.Register(() => action?.Cancel());
+                IAsyncInfo action = null;
+                token.Register(() =>
+                {
+                    progressTokens.Cancel();
+                    action?.Cancel();
+                });
                 if(logOn)
                 {
                     action = current.LogOnAsync();
                     try
                     {
-                        await action;
+                        if(await (IAsyncOperation<bool>)action)
+                            sendHint(LocalizedStrings.Resources.ToastSuccess);
                     }
                     catch(LogOnException ex)
                     {
@@ -117,7 +131,7 @@ namespace TsinghuaNet
                 action = current.RefreshAsync();
                 try
                 {
-                    await action;
+                    await (IAsyncAction)action;
                 }
                 catch(LogOnException ex)
                 {
@@ -131,13 +145,17 @@ namespace TsinghuaNet
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)
         {
-            var signIn = new SignInDialog();
-            signIn.Closed += (s, args) =>
+            var signIn = LazyInitializer.EnsureInitialized(ref this.signInDialog, () =>
             {
-                if(WebConnect.Current != null)
-                    this.appBarButtonChangeUser.Visibility = Visibility.Visible;
-                refresh();
-            };
+                var s = new SignInDialog();
+                s.Closed += (_, args) =>
+                {
+                    if(WebConnect.Current != null)
+                        this.appBarButtonChangeUser.Visibility = Visibility.Visible;
+                    refresh();
+                };
+                return s;
+            });
             await signIn.ShowAsync();
         }
 
@@ -186,8 +204,16 @@ namespace TsinghuaNet
 
         private void sendHint(string message)
         {
+            FindName("borderHint");
             textBlockHint.Text = message ?? "";
             showHint.Begin();
+        }
+
+        private void Flyout_Opening(object sender, object e)
+        {
+            FindName("textBlockAbout");
+            var version = Package.Current.Id.Version;
+            runVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
         }
     }
 
