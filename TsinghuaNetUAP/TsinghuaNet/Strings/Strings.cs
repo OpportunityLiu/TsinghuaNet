@@ -12,11 +12,16 @@
 
         public static string GetString(string resourceKey)
         {
-            string value = null;
+            string value;
             if(cache.TryGetValue(resourceKey, out value))
                 return value;
             else
                 return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
         }
 
         /// <summary>
@@ -137,6 +142,65 @@
             get
             {
                 return GetString("ToastSuccess");
+            }
+        }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
+    public static class Toast
+    {
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+            = new global::System.Collections.Generic.Dictionary<string, string>();
+
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+            = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("/Toast");
+
+        public static string GetString(string resourceKey)
+        {
+            string value;
+            if(cache.TryGetValue(resourceKey, out value))
+                return value;
+            else
+                return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
+        }
+
+        /// <summary>
+        /// &lt;toast&gt;
+        ///     &lt;visual&gt;
+        ///         &lt;binding template='ToastGeneric'&gt;
+        ///             &lt;text&gt;下载失败&lt;/text&gt;
+        ///         &lt;/binding&gt;
+        ///     &lt;/visual&gt;
+        /// &lt;/toast&gt;
+        /// </summary>
+        public static string DownloadFailed
+        {
+            get
+            {
+                return GetString("DownloadFailed");
+            }
+        }
+
+        /// <summary>
+        /// &lt;toast&gt;
+        ///     &lt;visual&gt;
+        ///         &lt;binding template='ToastGeneric'&gt;
+        ///             &lt;text&gt;下载完成&lt;/text&gt;
+        ///         &lt;/binding&gt;
+        ///     &lt;/visual&gt;
+        /// &lt;/toast&gt;
+        /// </summary>
+        public static string DownloadSucceed
+        {
+            get
+            {
+                return GetString("DownloadSucceed");
             }
         }
     }

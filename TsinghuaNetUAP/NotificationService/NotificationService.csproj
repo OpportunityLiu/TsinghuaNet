@@ -127,10 +127,10 @@
     </Compile>
     <Compile Include="NotificationService.cs" />
     <Content Include="Properties\NotificationService.rd.xml" />
-    <Content Include="Strings\Strings.tt">
+    <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Web\Web.csproj">

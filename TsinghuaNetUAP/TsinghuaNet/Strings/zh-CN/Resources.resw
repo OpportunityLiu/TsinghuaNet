@@ -225,6 +225,9 @@
   <data name="SignInPage.Title" xml:space="preserve">
     <value>登陆</value>
   </data>
+  <data name="SitesAppButton.Label" xml:space="preserve">
+    <value>校内网站</value>
+  </data>
   <data name="Theme.Text" xml:space="preserve">
     <value>主题</value>
   </data>

@@ -98,7 +98,7 @@ namespace TsinghuaNet
             this.currentAction = Run(async token =>
             {
                 //防止进度条闪烁
-                var progressTokens = new System.Threading.CancellationTokenSource();
+                var progressTokens = new CancellationTokenSource();
                 var progressToken = progressTokens.Token;
                 var progress = Task.Delay(1000, progressToken).ContinueWith(async task =>
                 {
@@ -148,12 +148,7 @@ namespace TsinghuaNet
             var signIn = LazyInitializer.EnsureInitialized(ref this.signInDialog, () =>
             {
                 var s = new SignInDialog();
-                s.Closed += (_, args) =>
-                {
-                    if(WebConnect.Current != null)
-                        this.appBarButtonChangeUser.Visibility = Visibility.Visible;
-                    refresh();
-                };
+                s.Closed += (_, args) => refresh();
                 return s;
             });
             await signIn.ShowAsync();

@@ -101,10 +101,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Strings\Strings.tt">
+    <PRIResource Include="Strings\en\Toast.resw" />
+    <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>
-    </Content>
+    </None>
     <Content Include="WebPages\zh-cn\HomePage.html" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +143,7 @@
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-CN\Toast.resw" />
     <None Include="TsinghuaNet_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>

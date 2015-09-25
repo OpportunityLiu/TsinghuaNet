@@ -41,18 +41,27 @@ namespace BackgroundLogOnTask
                 return;
             if(connection.IsWwanConnectionProfile)
                 return;
+                var client = new WebConnect(account);
             var d = taskInstance.GetDeferral();
             try
             {
-                var client = new WebConnect(account);
-                var logOn = await client.LogOnAsync();
-                await client.RefreshAsync();
-                var tileTask = UpdateTile(client);
-                var cacheTask = client.SaveCache();
-                if(logOn)
-                    SendToastNotification(LocalizedStrings.Resources.LogOnSucessful, string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Used, client.WebTrafficExact));
-                await tileTask;
-                await cacheTask;
+                var rst = false;
+                try
+                {
+                    rst = await client.LogOnAsync();
+                }
+                catch(LogOnException) { }
+                try
+                {
+                    await client.RefreshAsync();
+                    var tileTask = UpdateTile(client);
+                    var cacheTask = client.SaveCache();
+                    if(rst)
+                        SendToastNotification(LocalizedStrings.Resources.LogOnSucessful, string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Used, client.WebTrafficExact));
+                    await tileTask;
+                    await cacheTask;
+                }
+                catch(LogOnException) { }
             }
             finally
             {

@@ -105,7 +105,8 @@
                               Label="ChangeUser"
                               Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="appBarButtonSites"
+            <AppBarButton x:Uid="SitesAppButton"
+                          x:Name="appBarButtonSites"
                           Icon="Favorite"
                           Label="Sites"
                           Click="appBarButtonSites_Click" />
