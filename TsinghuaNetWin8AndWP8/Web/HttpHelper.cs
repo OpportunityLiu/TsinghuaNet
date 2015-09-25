@@ -11,21 +11,6 @@ namespace Web
 {
     internal static class HttpHelper
     {
-        private static readonly Uri generate204 = new Uri("http://www.v2ex.com/generate_204");
-
-        public static IAsyncOperation<bool> CheckLinkAvailable(this HttpClient httpClient)
-        {
-            return Run(async token =>
-            {
-                var postTask = httpClient.GetAsync(generate204, HttpCompletionOption.ResponseHeadersRead);
-                token.Register(() => postTask.Cancel());
-                using(var get = await postTask)
-                {
-                    return get.StatusCode == HttpStatusCode.NoContent || (get.IsSuccessStatusCode && get.Content.Headers.ContentLength == 0);
-                }
-            });
-        }
-
         public static IAsyncOperation<string> PostStrAsync(this HttpClient httpClient, Uri uri, string request)
         {
             return Run(async token =>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using Web;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources;
 using Windows.Data.Xml.Dom;
@@ -63,15 +64,20 @@ namespace Tasks
             if(connection.IsWwanConnectionProfile)
                 return;
             var d = taskInstance.GetDeferral();
-            var client = new Web.WebConnect(userName, passwordMD5);
+            var client = new WebConnect(userName, passwordMD5);
             try
             {
                 await client.LogOnAsync();
+            }
+            catch(LogOnException) { }
+            try
+            {
                 await client.RefreshAsync();
                 if(!client.IsOnline)
                     return;
                 SendToastNotification(logOnSucessful, string.Format(CultureInfo.CurrentCulture, used, client.WebTrafficExact));
             }
+            catch(LogOnException) { }
             finally
             {
                 d.Complete();

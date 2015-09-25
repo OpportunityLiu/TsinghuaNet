@@ -73,8 +73,6 @@ namespace Web
                 {
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                    if(await http.CheckLinkAvailable())
-                        return;
                     Func<Task<bool>> check = async () =>
                             {
                                 try

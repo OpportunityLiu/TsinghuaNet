@@ -67,6 +67,16 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            if(ApplicationData.Current.Version < 1)
+            {
+                ApplicationData.Current.SetVersionAsync(1, args =>
+                {
+                    var d = ApplicationData.Current.RoamingSettings;
+                    d.Values.Remove("Password");
+                    d.Values.Remove("UserName");
+                    d.Values.Remove("PasswordMD5");
+                }).AsTask().Wait();
+            }
             if(WebConnect.Current == null)
             {
                 //初始化信息存储区

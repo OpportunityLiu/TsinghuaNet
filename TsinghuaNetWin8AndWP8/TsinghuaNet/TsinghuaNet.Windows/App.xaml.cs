@@ -175,7 +175,17 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            
+            if(ApplicationData.Current.Version < 1)
+            {
+                ApplicationData.Current.SetVersionAsync(1, args =>
+                {
+                    var d = ApplicationData.Current.RoamingSettings;
+                    d.Values.Remove("Password");
+                    d.Values.Remove("UserName");
+                    d.Values.Remove("PasswordMD5");
+                }).AsTask().Wait();
+            }
+
             //注册设置项
             Windows.UI.ApplicationSettings.SettingsPane.GetForCurrentView().CommandsRequested += (sp, arg) =>
             {

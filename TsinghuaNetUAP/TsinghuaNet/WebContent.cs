@@ -11,11 +11,72 @@ using Windows.UI.Xaml.Controls;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using System.Text.RegularExpressions;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using System.IO;
 
 namespace TsinghuaNet
 {
     class WebContent : INotifyPropertyChanged
     {
+        private static class downloader
+        {
+            private static ToastNotification succeedToast, failedToast;
+
+            static downloader()
+            {
+                var sXml = new XmlDocument();
+                sXml.LoadXml(LocalizedStrings.Toast.DownloadSucceed);
+                succeedToast = new ToastNotification(sXml);
+                var fXml = new XmlDocument();
+                fXml.LoadXml(LocalizedStrings.Toast.DownloadFailed);
+                failedToast = new ToastNotification(fXml);
+            }
+
+            private static string toValidFileName(string raw)
+            {
+                var split = raw.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.None);
+                if(split.Length == 1)
+                    return raw;
+                return string.Join(".", split);
+            }
+
+            public static IAsyncAction Download(Uri fileUri)
+            {
+                return Run(async token =>
+                {
+                    var d = new BackgroundDownloader()
+                    {
+                        SuccessToastNotification = succeedToast,
+                        FailureToastNotification = failedToast
+                    };
+                    var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp");
+                    var o = d.CreateDownload(fileUri, file);
+                    var op = o.StartAsync();
+                    op.Completed = async (sender, e) =>
+                    {
+                        var resI = o.GetResponseInformation();
+                        string name;
+                        if(resI == null)
+                        {
+                            name = file.Name;
+                        }
+                        else if(resI.Headers.TryGetValue("Content-Disposition", out name))
+                        {
+                            var filename = Regex.Match(name, @"filename\s?=\s?""(.+)""");
+                            if(filename.Success)
+                            {
+                                name = filename.Groups[1].Value;
+                            }
+                        }
+                        name = name ?? resI.ActualUri.ToString();
+                        await file.RenameAsync(toValidFileName(name));
+                    };
+                });
+            }
+        }
+
         public WebContent(Uri uri)
         {
             View.Navigate(uri);
@@ -29,34 +90,7 @@ namespace TsinghuaNet
 
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
         {
-            var toast = new Windows.Data.Xml.Dom.XmlDocument();
-            toast.LoadXml($@"
-<toast>
-    <visual>
-        <binding template='ToastGeneric'>
-            <text>下载完成</text>
-            <text>已经下载</text>
-        </binding>
-    </visual>
-</toast>");
-            var d = new BackgroundDownloader();
-            d.SuccessToastNotification = new Windows.UI.Notifications.ToastNotification(toast);
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("temp", CreationCollisionOption.GenerateUniqueName);
-            var o = d.CreateDownload(args.Uri, file);
-            await o.StartAsync();
-            var resI = o.GetResponseInformation();
-            var h = resI.Headers;
-            string name = null;
-            if(h.TryGetValue("Content-Disposition", out name))
-            {
-                var filename = Regex.Match(name, @"filename\s?=\s?""(.+)""");
-                if(filename.Success)
-                {
-                    await file.RenameAsync(filename.Groups[1].Value, NameCollisionOption.GenerateUniqueName);
-                    return;
-                }
-            }
-            await file.RenameAsync(resI.ActualUri.ToString(), NameCollisionOption.GenerateUniqueName);
+            await downloader.Download(args.Uri);
         }
 
         private void View_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)

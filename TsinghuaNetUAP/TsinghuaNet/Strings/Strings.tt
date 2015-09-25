@@ -93,11 +93,16 @@ namespace <#=nameSpace#>
 
         public static string GetString(string resourceKey)
         {
-            string value = null;
+            string value;
             if(cache.TryGetValue(resourceKey, out value))
                 return value;
             else
                 return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
         }
 <#
         foreach(var name in localizedClass.Value)
@@ -108,7 +113,8 @@ namespace <#=nameSpace#>
 
         /// <summary>
 <#
-            var comments = new StringReader(name.Value);
+            // 转义注释序列
+            var comments = new StringReader(name.Value.Replace("\"", "&quot;").Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"));
             while(true)
             {
                 var comment = comments.ReadLine();
