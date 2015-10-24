@@ -10,11 +10,19 @@ using Windows.UI.Notifications;
 using Windows.ApplicationModel.Resources;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Foundation;
+using System.ComponentModel;
 
 namespace NotificationService
 {
     public static class NotificationService
     {
+        public static async void UpdateTile(object sender, PropertyChangedEventArgs e)
+        {
+            var c = sender as WebConnect;
+            if(c != null && e.PropertyName == nameof(WebConnect.UpdateTime))
+                await UpdateTile(c);
+        }
+
         public static IAsyncAction UpdateTile(WebConnect connect)
         {
             return Task.Run(() =>

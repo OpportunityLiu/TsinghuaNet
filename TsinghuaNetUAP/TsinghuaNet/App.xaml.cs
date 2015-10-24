@@ -69,48 +69,27 @@ namespace TsinghuaNet
 #endif
             if(ApplicationData.Current.Version < 1)
             {
-                ApplicationData.Current.SetVersionAsync(1, args =>
+                var ignore = ApplicationData.Current.SetVersionAsync(1, args =>
                 {
                     var d = ApplicationData.Current.RoamingSettings;
                     d.Values.Remove("Password");
                     d.Values.Remove("UserName");
                     d.Values.Remove("PasswordMD5");
-                }).AsTask().Wait();
-            }
-            if(WebConnect.Current == null)
-            {
-                //初始化信息存储区
-                try
-                {
-                    var passVault = new Windows.Security.Credentials.PasswordVault();
-                    var pass = passVault.FindAllByResource("TsinghuaAllInOne").First();
-                    //已经添加字段
-                    WebConnect.Current = new WebConnect(pass);
-                    //准备磁贴更新
-                    WebConnect.Current.PropertyChanged += async (sender, args) =>
-                    {
-                        if(args.PropertyName != nameof(WebConnect.UpdateTime))
-                            return;
-                        await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
-                    };
-                }
-                // 未找到储存的密码
-                catch(Exception ex) when (ex.HResult == -2147023728)
-                {
-                }
+                });
             }
 
             var view = ApplicationView.GetForCurrentView();
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
             if(e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
                 view.TryResizeView(new Windows.Foundation.Size(320, 600));
-            
-            if(Window.Current.Content == null)
+
+            var currentWindow = Window.Current;
+            if(currentWindow.Content == null)
             {
-                Window.Current.Content = new MainPage();
+                currentWindow.Content = new MainPage();
             }
 
-            Window.Current.Activate();
+            currentWindow.Activate();
         }
 
         /// <summary>

@@ -6,9 +6,7 @@
       xmlns:local="using:TsinghuaNet"
       xmlns:web="using:Web"
       mc:Ignorable="d"
-      Loaded="Page_Loaded"
-      Loading="Page_Loading"
-      NavigationCacheMode="Required">
+      Loaded="Page_Loaded">
     <Page.Resources>
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
                       x:DataType="web:WebDevice">
@@ -23,7 +21,7 @@
                     <ToolTip Content="{x:Bind Mac}" />
                 </ToolTipService.ToolTip>
                 <FlyoutBase.AttachedFlyout>
-                    <MenuFlyout>
+                    <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem x:Uid="RenameMenu"
                                         Click="Rename_Click"
                                         IsEnabled="{x:Bind CanRename, Mode=OneWay}" />
@@ -44,7 +42,7 @@
             </TextBlock>
         </DataTemplate>
         <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter" />
-        <Storyboard x:Name="showHint">
+        <Storyboard x:Name="showHint" Completed="showHint_Completed">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="borderHint"
                                            Storyboard.TargetProperty="UIElement.Opacity">
                 <DiscreteDoubleKeyFrame KeyTime="0:0:0"
@@ -105,11 +103,11 @@
                               Label="ChangeUser"
                               Click="changeUser_Click" />
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Uid="SitesAppButton"
+            <!--<AppBarButton x:Uid="SitesAppButton"
                           x:Name="appBarButtonSites"
                           Icon="Favorite"
                           Label="Sites"
-                          Click="appBarButtonSites_Click" />
+                          Click="appBarButtonSites_Click" />-->
             <AppBarButton x:Uid="RefreshAppButton"
                           x:Name="appBarButtonRefresh"
                           Icon="Refresh"

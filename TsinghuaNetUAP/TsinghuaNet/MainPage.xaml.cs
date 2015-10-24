@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using System.Threading;
+using System.Linq;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -33,13 +34,25 @@ namespace TsinghuaNet
             this.InitializeComponent();
         }
 
-        private async void Page_Loading(FrameworkElement sender, object args)
+        private async void Page_Loaded(object sender, RoutedEventArgs args)
         {
-            if(WebConnect.Current == null)
+            //初始化信息存储区
+            try
+            {
+                var passVault = new Windows.Security.Credentials.PasswordVault();
+                var pass = passVault.FindAllByResource("TsinghuaAllInOne").First();
+                //已经添加字段
+                WebConnect.Current = new WebConnect(pass);
+                //准备磁贴更新
+                WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
+            }
+            // 未找到储存的密码
+            catch(Exception ex) when (ex.HResult == -2147023728)
             {
                 changeUser_Click(null, null);
                 return;
             }
+
             this.DataContext = WebConnect.Current;
             try
             {
@@ -49,12 +62,8 @@ namespace TsinghuaNet
             catch(Exception)
             {
             }
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
             refresh();
-            App.Current.Resuming += (s, args) => refresh();
+            App.Current.Resuming += (s, e) => refresh();
         }
 
         private WebDevice selectedDevice;
@@ -81,7 +90,10 @@ namespace TsinghuaNet
             dropDialog.Title = selectedDevice.Name;
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
-                await selectedDevice.DropAsync();
+                if(await selectedDevice.DropAsync())
+                    sendHint("下线成功");
+                else
+                    sendHint("下线失败，请刷新后再试");
                 refresh(false);
             }
         }
@@ -181,6 +193,7 @@ namespace TsinghuaNet
                 var s = (FrameworkElement)sender;
                 selectedDevice = (WebDevice)s.DataContext;
                 var p = e.GetPosition(s);
+                p.X = p.X > 100 ? p.X - 100 : 0;
                 p.Y = s.ActualHeight;
                 ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
                 break;
@@ -197,10 +210,32 @@ namespace TsinghuaNet
             await WebPage.Launch();
         }
 
+        private Queue<string> hintQueue = new Queue<string>();
+
         private void sendHint(string message)
         {
-            FindName("borderHint");
-            textBlockHint.Text = message ?? "";
+            if(textBlockHint == null)
+                FindName("borderHint");
+            hintQueue.Enqueue(message ?? "");
+            if(showHint.GetCurrentState() != Windows.UI.Xaml.Media.Animation.ClockState.Active)
+            {
+                showHint_Completed(showHint, null);
+            }
+            else
+            {
+                showHint.SpeedRatio = 3;
+            }
+        }
+
+        private void showHint_Completed(object sender, object e)
+        {
+            if(hintQueue.Count <= 1)
+                showHint.SpeedRatio = 1;
+            else
+                showHint.SpeedRatio = 3;
+            if(hintQueue.Count == 0)
+                return;
+            textBlockHint.Text = hintQueue.Dequeue();
             showHint.Begin();
         }
 
