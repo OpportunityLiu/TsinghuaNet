@@ -214,7 +214,8 @@ namespace Web
                 {
                     var post = HttpClient.PostStrAsync(dropUri, $"action=drops&user_ip={DropToken}");
                     token.Register(() => post.Cancel());
-                    return await post == "ok";
+                    var ans = await post;
+                    return ans == "下线请求已发送";
                 }
                 catch(OperationCanceledException)
                 {
