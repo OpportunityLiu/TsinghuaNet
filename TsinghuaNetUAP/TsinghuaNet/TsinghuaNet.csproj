@@ -105,6 +105,7 @@
     </Content>
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Strings.cs</LastGenOutput>
     </None>
     <Content Include="Assets\150x150.scale-100.png" />
     <Content Include="Assets\150x150.scale-125.png" />
@@ -182,6 +183,11 @@
       <DependentUpon>SignInDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SiteLanucher.cs" />
+    <Compile Include="Strings\Strings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.tt</DependentUpon>
+    </Compile>
     <Compile Include="WebContent.cs" />
     <Compile Include="WebPage.xaml.cs">
       <DependentUpon>WebPage.xaml</DependentUpon>

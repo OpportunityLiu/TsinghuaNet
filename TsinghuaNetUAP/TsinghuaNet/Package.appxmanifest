@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="8758870a-313c-4627-8f4f-1c1ad5955bfb" Publisher="CN=liuzh" Version="1.0.0.0" />
+  <Identity Name="8758870a-313c-4627-8f4f-1c1ad5955bfb" Publisher="CN=liuzh" Version="2.1.0.0" />
   <mp:PhoneIdentity PhoneProductId="8758870a-313c-4627-8f4f-1c1ad5955bfb" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>TsinghuaNet</DisplayName>
