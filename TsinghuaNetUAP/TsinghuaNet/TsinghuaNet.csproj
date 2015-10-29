@@ -101,6 +101,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebPages\HomePage.lang-en.html" />
     <Content Include="WebPages\Image\info.png" />
     <Content Include="WebPages\Image\learn.png" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
@@ -261,9 +262,7 @@
       <Name>Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WebPages\zh-cn\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
