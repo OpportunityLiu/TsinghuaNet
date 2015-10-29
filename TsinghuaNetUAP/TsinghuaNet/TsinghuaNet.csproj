@@ -101,12 +101,32 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebPages\Image\info.png" />
+    <Content Include="WebPages\Image\learn.png" />
+    <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
+    <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="WebPages\jQuery\jquery.min.map" />
     <PRIResource Include="Strings\en\Toast.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>
     </None>
-    <Content Include="WebPages\zh-cn\HomePage.html" />
+    <Content Include="WebPages\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="WebPages\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="WebPages\bootstrap\css\bootstrap.css" />
+    <Content Include="WebPages\bootstrap\css\bootstrap.min.css" />
+    <Content Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="WebPages\bootstrap\js\bootstrap.js" />
+    <Content Include="WebPages\bootstrap\js\bootstrap.min.js" />
+    <Content Include="WebPages\bootstrap\js\npm.js" />
+    <Content Include="WebPages\HomePage.js" />
+    <Content Include="WebPages\jQuery\jquery.js" />
+    <Content Include="WebPages\jQuery\jquery.min.js" />
+    <Content Include="WebPages\HomePage.lang-zh-cn.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -240,6 +260,9 @@
       <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>
       <Name>Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WebPages\zh-cn\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
