@@ -101,9 +101,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="WebPages\HomePage.lang-en.html" />
     <Content Include="WebPages\Image\info.png" />
     <Content Include="WebPages\Image\learn.png" />
+    <None Include="TsinghuaNet_StoreKey.pfx" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -165,7 +167,6 @@
     <PRIResource Include="Strings\en\Resources.resw" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-CN\Toast.resw" />
-    <None Include="TsinghuaNet_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\150x150.scale-100.png" />
@@ -202,7 +203,6 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
     </Content>
