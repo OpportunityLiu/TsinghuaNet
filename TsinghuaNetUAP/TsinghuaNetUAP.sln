@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "NotificationService\NotificationService.csproj", "{B856C287-9A19-445E-B6DA-B3A2579BE646}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsinghuaNet", "TsinghuaNet\TsinghuaNet.csproj", "{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -56,12 +58,30 @@ Global
 		{B856C287-9A19-445E-B6DA-B3A2579BE646}.Release|x64.Build.0 = Release|x64
 		{B856C287-9A19-445E-B6DA-B3A2579BE646}.Release|x86.ActiveCfg = Release|x86
 		{B856C287-9A19-445E-B6DA-B3A2579BE646}.Release|x86.Build.0 = Release|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|ARM.ActiveCfg = Debug|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|ARM.Build.0 = Debug|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|ARM.Deploy.0 = Debug|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x64.ActiveCfg = Debug|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x64.Build.0 = Debug|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x64.Deploy.0 = Debug|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x86.ActiveCfg = Debug|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x86.Build.0 = Debug|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Debug|x86.Deploy.0 = Debug|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|ARM.ActiveCfg = Release|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|ARM.Build.0 = Release|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|ARM.Deploy.0 = Release|ARM
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x64.ActiveCfg = Release|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x64.Build.0 = Release|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x64.Deploy.0 = Release|x64
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x86.ActiveCfg = Release|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x86.Build.0 = Release|x86
+		{6EA4BF54-0E4C-48F1-98E9-CBEFB7C54299}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://liuzhengyuan13.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -74,5 +94,8 @@ Global
 		SccProjectUniqueName3 = NotificationService\\NotificationService.csproj
 		SccProjectName3 = NotificationService
 		SccLocalPath3 = NotificationService
+		SccProjectUniqueName4 = TsinghuaNet\\TsinghuaNet.csproj
+		SccProjectName4 = TsinghuaNet
+		SccLocalPath4 = TsinghuaNet
 	EndGlobalSection
 EndGlobal
