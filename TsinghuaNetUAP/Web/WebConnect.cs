@@ -76,38 +76,36 @@ namespace Web
         {
             return Run(async token =>
             {
-                var cacheFolder = ApplicationData.Current.LocalCacheFolder;
+                string dataStr;
                 try
                 {
-                    using(var stream = await cacheFolder.OpenStreamForReadAsync("WebConnectCache.json"))
-                    using(var reader = new StreamReader(stream))
-                    {
-                        var dataStr = reader.ReadToEnd();
-                        if(string.IsNullOrWhiteSpace(dataStr))
-                            return;
-                        JsonObject data;
-                        if(!JsonObject.TryParse(dataStr, out data))
-                            return;
-                        Balance = (decimal)data[nameof(Balance)].GetNumber();
-                        UpdateTime = DateTime.FromBinary((long)data[nameof(UpdateTime)].GetNumber());
-                        WebTraffic = new Size((ulong)data[nameof(WebTraffic)].GetNumber());
-                        var devices = from item in data[nameof(DeviceList)].GetArray()
-                                      let device = item.GetObject()
-                                      let ip = Ipv4Address.Parse(device[nameof(WebDevice.IPAddress)].GetString())
-                                      let mac = MacAddress.Parse(device[nameof(WebDevice.Mac)].GetString())
-                                      let deTraffic = new Size((ulong)device[nameof(WebDevice.WebTraffic)].GetNumber())
-                                      let deTime = DateTime.FromBinary((long)device[nameof(WebDevice.LogOnDateTime)].GetNumber())
-                                      select new WebDevice(ip, mac)
-                                      {
-                                          WebTraffic = deTraffic,
-                                          LogOnDateTime = deTime
-                                      };
-                        Dispose();
-                        foreach(var item in devices)
-                            deviceList.Add(item);
-                    }
+                    var cacheFolder = ApplicationData.Current.LocalCacheFolder;
+                    var cacheFile = await cacheFolder.GetFileAsync("WebConnectCache.json");
+                    dataStr = await FileIO.ReadTextAsync(cacheFile);
                 }
-                catch(IOException) { return; }
+                catch(Exception) { return; }
+                if(string.IsNullOrWhiteSpace(dataStr))
+                    return;
+                JsonObject data;
+                if(!JsonObject.TryParse(dataStr, out data))
+                    return;
+                Balance = (decimal)data[nameof(Balance)].GetNumber();
+                UpdateTime = DateTime.FromBinary((long)data[nameof(UpdateTime)].GetNumber());
+                WebTraffic = new Size((ulong)data[nameof(WebTraffic)].GetNumber());
+                var devices = from item in data[nameof(DeviceList)].GetArray()
+                              let device = item.GetObject()
+                              let ip = Ipv4Address.Parse(device[nameof(WebDevice.IPAddress)].GetString())
+                              let mac = MacAddress.Parse(device[nameof(WebDevice.Mac)].GetString())
+                              let deTraffic = new Size((ulong)device[nameof(WebDevice.WebTraffic)].GetNumber())
+                              let deTime = DateTime.FromBinary((long)device[nameof(WebDevice.LogOnDateTime)].GetNumber())
+                              select new WebDevice(ip, mac)
+                              {
+                                  WebTraffic = deTraffic,
+                                  LogOnDateTime = deTime
+                              };
+                Dispose();
+                foreach(var item in devices)
+                    deviceList.Add(item);
             });
         }
 
@@ -132,11 +130,7 @@ namespace Web
                 data[nameof(DeviceList)] = devices;
                 var cacheFolder = ApplicationData.Current.LocalCacheFolder;
                 var cacheFile = await cacheFolder.CreateFileAsync("WebConnectCache.json", CreationCollisionOption.ReplaceExisting);
-                using(var stream = await cacheFile.OpenStreamForWriteAsync())
-                using(var writer = new StreamWriter(stream))
-                {
-                    writer.Write(data.Stringify());
-                }
+                await FileIO.WriteTextAsync(cacheFile, data.Stringify());
             });
         }
 

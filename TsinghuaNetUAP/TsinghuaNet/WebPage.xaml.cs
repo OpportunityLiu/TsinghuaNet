@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.ViewManagement;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Windows.ApplicationModel.Core;
+using Windows.UI;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -42,6 +44,8 @@ namespace TsinghuaNet
                     webPageWindow.Content = frame;
                     webPageWindow.Activate();
                     appView = ApplicationView.GetForCurrentView();
+                    appView.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+                    appView.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                     appView.SetPreferredMinSize(new Size(320, 400));
                     webPageViewId = appView.Id;
                     appView.Consolidated += async (sender, e) =>
@@ -50,7 +54,6 @@ namespace TsinghuaNet
                         {
                             webPageWindow.Content = null;
                         });
-                        webPageWindow.Close();
                         webPageWindow = null;
                     };
                 });
@@ -119,6 +122,15 @@ namespace TsinghuaNet
                 webViewBorder.Width = 1024;
                 webViewBorder.Height = (height - 32) / width * 1024;
             }
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            if(width > 500)
+            {
+                coreTitleBar.ExtendViewIntoTitleBar = true;
+            }
+            else
+            {
+                coreTitleBar.ExtendViewIntoTitleBar = false;
+            }
         }
 
         private void CloseViewButton_Click(object sender, RoutedEventArgs e)
@@ -145,6 +157,20 @@ namespace TsinghuaNet
         private void NewViewButton_Click(object sender, RoutedEventArgs e)
         {
             AddEmptyView();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
+            Window.Current.SetTitleBar(titleBar);
+        }
+
+        private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+        {
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            colL.Width = new GridLength(coreTitleBar.SystemOverlayLeftInset);
+            colR.Width = new GridLength(coreTitleBar.SystemOverlayRightInset);
         }
     }
 }
