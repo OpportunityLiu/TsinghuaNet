@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
+      Loaded="Page_Loaded"
       NavigationCacheMode="Required">
     <Grid x:Name="root"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -17,6 +18,8 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="listView.(Grid.Row)"
+                                Value="1" />
+                        <Setter Target="titleBar.(Grid.Row)"
                                 Value="1" />
                         <Setter Target="webViewPlaceholder.(Grid.Row)"
                                 Value="0" />
@@ -33,6 +36,8 @@
                     <VisualState.Setters>
                         <Setter Target="listView.(Grid.Row)"
                                 Value="0" />
+                        <Setter Target="titleBar.(Grid.Row)"
+                                Value="0" />
                         <Setter Target="webViewPlaceholder.(Grid.Row)"
                                 Value="1" />
                         <Setter Target="row0.Height"
@@ -44,11 +49,21 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="row0" Height="32"/>
+            <RowDefinition x:Name="row0"
+                           Height="32" />
             <RowDefinition x:Name="row1" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="colL" Width="0"/>
+            <ColumnDefinition x:Name="colC" />
+            <ColumnDefinition x:Name="colR" Width="0"/>
+        </Grid.ColumnDefinitions>
+        <Border x:Name="titleBar"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                Grid.ColumnSpan="3" />
         <ListView x:Name="listView"
                   Height="32"
+                  Grid.Column="1"
                   ItemsSource="{x:Bind webViewCollection}"
                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -56,8 +71,10 @@
                   HorizontalAlignment="Left">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="MinHeight" Value="32"/>
+                    <Setter Property="Padding"
+                            Value="0" />
+                    <Setter Property="MinHeight"
+                            Value="32" />
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.Template>
@@ -76,8 +93,7 @@
                                         Header="{TemplateBinding Header}"
                                         HeaderTemplate="{TemplateBinding HeaderTemplate}"
                                         HeaderTransitions="{TemplateBinding HeaderTransitions}"
-                                        Transitions="{TemplateBinding Transitions}" 
-                                        />
+                                        Transitions="{TemplateBinding Transitions}" />
                     </ScrollViewer>
                 </ControlTemplate>
             </ListView.Template>
@@ -92,13 +108,14 @@
                                    Text="{x:Bind Title, Mode=OneWay}"
                                    VerticalAlignment="Center"
                                    Margin="8,0,4,0"
-                                   TextTrimming="Clip" 
-                                   Width="100"/>
-                        <Button Grid.Column="1" Style="{StaticResource NavigationBackButtonSmallStyle}"
+                                   TextTrimming="Clip"
+                                   Width="100" />
+                        <Button Grid.Column="1"
+                                Style="{StaticResource NavigationBackButtonSmallStyle}"
                                 Content="&#xE106;"
                                 Width="32"
                                 Height="32"
-                                FontSize="16" 
+                                FontSize="16"
                                 Click="CloseViewButton_Click" />
                     </Grid>
                 </DataTemplate>
@@ -118,7 +135,8 @@
                         Click="NewViewButton_Click" />
             </ListView.Footer>
         </ListView>
-        <Viewbox x:Name="webViewPlaceholder">
+        <Viewbox x:Name="webViewPlaceholder"
+                 Grid.ColumnSpan="3">
             <Border x:Name="webViewBorder"
                     Child="{Binding SelectedItem.View, ElementName=listView, Mode=OneWay}" />
         </Viewbox>

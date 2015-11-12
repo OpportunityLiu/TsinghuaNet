@@ -41,7 +41,7 @@ namespace BackgroundLogOnTask
                 return;
             if(connection.IsWwanConnectionProfile)
                 return;
-                var client = new WebConnect(account);
+            var client = new WebConnect(account);
             var d = taskInstance.GetDeferral();
             try
             {
