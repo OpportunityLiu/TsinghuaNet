@@ -22,7 +22,7 @@ namespace Web
         /// 使用序列化字符串初始化 <see cref="DeviceNameDictionary"/> 的新实例。
         /// </summary>
         /// <param name="jsonInput">保存有字典信息的 json 序列化字符串。</param>
-        /// <exception cref="System.ArgumentException">输入字符串有误，无法进行反序列化。</exception>
+        /// <exception cref="ArgumentException">输入字符串有误，无法进行反序列化。</exception>
         public DeviceNameDictionary(string jsonInput)
             : base()
         {

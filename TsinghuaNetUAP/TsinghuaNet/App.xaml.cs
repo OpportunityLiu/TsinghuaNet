@@ -10,6 +10,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
+using Windows.System;
+using System.IO;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -34,22 +36,42 @@ namespace TsinghuaNet
             Current = this;
 
             //注册后台任务
-            IBackgroundTaskRegistration task = null;
+            IBackgroundTaskRegistration BackgroundLogOnTask = null;
             foreach(var cur in BackgroundTaskRegistration.AllTasks)
             {
                 if(cur.Value.Name == "BackgroundLogOnTask")
                 {
-                    task = cur.Value;
-                    break;
+                    BackgroundLogOnTask = cur.Value;
+                    continue;
                 }
             }
-            if(task == null)
+            if(BackgroundLogOnTask == null)
             {
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = "BackgroundLogOnTask";
                 builder.TaskEntryPoint = "BackgroundLogOnTask.Task";
                 builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
-                task = builder.Register();
+                BackgroundLogOnTask = builder.Register();
+            }
+
+            object theme;
+            if(ApplicationData.Current.LocalSettings.Values.TryGetValue("Theme", out theme))
+            {
+                switch((ElementTheme)Enum.Parse(typeof(ElementTheme), theme.ToString()))
+                {
+                case ElementTheme.Light:
+                    Current.RequestedTheme = ApplicationTheme.Light;
+                    break;
+                case ElementTheme.Dark:
+                    Current.RequestedTheme = ApplicationTheme.Dark;
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                ApplicationData.Current.LocalSettings.Values["Theme"] = ElementTheme.Default.ToString();
             }
         }
 

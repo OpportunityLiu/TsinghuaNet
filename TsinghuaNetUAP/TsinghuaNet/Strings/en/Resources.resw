@@ -213,6 +213,9 @@
   <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
     <value>New name</value>
   </data>
+  <data name="SettingsAppButton.Label" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="SignInHint.Text" xml:space="preserve">
     <value>Enter your user ID and password for Tsinghua University Network to start.</value>
   </data>

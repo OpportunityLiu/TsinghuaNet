@@ -128,11 +128,11 @@
   </data>
   <data name="DownloadSucceed" xml:space="preserve">
     <value>&lt;toast&gt;
-    &lt;visual&gt;
-        &lt;binding template='ToastGeneric'&gt;
-            &lt;text&gt;下载完成&lt;/text&gt;
-        &lt;/binding&gt;
-    &lt;/visual&gt;
+  &lt;visual&gt;
+    &lt;binding template="ToastGeneric"&gt;
+      &lt;text&gt;下载完成&lt;/text&gt;
+    &lt;/binding&gt;
+  &lt;/visual&gt;
 &lt;/toast&gt;</value>
   </data>
 </root>

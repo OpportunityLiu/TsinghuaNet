@@ -1,0 +1,22 @@
+﻿<Flyout x:Class="TsinghuaNet.SettingsFlyout"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:TsinghuaNet"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Placement="Full"
+        Opening="Flyout_Opening">
+    <StackPanel Width="240">
+        <ToggleSwitch Header="Auto login"
+                      Margin="0,4" />
+        <ComboBox x:Name="comboBoxTheme" Header="Theme (need to restart the app)"
+                  Margin="0,4"
+                  SelectionChanged="comboBoxTheme_SelectionChanged"
+                  HorizontalAlignment="Stretch">
+            <ComboBoxItem>Auto</ComboBoxItem>
+            <ComboBoxItem>Light</ComboBoxItem>
+            <ComboBoxItem>Dark</ComboBoxItem>
+        </ComboBox>
+    </StackPanel>
+</Flyout>

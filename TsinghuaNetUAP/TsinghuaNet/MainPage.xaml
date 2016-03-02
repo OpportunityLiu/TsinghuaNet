@@ -67,6 +67,12 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="commandBar">
             <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="SettingsAppButton"
+                              Label="Settings">
+                    <AppBarButton.Flyout>
+                        <local:SettingsFlyout />
+                    </AppBarButton.Flyout>
+                </AppBarButton>
                 <AppBarButton x:Uid="AboutAppButton"
                               x:Name="appBarButtonAbout"
                               Label="About">
@@ -75,9 +81,9 @@
                             <TextBlock x:Name="textBlockAbout"
                                        x:DeferLoadStrategy="Lazy"
                                        Width="240"
+                                       Margin="0,4"
                                        Style="{StaticResource BodyTextBlockStyle}"
-                                       Margin="4"
-                                       LineHeight="16">
+                                       Height="120">
                                 <Run x:Uid="AppName"
                                      Text="Tsinghua Net"
                                      FontSize="16" />
@@ -93,7 +99,6 @@
                                     <Run x:Uid="RateLink"
                                          Text="Rate and review" />
                                 </Hyperlink>
-                                <LineBreak />
                             </TextBlock>
                         </Flyout>
                     </AppBarButton.Flyout>
