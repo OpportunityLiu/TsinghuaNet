@@ -27,7 +27,7 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class WebPage : Page
     {
-        private static Window webPageWindow;
+        internal static Window webPageWindow;
         private static int webPageViewId;
         
         public static async Task Launch()

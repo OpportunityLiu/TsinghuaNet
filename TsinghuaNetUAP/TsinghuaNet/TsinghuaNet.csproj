@@ -262,6 +262,10 @@
       <Project>{b856c287-9a19-445e-b6da-b3a2579be646}</Project>
       <Name>NotificationService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Project>{062804af-feed-4ced-b25b-efa89a19b70e}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web\Web.csproj">
       <Project>{f6a4b63e-1bbc-491f-8ab9-3415df88fdd8}</Project>
       <Name>Web</Name>

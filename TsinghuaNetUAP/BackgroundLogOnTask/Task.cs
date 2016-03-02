@@ -24,8 +24,13 @@ namespace BackgroundLogOnTask
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            PasswordCredential account;
+            //是否自动登陆
+            if(!Settings.SettingsHelper.GetLocal("AutoLogOn", true))
+            {
+                return;
+            }
             //初始化信息存储区
+            PasswordCredential account;
             try
             {
                 var passVault = new PasswordVault();
