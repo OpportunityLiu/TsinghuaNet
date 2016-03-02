@@ -213,6 +213,9 @@
   <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
     <value>新名称</value>
   </data>
+  <data name="SettingsAppButton.Label" xml:space="preserve">
+    <value>设置</value>
+  </data>
   <data name="SignInHint.Text" xml:space="preserve">
     <value>输入清华大学校园网用户名与密码以开始使用。</value>
   </data>

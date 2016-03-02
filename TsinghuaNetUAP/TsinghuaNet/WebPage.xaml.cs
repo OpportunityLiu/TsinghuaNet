@@ -29,30 +29,31 @@ namespace TsinghuaNet
     {
         private static Window webPageWindow;
         private static int webPageViewId;
-
+        
         public static async Task Launch()
         {
             if(webPageWindow == null)
             {
-                var view = Windows.ApplicationModel.Core.CoreApplication.CreateNewView();
+                var view = CoreApplication.CreateNewView();
                 ApplicationView appView = null;
                 await view.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    var frame = new Frame();
-                    frame.Navigate(typeof(WebPage));
+                    var page = new WebPage();
                     webPageWindow = Window.Current;
-                    webPageWindow.Content = frame;
+                    webPageWindow.Content = page;
                     webPageWindow.Activate();
                     appView = ApplicationView.GetForCurrentView();
-                    appView.TitleBar.ButtonBackgroundColor = Colors.Transparent;
-                    appView.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                    appView.SetPreferredMinSize(new Size(320, 400));
+                    appView.TitleBar.BackgroundColor = (Color)page.Resources["SystemChromeMediumLowColor"];
+                    appView.TitleBar.ButtonBackgroundColor = (Color)page.Resources["SystemChromeMediumLowColor"];
                     webPageViewId = appView.Id;
+                    webPageWindow.Activated += page.WebPageWindow_Activated;
                     appView.Consolidated += async (sender, e) =>
                     {
                         await webPageWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
+                            var p = (WebPage)webPageWindow.Content;
                             webPageWindow.Content = null;
+                            webPageWindow.Activated -= p.WebPageWindow_Activated;
                         });
                         webPageWindow = null;
                     };
@@ -69,20 +70,27 @@ namespace TsinghuaNet
             }
         }
 
+        private void WebPageWindow_Activated(object sender, Windows.UI.Core.WindowActivatedEventArgs e)
+        {
+            if(e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
+            {
+                titleBar.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                titleBar.Visibility = Visibility.Visible;
+            }
+        }
+        
         public WebPage()
         {
             this.InitializeComponent();
-        }
-
-        private ObservableCollection<WebContent> webViewCollection = new ObservableCollection<WebContent>();
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
             Bindings.Initialize();
             if(webViewCollection.Count == 0)
                 AddEmptyView();
         }
+
+        private ObservableCollection<WebContent> webViewCollection = new ObservableCollection<WebContent>();
 
         private WebContent NewWebContent(Uri uri)
         {
@@ -112,7 +120,7 @@ namespace TsinghuaNet
         {
             var width = e.NewSize.Width;
             var height = e.NewSize.Height;
-            if(width > 1024)
+            if(width >= 1024)
             {
                 webViewBorder.Height = height - 32;
                 webViewBorder.Width = width;
@@ -123,7 +131,7 @@ namespace TsinghuaNet
                 webViewBorder.Height = (height - 32) / width * 1024;
             }
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            if(width > 500)
+            if(width >= 500)
             {
                 coreTitleBar.ExtendViewIntoTitleBar = true;
             }

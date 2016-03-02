@@ -100,7 +100,117 @@ namespace TsinghuaNet
 
         private void View_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
         {
-
+            switch(e.WebErrorStatus)
+            {
+            case Windows.Web.WebErrorStatus.Unknown:
+                break;
+            case Windows.Web.WebErrorStatus.CertificateCommonNameIsIncorrect:
+                break;
+            case Windows.Web.WebErrorStatus.CertificateExpired:
+                break;
+            case Windows.Web.WebErrorStatus.CertificateContainsErrors:
+                break;
+            case Windows.Web.WebErrorStatus.CertificateRevoked:
+                break;
+            case Windows.Web.WebErrorStatus.CertificateIsInvalid:
+                break;
+            case Windows.Web.WebErrorStatus.ServerUnreachable:
+                break;
+            case Windows.Web.WebErrorStatus.Timeout:
+                break;
+            case Windows.Web.WebErrorStatus.ErrorHttpInvalidServerResponse:
+                break;
+            case Windows.Web.WebErrorStatus.ConnectionAborted:
+                break;
+            case Windows.Web.WebErrorStatus.ConnectionReset:
+                break;
+            case Windows.Web.WebErrorStatus.Disconnected:
+                break;
+            case Windows.Web.WebErrorStatus.HttpToHttpsOnRedirection:
+                break;
+            case Windows.Web.WebErrorStatus.HttpsToHttpOnRedirection:
+                break;
+            case Windows.Web.WebErrorStatus.CannotConnect:
+                break;
+            case Windows.Web.WebErrorStatus.HostNameNotResolved:
+                break;
+            case Windows.Web.WebErrorStatus.OperationCanceled:
+                break;
+            case Windows.Web.WebErrorStatus.RedirectFailed:
+                break;
+            case Windows.Web.WebErrorStatus.UnexpectedStatusCode:
+                break;
+            case Windows.Web.WebErrorStatus.UnexpectedRedirection:
+                break;
+            case Windows.Web.WebErrorStatus.UnexpectedClientError:
+                break;
+            case Windows.Web.WebErrorStatus.UnexpectedServerError:
+                break;
+            case Windows.Web.WebErrorStatus.MultipleChoices:
+                break;
+            case Windows.Web.WebErrorStatus.MovedPermanently:
+                break;
+            case Windows.Web.WebErrorStatus.Found:
+                break;
+            case Windows.Web.WebErrorStatus.SeeOther:
+                break;
+            case Windows.Web.WebErrorStatus.NotModified:
+                break;
+            case Windows.Web.WebErrorStatus.UseProxy:
+                break;
+            case Windows.Web.WebErrorStatus.TemporaryRedirect:
+                break;
+            case Windows.Web.WebErrorStatus.BadRequest:
+                break;
+            case Windows.Web.WebErrorStatus.Unauthorized:
+                break;
+            case Windows.Web.WebErrorStatus.PaymentRequired:
+                break;
+            case Windows.Web.WebErrorStatus.Forbidden:
+                break;
+            case Windows.Web.WebErrorStatus.NotFound:
+                break;
+            case Windows.Web.WebErrorStatus.MethodNotAllowed:
+                break;
+            case Windows.Web.WebErrorStatus.NotAcceptable:
+                break;
+            case Windows.Web.WebErrorStatus.ProxyAuthenticationRequired:
+                break;
+            case Windows.Web.WebErrorStatus.RequestTimeout:
+                break;
+            case Windows.Web.WebErrorStatus.Conflict:
+                break;
+            case Windows.Web.WebErrorStatus.Gone:
+                break;
+            case Windows.Web.WebErrorStatus.LengthRequired:
+                break;
+            case Windows.Web.WebErrorStatus.PreconditionFailed:
+                break;
+            case Windows.Web.WebErrorStatus.RequestEntityTooLarge:
+                break;
+            case Windows.Web.WebErrorStatus.RequestUriTooLong:
+                break;
+            case Windows.Web.WebErrorStatus.UnsupportedMediaType:
+                break;
+            case Windows.Web.WebErrorStatus.RequestedRangeNotSatisfiable:
+                break;
+            case Windows.Web.WebErrorStatus.ExpectationFailed:
+                break;
+            case Windows.Web.WebErrorStatus.InternalServerError:
+                break;
+            case Windows.Web.WebErrorStatus.NotImplemented:
+                break;
+            case Windows.Web.WebErrorStatus.BadGateway:
+                break;
+            case Windows.Web.WebErrorStatus.ServiceUnavailable:
+                break;
+            case Windows.Web.WebErrorStatus.GatewayTimeout:
+                break;
+            case Windows.Web.WebErrorStatus.HttpVersionNotSupported:
+                break;
+            default:
+                break;
+            }
         }
 
         private void View_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
