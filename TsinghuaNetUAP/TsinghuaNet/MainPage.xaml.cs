@@ -34,6 +34,8 @@ namespace TsinghuaNet
             this.InitializeComponent();
         }
 
+        private bool autoLogOn;
+
         private async void Page_Loaded(object sender, RoutedEventArgs args)
         {
             //初始化信息存储区
@@ -62,8 +64,9 @@ namespace TsinghuaNet
             catch(Exception)
             {
             }
-            refresh();
-            App.Current.Resuming += (s, e) => refresh();
+            SettingsFlyout_SettingsChanged(null, "AutoLogOn");
+            refresh(autoLogOn);
+            App.Current.Resuming += (s, e) => refresh(autoLogOn);
         }
 
         private WebDevice selectedDevice;
@@ -160,7 +163,7 @@ namespace TsinghuaNet
             var signIn = LazyInitializer.EnsureInitialized(ref this.signInDialog, () =>
             {
                 var s = new SignInDialog();
-                s.Closed += (_, args) => refresh();
+                s.Closed += (_, args) => refresh(autoLogOn);
                 return s;
             });
             await signIn.ShowAsync();
@@ -168,7 +171,7 @@ namespace TsinghuaNet
 
         private void refresh_Click(object sender, RoutedEventArgs e)
         {
-            refresh();
+            refresh(autoLogOn);
         }
 
         private void TextBlock_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -244,6 +247,23 @@ namespace TsinghuaNet
             FindName("textBlockAbout");
             var version = Package.Current.Id.Version;
             runVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
+        }
+
+        private void appBarButtonLogOn_Click(object sender, RoutedEventArgs e)
+        {
+            refresh(true);
+        }
+
+        private void SettingsFlyout_SettingsChanged(object sender, string e)
+        {
+            if(e == "AutoLogOn")
+            {
+                autoLogOn = Settings.SettingsHelper.GetLocal("AutoLogOn", true);
+                if(autoLogOn)
+                    appBarButtonLogOn.Visibility = Visibility.Collapsed;
+                else
+                    appBarButtonLogOn.Visibility = Visibility.Visible;
+            }
         }
     }
 

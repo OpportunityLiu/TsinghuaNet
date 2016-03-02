@@ -8,15 +8,29 @@
         Placement="Full"
         Opening="Flyout_Opening">
     <StackPanel Width="240">
-        <ToggleSwitch Header="Auto login"
-                      Margin="0,4" />
-        <ComboBox x:Name="comboBoxTheme" Header="Theme (need to restart the app)"
+        <ToggleSwitch x:Name="toggleSwitchLogOn"
+                      x:Uid="LogOnToggleSeitch"
+                      Header="Auto login"
+                      Margin="0,4"
+                      Toggled="toggleSwitchLogOn_Toggled" />
+        <ComboBox x:Name="comboBoxTheme"
                   Margin="0,4"
                   SelectionChanged="comboBoxTheme_SelectionChanged"
                   HorizontalAlignment="Stretch">
-            <ComboBoxItem>Auto</ComboBoxItem>
-            <ComboBoxItem>Light</ComboBoxItem>
-            <ComboBoxItem>Dark</ComboBoxItem>
+            <ComboBox.Header>
+                <StackPanel>
+                    <TextBlock x:Uid="ThemeTextBlock1">
+                    Theme
+                    </TextBlock>
+                    <TextBlock x:Uid="ThemeTextBlock2"
+                               Style="{StaticResource CaptionTextBlockStyle}">
+                        (need to restart the app)
+                    </TextBlock>
+                </StackPanel>
+            </ComboBox.Header>
+            <ComboBoxItem x:Uid="ThemeComboBoxItem0">Auto</ComboBoxItem>
+            <ComboBoxItem x:Uid="ThemeComboBoxItem1">Light</ComboBoxItem>
+            <ComboBoxItem x:Uid="ThemeComboBoxItem2">Dark</ComboBoxItem>
         </ComboBox>
     </StackPanel>
 </Flyout>

@@ -70,7 +70,7 @@
                 <AppBarButton x:Uid="SettingsAppButton"
                               Label="Settings">
                     <AppBarButton.Flyout>
-                        <local:SettingsFlyout />
+                        <local:SettingsFlyout SettingsChanged="SettingsFlyout_SettingsChanged"/>
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <AppBarButton x:Uid="AboutAppButton"
@@ -113,6 +113,11 @@
                           Icon="Favorite"
                           Label="Sites"
                           Click="appBarButtonSites_Click" />
+            <AppBarButton x:Uid="LogOnAppButton"
+                          x:Name="appBarButtonLogOn"
+                          Icon="Permissions"
+                          Label="Login"
+                          Click="appBarButtonLogOn_Click" />
             <AppBarButton x:Uid="RefreshAppButton"
                           x:Name="appBarButtonRefresh"
                           Icon="Refresh"

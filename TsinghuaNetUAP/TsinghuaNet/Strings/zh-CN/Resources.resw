@@ -165,6 +165,12 @@
   <data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
+  <data name="LogOnAppButton.Label" xml:space="preserve">
+    <value>登陆</value>
+  </data>
+  <data name="LogOnToggleSeitch.Header" xml:space="preserve">
+    <value>自动登陆</value>
+  </data>
   <data name="Mac.Text" xml:space="preserve">
     <value>MAC</value>
   </data>
@@ -234,11 +240,26 @@
   <data name="Theme.Text" xml:space="preserve">
     <value>主题</value>
   </data>
+  <data name="ThemeComboBoxItem0.Content" xml:space="preserve">
+    <value>自动选择</value>
+  </data>
+  <data name="ThemeComboBoxItem1.Content" xml:space="preserve">
+    <value>明亮</value>
+  </data>
+  <data name="ThemeComboBoxItem2.Content" xml:space="preserve">
+    <value>黑暗</value>
+  </data>
   <data name="ThemeDark.Content" xml:space="preserve">
     <value>深色</value>
   </data>
   <data name="ThemeLight.Content" xml:space="preserve">
     <value>浅色</value>
+  </data>
+  <data name="ThemeTextBlock1.Text" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="ThemeTextBlock2.Text" xml:space="preserve">
+    <value>(重启应用后生效)</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
     <value>登陆失败</value>
