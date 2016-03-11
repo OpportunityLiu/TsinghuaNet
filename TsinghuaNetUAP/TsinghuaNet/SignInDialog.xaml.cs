@@ -41,71 +41,65 @@ namespace TsinghuaNet
 
         private async System.Threading.Tasks.Task<bool> SignIn()
         {
+            textBlockHint.Text = "";
             var userName = textBoxUserName.Text;
-            if(string.IsNullOrEmpty(userName))
+            if(string.IsNullOrEmpty(userName) || userName.All(c => char.IsDigit(c)))
             {
                 textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.Resources.EmptyUserName;
+                textBlockHint.Text = LocalizedStrings.Errors.EmptyUserName;
                 return false;
             }
             var password = passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
                 passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.Resources.EmptyPassword;
+                textBlockHint.Text = LocalizedStrings.Errors.EmptyPassword;
                 return false;
             }
+            progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
-                progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                var connect = new WebConnect(userName, password);
-                await connect.RefreshAsync();
-                var passVault = new Windows.Security.Credentials.PasswordVault();
-                try
+                if(!await WebConnect.CheckAccount(userName, password))
                 {
-                    var oldPass = passVault.FindAllByResource("TsinghuaAllInOne").First();
-                    passVault.Remove(oldPass);
-                }
-                // 未找到储存的密码
-                catch(Exception ex) when (ex.HResult == -2147023728)
-                {
-                }
-                var pass = new Windows.Security.Credentials.PasswordCredential("TsinghuaAllInOne", userName, password);
-                passVault.Add(pass);
-
-                WebConnect.Current = connect;
-                WebConnect.Current.PropertyChanged += async (sender, e) =>
-                {
-                    if(e.PropertyName != nameof(WebConnect.UpdateTime))
-                        return;
-                    await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
-                };
-                return true;
-            }
-            catch(LogOnException excep)
-            {
-                textBlockHint.Text = excep.Message;
-                switch(excep.ExceptionType)
-                {
-                case LogOnExceptionType.UserNameError:
                     textBoxUserName.SelectAll();
                     textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                    break;
-                case LogOnExceptionType.PasswordError:
-                    passwordBoxPassword.SelectAll();
-                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                    break;
-                default:
-                    break;
+                    passwordBoxPassword.Password = "";
+                    progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    textBlockHint.Text = LocalizedStrings.Errors.AuthError;
+                    return false;
                 }
+            }
+            catch(Exception)
+            {
+                textBlockHint.Text =LocalizedStrings.Errors.ConnectError;
                 progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 return false;
             }
+            var connect = new WebConnect(userName, password);
+            var passVault = new Windows.Security.Credentials.PasswordVault();
+            try
+            {
+                var oldPass = passVault.FindAllByResource("TsinghuaAllInOne").First();
+                passVault.Remove(oldPass);
+            }
+            // 未找到储存的密码
+            catch(Exception ex) when(ex.HResult == -2147023728)
+            {
+            }
+            passVault.Add(connect.Account);
+
+            WebConnect.Current = connect;
+            WebConnect.Current.PropertyChanged += async (sender, e) =>
+            {
+                if(e.PropertyName != nameof(WebConnect.UpdateTime))
+                    return;
+                await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
+            };
+            return true;
         }
 
         private void textChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            textBlockHint.Text = "";
         }
     }
 }

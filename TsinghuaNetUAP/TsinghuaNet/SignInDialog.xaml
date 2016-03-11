@@ -25,7 +25,7 @@
             <ProgressBar x:Name="progressBar"
                          IsIndeterminate="True"
                          VerticalAlignment="Top"
-                         Visibility="Collapsed" />
+                         Visibility="Collapsed"/>
             <TextBlock x:Name="textBlockHint"
                        Foreground="Red" />
         </Grid>

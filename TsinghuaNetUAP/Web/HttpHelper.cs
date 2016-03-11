@@ -51,5 +51,28 @@ namespace Web
                 }
             });
         }
+
+        private static Uri testUri = new Uri("http://info.tsinghua.edu.cn");
+
+        public static IAsyncOperation<bool> NeedSslVpn(this HttpClient httpClient)
+        {
+            if(httpClient == null)
+                throw new ArgumentNullException(nameof(httpClient));
+            return Run(async token =>
+            {
+                var postTask = httpClient.GetAsync(testUri, HttpCompletionOption.ResponseHeadersRead);
+                token.Register(() => postTask.Cancel());
+                using(var get = await postTask)
+                {
+                    var code = (int)get.StatusCode;
+                    if(code < 200 || code >= 400)
+                        throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
+                    else if(code < 300)
+                        return get.RequestMessage.RequestUri.ToString().EndsWith("indexOutJump.jsp");
+                    else
+                        return (int)get.StatusCode >= 300;
+                }
+            });
+        }
     }
 }

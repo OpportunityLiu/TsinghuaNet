@@ -100,6 +100,12 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\en\Errors.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <PRIResource Include="Strings\zh-CN\Errors.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <None Include="TsinghuaNet_StoreKey.pfx" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
