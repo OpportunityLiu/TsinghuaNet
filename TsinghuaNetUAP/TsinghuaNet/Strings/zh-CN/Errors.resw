@@ -117,160 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutAppButton.Label" xml:space="preserve">
-    <value>About</value>
+  <data name="AuthError" xml:space="preserve">
+    <value>用户名或密码错误。</value>
   </data>
-  <data name="AboutPage.Title" xml:space="preserve">
-    <value>About</value>
+  <data name="ConnectError" xml:space="preserve">
+    <value>连接错误。</value>
   </data>
-  <data name="AppAuthor.Text" xml:space="preserve">
-    <value>Opportunity</value>
+  <data name="EmptyPassword" xml:space="preserve">
+    <value>请输入密码。</value>
   </data>
-  <data name="AppName.Text" xml:space="preserve">
-    <value>Tsinghua Net</value>
-  </data>
-  <data name="AppVersionFormat" xml:space="preserve">
-    <value>Version {0}.{1}.{2}.{3}</value>
-  </data>
-  <data name="Balance.Text" xml:space="preserve">
-    <value>Balance</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="ChangeUserAppButton.Label" xml:space="preserve">
-    <value>Change user</value>
-  </data>
-  <data name="DropHint.Text" xml:space="preserve">
-    <value>The selected device will be forced to log off.</value>
-  </data>
-  <data name="DropMenu.Text" xml:space="preserve">
-    <value>Log off</value>
-  </data>
-  <data name="DropPage.PrimaryButtonText" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="DropPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="DropPage.Title" xml:space="preserve">
-    <value>Log off</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Oops</value>
-  </data>
-  <data name="LogOnAppButton.Label" xml:space="preserve">
-    <value>Login</value>
-  </data>
-  <data name="LogOnToggleSeitch.Header" xml:space="preserve">
-    <value>Auto login</value>
-  </data>
-  <data name="Mac.Text" xml:space="preserve">
-    <value>Mac</value>
-  </data>
-  <data name="NoDevices.Text" xml:space="preserve">
-    <value>No online devices.</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="OkButton.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="OnlineDevices.Text" xml:space="preserve">
-    <value>Online devices</value>
-  </data>
-  <data name="PackageAuthor" xml:space="preserve">
-    <value>Opportunity</value>
-  </data>
-  <data name="PackageDescription" xml:space="preserve">
-    <value>Tsinghua Net is a third party client for Tsinghua University campus network.</value>
-  </data>
-  <data name="PackageName" xml:space="preserve">
-    <value>Tsinghua Net</value>
-  </data>
-  <data name="Password.PlaceholderText" xml:space="preserve">
-    <value>Password</value>
-  </data>
-  <data name="RateLink.Text" xml:space="preserve">
-    <value>Rate and review</value>
-  </data>
-  <data name="RefreshAppButton.Label" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="RenameMenu.Text" xml:space="preserve">
-    <value>Rename</value>
-  </data>
-  <data name="RenamePage.PrimaryButtonText" xml:space="preserve">
-    <value>Rename</value>
-  </data>
-  <data name="RenamePage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="RenamePage.Title" xml:space="preserve">
-    <value>Rename device</value>
-  </data>
-  <data name="RenameTextBox.PlaceholderText" xml:space="preserve">
-    <value>New name</value>
-  </data>
-  <data name="SettingsAppButton.Label" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="SignInHint.Text" xml:space="preserve">
-    <value>Enter your user ID and password for Tsinghua University Network to start.</value>
-  </data>
-  <data name="SignInPage.PrimaryButtonText" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="SignInPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="SignInPage.Title" xml:space="preserve">
-    <value>Sign in</value>
-  </data>
-  <data name="SitesAppButton.Label" xml:space="preserve">
-    <value>Sites</value>
-  </data>
-  <data name="Theme.Text" xml:space="preserve">
-    <value>Theme</value>
-  </data>
-  <data name="ThemeComboBoxItem0.Content" xml:space="preserve">
-    <value>Auto</value>
-  </data>
-  <data name="ThemeComboBoxItem1.Content" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="ThemeComboBoxItem2.Content" xml:space="preserve">
-    <value>Dark</value>
-  </data>
-  <data name="ThemeDark.Content" xml:space="preserve">
-    <value>Dark</value>
-  </data>
-  <data name="ThemeLight.Content" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="ThemeTextBlock1.Text" xml:space="preserve">
-    <value>Theme</value>
-  </data>
-  <data name="ThemeTextBlock2.Text" xml:space="preserve">
-    <value>(need to restart the app)</value>
-  </data>
-  <data name="ToastFailed" xml:space="preserve">
-    <value>Something happened when logging on.</value>
-  </data>
-  <data name="ToastSuccess" xml:space="preserve">
-    <value>Log on sucessfully</value>
-  </data>
-  <data name="UpdateTime.Text" xml:space="preserve">
-    <value>Update time</value>
-  </data>
-  <data name="Usage.Text" xml:space="preserve">
-    <value>Usage</value>
-  </data>
-  <data name="UserName.PlaceholderText" xml:space="preserve">
-    <value>User ID</value>
-  </data>
-  <data name="Yuan.Text" xml:space="preserve">
-    <value>Yuan</value>
+  <data name="EmptyUserName" xml:space="preserve">
+    <value>请输入用户名。</value>
   </data>
 </root>

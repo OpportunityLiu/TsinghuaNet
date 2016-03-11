@@ -2,6 +2,75 @@
 {    
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
+    public static class Errors
+    {
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+            = new global::System.Collections.Generic.Dictionary<string, string>();
+
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+            = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("/Errors");
+
+        public static string GetString(string resourceKey)
+        {
+            string value;
+            if(cache.TryGetValue(resourceKey, out value))
+                return value;
+            else
+                return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
+        }
+
+        /// <summary>
+        /// 用户名或密码错误。
+        /// </summary>
+        public static string AuthError
+        {
+            get
+            {
+                return GetString("AuthError");
+            }
+        }
+
+        /// <summary>
+        /// 连接错误。
+        /// </summary>
+        public static string ConnectError
+        {
+            get
+            {
+                return GetString("ConnectError");
+            }
+        }
+
+        /// <summary>
+        /// 请输入密码。
+        /// </summary>
+        public static string EmptyPassword
+        {
+            get
+            {
+                return GetString("EmptyPassword");
+            }
+        }
+
+        /// <summary>
+        /// 请输入用户名。
+        /// </summary>
+        public static string EmptyUserName
+        {
+            get
+            {
+                return GetString("EmptyUserName");
+            }
+        }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
     public static class Resources
     {
         private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
@@ -43,28 +112,6 @@
             get
             {
                 return GetString("Cancel");
-            }
-        }
-
-        /// <summary>
-        /// 请输入密码。
-        /// </summary>
-        public static string EmptyPassword
-        {
-            get
-            {
-                return GetString("EmptyPassword");
-            }
-        }
-
-        /// <summary>
-        /// 请输入用户名。
-        /// </summary>
-        public static string EmptyUserName
-        {
-            get
-            {
-                return GetString("EmptyUserName");
             }
         }
 
@@ -189,11 +236,11 @@
 
         /// <summary>
         /// &lt;toast&gt;
-        ///     &lt;visual&gt;
-        ///         &lt;binding template='ToastGeneric'&gt;
-        ///             &lt;text&gt;下载完成&lt;/text&gt;
-        ///         &lt;/binding&gt;
-        ///     &lt;/visual&gt;
+        ///   &lt;visual&gt;
+        ///     &lt;binding template=&amp;quot;ToastGeneric&amp;quot;&gt;
+        ///       &lt;text&gt;下载完成&lt;/text&gt;
+        ///     &lt;/binding&gt;
+        ///   &lt;/visual&gt;
         /// &lt;/toast&gt;
         /// </summary>
         public static string DownloadSucceed

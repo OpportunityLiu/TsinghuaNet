@@ -24,6 +24,7 @@ namespace TsinghuaNet
         public SettingsFlyout()
         {
             this.InitializeComponent();
+            this.Placement = FlyoutPlacementMode.Top;
         }
 
         public event EventHandler<string> SettingsChanged;
@@ -31,7 +32,7 @@ namespace TsinghuaNet
         private void raiseEvent(string settingsName)
         {
             var temp = SettingsChanged;
-            if(temp!=null)
+            if(temp != null)
             {
                 temp(this, settingsName);
             }
@@ -41,7 +42,7 @@ namespace TsinghuaNet
         {
             toggleSwitchLogOn.IsOn = GetLocal("AutoLogOn", true);
 
-            switch((ElementTheme)Enum.Parse(typeof(ElementTheme),GetLocal("Theme","Default")))
+            switch((ElementTheme)Enum.Parse(typeof(ElementTheme), GetLocal("Theme", "Default")))
             {
             case ElementTheme.Default:
                 comboBoxTheme.SelectedIndex = 0;

@@ -52,21 +52,23 @@ namespace TsinghuaNet
             catch(Exception ex) when (ex.HResult == -2147023728)
             {
                 changeUser_Click(null, null);
-                return;
             }
 
-            this.DataContext = WebConnect.Current;
-            try
+            if(WebConnect.Current != null)
             {
-                await WebConnect.Current.LoadCache();
-                this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
-            }
-            catch(Exception)
-            {
+                this.DataContext = WebConnect.Current;
+                try
+                {
+                    await WebConnect.Current.LoadCache();
+                    this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
+                }
+                catch(Exception)
+                {
+                }
+                refresh(autoLogOn);
             }
             SettingsFlyout_SettingsChanged(null, "AutoLogOn");
-            refresh(autoLogOn);
-            App.Current.Resuming += (s, e) => refresh(autoLogOn);
+            App.Current.Resuming += (s, e) => refresh(this.autoLogOn);
         }
 
         private WebDevice selectedDevice;

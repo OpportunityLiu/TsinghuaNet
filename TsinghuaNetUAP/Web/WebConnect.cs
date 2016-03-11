@@ -23,6 +23,18 @@ namespace Web
     /// </summary>
     public sealed class WebConnect : INotifyPropertyChanged, IDisposable
     {
+        public static IAsyncOperation<bool> CheckAccount(string userName, string password)
+        {
+            return Run(async token =>
+            {
+                using(var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()))
+                {
+                    var result = await http.GetAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"), HttpCompletionOption.ResponseHeadersRead);
+                    return result.Headers["Set-Cookie"].Contains("THNSV2COOKIE");
+                }
+            });
+        }
+
         /// <summary>
         /// 使用用户名和加密后的密码创建新实例。
         /// </summary>
@@ -54,7 +66,14 @@ namespace Web
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
         }
 
-        public PasswordCredential Account => new PasswordCredential("TsinghuaAllInOne", userName, password);
+        public PasswordCredential Account
+        {
+            get
+            {
+                var pass = new PasswordCredential("TsinghuaAllInOne", userName, password);
+                return pass;
+            }
+        }
 
         private static WebConnect current;
 
