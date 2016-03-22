@@ -82,9 +82,9 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            if(ApplicationData.Current.Version < 1)
+            if(ApplicationData.Current.Version < 2)
             {
-                var ignore = ApplicationData.Current.SetVersionAsync(1, args =>
+                var ignore = ApplicationData.Current.SetVersionAsync(2, args =>
                 {
                     var d = ApplicationData.Current.RoamingSettings;
                     d.Values.Remove("Password");

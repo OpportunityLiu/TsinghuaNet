@@ -14,7 +14,6 @@ using Windows.Web.Http.Headers;
 using Windows.Security.Credentials;
 using Windows.Storage;
 using Windows.Data.Json;
-using System.IO;
 
 namespace Web
 {
@@ -23,27 +22,22 @@ namespace Web
     /// </summary>
     public sealed class WebConnect : INotifyPropertyChanged, IDisposable
     {
+        /// <summary>
+        /// 检查账户有效性。
+        /// </summary>
+        /// <param name="userName">用户名</param>
+        /// <param name="password">密码</param>
+        /// <returns>有效则返回 <c>true</c>，否则为 <c>false</c>。</returns>
         public static IAsyncOperation<bool> CheckAccount(string userName, string password)
         {
             return Run(async token =>
             {
                 using(var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()))
                 {
-                    var result = await http.GetAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"), HttpCompletionOption.ResponseHeadersRead);
-                    return result.Headers["Set-Cookie"].Contains("THNSV2COOKIE");
+                    var result = await http.GetStringAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"));
+                    return !result.Contains("window.alert");
                 }
             });
-        }
-
-        /// <summary>
-        /// 使用用户名和加密后的密码创建新实例。
-        /// </summary>
-        /// <param name="userName">用户名</param>
-        /// <param name="password">密码</param>
-        /// <exception cref="ArgumentNullException">参数为 <c>null</c> 或 <see cref="string.Empty"/>。</exception>
-        public WebConnect(string userName, string password)
-            : this(new PasswordCredential("TsinghuaAllInOne", userName, password))
-        {
         }
 
         /// <summary>
@@ -56,23 +50,12 @@ namespace Web
         {
             if(account == null)
                 throw new ArgumentNullException(nameof(account));
-            if(string.IsNullOrEmpty(account.UserName))
-                throw new ArgumentException(nameof(account));
             this.userName = account.UserName;
             account.RetrievePassword();
             this.password = account.Password;
             this.passwordMd5 = MD5Helper.GetMd5Hash(password);
             this.deviceList = new ObservableCollection<WebDevice>();
             this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
-        }
-
-        public PasswordCredential Account
-        {
-            get
-            {
-                var pass = new PasswordCredential("TsinghuaAllInOne", userName, password);
-                return pass;
-            }
         }
 
         private static WebConnect current;

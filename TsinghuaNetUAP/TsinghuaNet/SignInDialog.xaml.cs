@@ -5,6 +5,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using Settings;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -61,9 +62,8 @@ namespace TsinghuaNet
             {
                 if(!await WebConnect.CheckAccount(userName, password))
                 {
-                    textBoxUserName.SelectAll();
-                    textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                    passwordBoxPassword.Password = "";
+                    passwordBoxPassword.SelectAll();
+                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                     progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     textBlockHint.Text = LocalizedStrings.Errors.AuthError;
                     return false;
@@ -75,31 +75,24 @@ namespace TsinghuaNet
                 progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 return false;
             }
-            var connect = new WebConnect(userName, password);
-            var passVault = new Windows.Security.Credentials.PasswordVault();
-            try
-            {
-                var oldPass = passVault.FindAllByResource("TsinghuaAllInOne").First();
-                passVault.Remove(oldPass);
-            }
-            // 未找到储存的密码
-            catch(Exception ex) when(ex.HResult == -2147023728)
-            {
-            }
-            passVault.Add(connect.Account);
-
+            var account = AccountManager.CreateAccount(userName, password);
+            var connect = new WebConnect(account);
+            AccountManager.Account = account;
             WebConnect.Current = connect;
-            WebConnect.Current.PropertyChanged += async (sender, e) =>
-            {
-                if(e.PropertyName != nameof(WebConnect.UpdateTime))
-                    return;
-                await NotificationService.NotificationService.UpdateTile((WebConnect)sender);
-            };
+            WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
             return true;
         }
 
         private void textChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+        }
+
+        private void ContentDialog_Loading(Windows.UI.Xaml.FrameworkElement sender, object args)
+        {
+            textBlockHint.Text = "";
+            progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            textBoxUserName.Text = "";
+            passwordBoxPassword.Password = "";
         }
     }
 }
