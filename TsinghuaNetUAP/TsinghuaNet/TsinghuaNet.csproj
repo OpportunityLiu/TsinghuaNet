@@ -99,6 +99,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="WebPages\Image\its.png" />
+    <Content Include="WebPages\Style.css" />
     <None Include="project.json" />
     <PRIResource Include="Strings\en\Errors.resw">
       <SubType>Designer</SubType>

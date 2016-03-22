@@ -79,13 +79,13 @@ namespace TsinghuaNet
 
         public WebContent(Uri uri)
         {
-            View.Navigate(uri);
             View.DOMContentLoaded += View_DOMContentLoaded;
             View.NewWindowRequested += View_NewWindowRequested;
             View.NavigationStarting += View_NavigationStarting;
             View.NavigationFailed += View_NavigationFailed;
             View.NavigationCompleted += View_NavigationCompleted;
             View.UnviewableContentIdentified += View_UnviewableContentIdentified;
+            View.Navigate(uri);
         }
 
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
@@ -215,7 +215,6 @@ namespace TsinghuaNet
 
         private void View_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
-
         }
 
         public event TypedEventHandler<WebContent, WebViewNewWindowRequestedEventArgs> NewWindowRequested;
@@ -225,8 +224,34 @@ namespace TsinghuaNet
             NewWindowRequested?.Invoke(this, args);
         }
 
+        private bool logged = false;
+
         private void View_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
+            if(!logged)
+            {
+                var account = Settings.AccountManager.Account;
+                var id = account.UserName;
+                account.RetrievePassword();
+                var pass = account.Password;
+                account = null;
+                if(args.Uri == new Uri("http://its.tsinghua.edu.cn"))
+                {
+                    logged = true;
+                    var ignore = View.InvokeScriptAsync("eval", new string[]
+                    {
+                        $@" $.post(
+                                'http://its.tsinghua.edu.cn/loginAjax',
+                                'username={id}&password={pass}',
+                                function (data) {{
+                                    if(data.code != 0)
+                                        $.common.message('error', data.msg).follow($('#loginbutton')[0]);
+                                    else
+                                        location.href = 'http://its.tsinghua.edu.cn/';
+                                }}, 'json')"
+                    });
+                }
+            }
             UpdateTitle();
         }
 

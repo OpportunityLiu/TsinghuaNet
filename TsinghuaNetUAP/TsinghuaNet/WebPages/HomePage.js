@@ -10,5 +10,14 @@ function getQueryStr(str) {
 }
 var id = getQueryStr("id");
 var pw = getQueryStr("pw");
-document.getElementById("learning").href = "https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid=" + id + "&userpass=" + pw;
-document.getElementById("info").href = "https://info.tsinghua.edu.cn:443/Login?userName=" + id + "&password=" + pw;
+$(function () {
+    $("#learning").click(function () {
+        location.href = "https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid=" + id + "&userpass=" + pw;
+    });
+    $("#info").click(function () {
+        location.href ="https://info.tsinghua.edu.cn:443/Login?userName=" + id + "&password=" + pw;
+    });
+    $("#its").click(function () {
+        location.href = "http://its.tsinghua.edu.cn";
+    });
+})
