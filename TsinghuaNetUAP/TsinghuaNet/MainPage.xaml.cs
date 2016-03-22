@@ -38,20 +38,17 @@ namespace TsinghuaNet
 
         private async void Page_Loaded(object sender, RoutedEventArgs args)
         {
-            //初始化信息存储区
-            try
+            var account=  Settings.AccountManager.Account;
+            if(account == null)
             {
-                var passVault = new Windows.Security.Credentials.PasswordVault();
-                var pass = passVault.FindAllByResource("TsinghuaAllInOne").First();
-                //已经添加字段
-                WebConnect.Current = new WebConnect(pass);
+                // 未找到储存的密码
+                changeUser_Click(null, null);
+            }
+            else
+            {
+                WebConnect.Current = new WebConnect(account);
                 //准备磁贴更新
                 WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
-            }
-            // 未找到储存的密码
-            catch(Exception ex) when (ex.HResult == -2147023728)
-            {
-                changeUser_Click(null, null);
             }
 
             if(WebConnect.Current != null)

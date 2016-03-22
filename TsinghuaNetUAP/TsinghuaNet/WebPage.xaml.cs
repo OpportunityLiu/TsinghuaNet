@@ -101,7 +101,7 @@ namespace TsinghuaNet
 
         private void AddEmptyView()
         {
-            var account = Web.WebConnect.Current.Account;
+            var account = Settings.AccountManager.Account;
             account.RetrievePassword();
             var webView = NewWebContent(new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.UserName}&pw={account.Password}"));
             webViewCollection.Add(webView);
