@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.System;
 using System.IO;
+using Windows.UI;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -95,11 +96,17 @@ namespace TsinghuaNet
 
             var view = ApplicationView.GetForCurrentView();
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
+            view.TitleBar.BackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
 
             var currentWindow = Window.Current;
             if(currentWindow.Content == null)
             {
-                currentWindow.Content = new MainPage();
+                var f = new Frame();
+                f.Navigate(typeof(MainPage));
+                currentWindow.Content = f;
             }
 
             currentWindow.Activate();

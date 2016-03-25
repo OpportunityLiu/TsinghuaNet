@@ -209,9 +209,25 @@ namespace TsinghuaNet
             await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
         }
 
-        private async void appBarButtonSites_Click(object sender, RoutedEventArgs e)
+        private void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
-            await WebPage.Launch();
+            var coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
+            if(this.ActualWidth >= 500)
+            {
+                coreTitleBar.ExtendViewIntoTitleBar = true;
+            }
+            else
+            {
+                coreTitleBar.ExtendViewIntoTitleBar = false;
+            }
+            if(Frame.CanGoForward)
+            {
+                Frame.GoForward();
+            }
+            else
+            {
+                Frame.Navigate(typeof(WebPage));
+            }
         }
 
         private Queue<string> hintQueue = new Queue<string>();

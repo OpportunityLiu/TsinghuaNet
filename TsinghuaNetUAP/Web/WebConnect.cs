@@ -146,6 +146,11 @@ namespace Web
             private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
             private static readonly Uri useregUri = new Uri("http://usereg.tsinghua.edu.cn/do.php");
 
+            /// <summary>
+            /// 检测当前客户端在线情况。
+            /// </summary>
+            /// <param name="http">使用的连接</param>
+            /// <returns>在线情况</returns>
             public static IAsyncOperation<bool> CheckOnline(HttpClient http)
             {
                 return Run(async token =>
@@ -165,7 +170,14 @@ namespace Web
                 });
             }
 
-            public static IAsyncOperation<bool> LogOn(HttpClient http, string userName, string passwordMd5)
+            /// <summary>
+            /// 登陆当前客户端。
+            /// </summary>
+            /// <param name="http">使用的连接</param>
+            /// <param name="userName">用户名</param>
+            /// <param name="passwordMd5">加密后的密码</param>
+            /// <exception cref="LogOnException">登陆失败</exception>
+            public static IAsyncAction LogOn(HttpClient http, string userName, string passwordMd5)
             {
                 return Run(async token =>
                 {
@@ -176,7 +188,7 @@ namespace Web
                         //post = http.PostStrAsync(new Uri("http://166.111.204.120:69/cgi-bin/srun_portal"), $"action=login&username={userName}&password={passwordMd5}&drop=0&pop=0&type=2&n=117&mbytes=0&minutes=0&ac_id=1&mac={MacAddress.Current}&chap=1");
                         var res = await action;
                         if(!res.StartsWith("E"))
-                            return true;
+                            return;
                         else
                             throw LogOnException.GetByErrorString(res);
                     }
@@ -189,6 +201,12 @@ namespace Web
                 });
             }
 
+            /// <summary>
+            /// 登陆到 Usereg。
+            /// </summary>
+            /// <param name="http">使用的连接</param>
+            /// <param name="userName">用户名</param>
+            /// <param name="passwordMd5">加密后的密码</param>
             private static IAsyncAction signIn(HttpClient http, string userName, string passwordMd5)
             {
                 return Run(async token =>
@@ -278,10 +296,9 @@ namespace Web
                     action = logOnHelper.CheckOnline(http);
                     if(await action)
                         return false;
-                    action = logOnHelper.LogOn(http, userName, passwordMd5);
-                    if(await action)
-                        return true;
-                    throw new LogOnException(LogOnExceptionType.UnknownError);
+                    check = logOnHelper.LogOn(http, userName, passwordMd5);
+                    await check;
+                    return true;
                 }
             });
         }

@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Core;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -27,61 +28,6 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class WebPage : Page
     {
-        internal static Window webPageWindow;
-        private static int webPageViewId;
-        
-        public static async Task Launch()
-        {
-            if(webPageWindow == null)
-            {
-                var view = CoreApplication.CreateNewView();
-                ApplicationView appView = null;
-                await view.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    var page = new WebPage();
-                    webPageWindow = Window.Current;
-                    webPageWindow.Content = page;
-                    webPageWindow.Activate();
-                    appView = ApplicationView.GetForCurrentView();
-                    appView.TitleBar.BackgroundColor = (Color)page.Resources["SystemChromeMediumLowColor"];
-                    appView.TitleBar.ButtonBackgroundColor = (Color)page.Resources["SystemChromeMediumLowColor"];
-                    webPageViewId = appView.Id;
-                    webPageWindow.Activated += page.WebPageWindow_Activated;
-                    appView.Consolidated += async (sender, e) =>
-                    {
-                        await webPageWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                        {
-                            var p = (WebPage)webPageWindow.Content;
-                            webPageWindow.Content = null;
-                            webPageWindow.Activated -= p.WebPageWindow_Activated;
-                        });
-                        webPageWindow = null;
-                    };
-                });
-                await ApplicationViewSwitcher.TryShowAsStandaloneAsync(webPageViewId);
-                await view.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    appView.TryResizeView(new Size(1000, 600));
-                });
-            }
-            else
-            {
-                await ApplicationViewSwitcher.SwitchAsync(webPageViewId);
-            }
-        }
-
-        private void WebPageWindow_Activated(object sender, Windows.UI.Core.WindowActivatedEventArgs e)
-        {
-            if(e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
-            {
-                titleBar.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                titleBar.Visibility = Visibility.Visible;
-            }
-        }
-        
         public WebPage()
         {
             this.InitializeComponent();
@@ -155,7 +101,10 @@ namespace TsinghuaNet
                     if(webViewCollection.Count != 0)
                         listView.SelectedIndex = 0;
                     else
+                    {
                         AddEmptyView();
+                        Frame.GoBack();
+                    }
                 }
                 else
                     listView.SelectedIndex = closingIndex - 1;
@@ -167,18 +116,47 @@ namespace TsinghuaNet
             AddEmptyView();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
+
+            var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
+            systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            systemNavigationManager.BackRequested += SystemNavigationManager_BackRequested;
+
             Window.Current.SetTitleBar(titleBar);
+        }
+
+        private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            Frame.GoBack();
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.LayoutMetricsChanged -= CoreTitleBar_LayoutMetricsChanged;
+            coreTitleBar.ExtendViewIntoTitleBar = false;
+
+            var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
+            systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            systemNavigationManager.BackRequested -= SystemNavigationManager_BackRequested;
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            colL.Width = new GridLength(coreTitleBar.SystemOverlayLeftInset);
-            colR.Width = new GridLength(coreTitleBar.SystemOverlayRightInset);
+            colL.Width = new GridLength(sender.SystemOverlayLeftInset);
+            colR.Width = new GridLength(sender.SystemOverlayRightInset);
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.GoBack();
         }
     }
 }
