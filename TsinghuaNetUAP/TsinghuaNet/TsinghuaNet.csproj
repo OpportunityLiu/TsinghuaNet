@@ -99,6 +99,22 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Images\Android-Dark.png" />
+    <Content Include="Images\Android-Light.png" />
+    <Content Include="Images\iPad-Dark.png" />
+    <Content Include="Images\iPad-Light.png" />
+    <Content Include="Images\iPhone-Dark.png" />
+    <Content Include="Images\iPhone-Light.png" />
+    <Content Include="Images\Linux-Dark.png" />
+    <Content Include="Images\Linux-Light.png" />
+    <Content Include="Images\MacOS-Dark.png" />
+    <Content Include="Images\MacOS-Light.png" />
+    <Content Include="Images\Unknown-Dark.png" />
+    <Content Include="Images\Unknown-Light.png" />
+    <Content Include="Images\Windows-Dark.png" />
+    <Content Include="Images\Windows-Light.png" />
+    <Content Include="Images\WindowsPhone-Dark.png" />
+    <Content Include="Images\WindowsPhone-Light.png" />
     <Content Include="WebPages\Image\its.png" />
     <Content Include="WebPages\Style.css" />
     <None Include="project.json" />

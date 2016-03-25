@@ -100,10 +100,12 @@ namespace Web
                               let mac = MacAddress.Parse(device[nameof(WebDevice.Mac)].GetString())
                               let deTraffic = new Size((ulong)device[nameof(WebDevice.WebTraffic)].GetNumber())
                               let deTime = DateTime.FromBinary((long)device[nameof(WebDevice.LogOnDateTime)].GetNumber())
+                              let deviceFamily = ((DeviceFamily)(int)device[nameof(WebDevice.DeviceFamily)].GetNumber())
                               select new WebDevice(ip, mac)
                               {
                                   WebTraffic = deTraffic,
-                                  LogOnDateTime = deTime
+                                  LogOnDateTime = deTime,
+                                  DeviceFamily = deviceFamily
                               };
                 Dispose();
                 foreach(var item in devices)
@@ -127,6 +129,7 @@ namespace Web
                     device[nameof(WebDevice.Mac)] = JsonValue.CreateStringValue(item.Mac.ToString());
                     device[nameof(WebDevice.WebTraffic)] = JsonValue.CreateNumberValue(item.WebTraffic.Value);
                     device[nameof(WebDevice.LogOnDateTime)] = JsonValue.CreateNumberValue(item.LogOnDateTime.ToBinary());
+                    device[nameof(WebDevice.DeviceFamily)] = JsonValue.CreateNumberValue((int)item.DeviceFamily);
                     devices.Add(device);
                 }
                 data[nameof(DeviceList)] = devices;
@@ -186,7 +189,7 @@ namespace Web
                 });
             }
 
-            private static IAsyncAction signIn(HttpClient http,string userName,string passwordMd5)
+            private static IAsyncAction signIn(HttpClient http, string userName, string passwordMd5)
             {
                 return Run(async token =>
                 {
@@ -207,7 +210,7 @@ namespace Web
                 });
             }
 
-            public static IAsyncAction SignInUsereg(HttpClient http,string userName,string passwordMd5)
+            public static IAsyncAction SignInUsereg(HttpClient http, string userName, string passwordMd5)
             {
                 return Run(async token =>
                 {
@@ -217,7 +220,7 @@ namespace Web
                     {
                         await signInAction;
                     }
-                    catch(LogOnException ex) when (ex.ExceptionType == LogOnExceptionType.UnknownError)
+                    catch(LogOnException ex) when(ex.ExceptionType == LogOnExceptionType.UnknownError)
                     {
                         await Task.Delay(500);
                         signInAction = signIn(http, userName, passwordMd5);
@@ -262,8 +265,16 @@ namespace Web
                 }
                 using(var http = new HttpClient())
                 {
+
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
-                    http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
+                    if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+                    {
+                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows Phone 10.0"));
+                    }
+                    else
+                    {
+                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
+                    }
                     action = logOnHelper.CheckOnline(http);
                     if(await action)
                         return false;
@@ -314,15 +325,16 @@ namespace Web
                     //获取用户信息
                     ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
                     var res1 = await ope;
-                    var info1 = Regex.Match(res1, "使用流量\\(IPV4\\).+?(\\d+?)\\(byte\\).+?帐户余额.+?([0-9.]+)\\(元\\)", RegexOptions.Singleline).Groups;
-                    if(info1.Count != 3)
+                    var info1 = Regex.Match(res1, @"证件号.+?(\d+).+?使用流量\(IPV4\).+?(\d+?)\(byte\).+?帐户余额.+?([0-9.]+)\(元\)", RegexOptions.Singleline).Groups;
+                    if(info1.Count != 4)
                     {
                         var ex = new InvalidOperationException("获取到的数据格式错误。");
                         ex.Data.Add("HtmlResponse", res1);
                         throw ex;
                     }
-                    WebTraffic = new Size(ulong.Parse(info1[1].Value, CultureInfo.InvariantCulture));
-                    Balance = decimal.Parse(info1[2].Value, CultureInfo.InvariantCulture);
+                    Settings.AccountManager.ID = info1[1].Value;
+                    WebTraffic = new Size(ulong.Parse(info1[2].Value, CultureInfo.InvariantCulture));
+                    Balance = decimal.Parse(info1[3].Value, CultureInfo.InvariantCulture);
                     //获取登录信息
                     var res2 = await http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
@@ -331,9 +343,10 @@ namespace Web
                                    let ip = Ipv4Address.Parse(details[0].Value)
                                    let mac = MacAddress.Parse(details[6].Value)
                                    let tra = Size.Parse(details[2].Value)
+                                   let device = details[10].Value
                                    let logOnTime = DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
                                    let devToken = Regex.Match(r.Value, @"(?<=value="")(\d+)(?="")").Value
-                                   select new WebDevice(ip, mac)
+                                   select new WebDevice(ip, mac, device)
                                    {
                                        WebTraffic = tra,
                                        LogOnDateTime = logOnTime,

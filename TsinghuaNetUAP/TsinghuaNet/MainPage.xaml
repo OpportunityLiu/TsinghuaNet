@@ -8,15 +8,23 @@
       mc:Ignorable="d"
       Loaded="Page_Loaded">
     <Page.Resources>
+        <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter" />
+        <local:DeviceImageConverter x:Key="DeviceImageConverter" />
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
                       x:DataType="web:WebDevice">
-            <TextBlock x:Name="textBlock"
-                       Holding="TextBlock_Holding"
-                       RightTapped="TextBlock_RightTapped"
-                       Style="{StaticResource BodyTextBlockStyle}"
-                       TextTrimming="CharacterEllipsis"
-                       TextWrapping="NoWrap"
-                       Padding="8">
+            <Grid Holding="Grid_Holding"
+                  RightTapped="Grid_RightTapped"
+                  Padding="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <ToolTipService.ToolTip>
                     <ToolTip Content="{x:Bind Mac}" />
                 </ToolTipService.ToolTip>
@@ -29,20 +37,34 @@
                                         Click="Drop_Click" />
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
-                <Run Text="{x:Bind Name, Mode=OneWay}" />
-                <LineBreak />
-                <Run Text="{x:Bind WebTraffic, Mode=OneWay}"
-                     FontSize="12" />
-                <LineBreak />
-                <Run Text="{x:Bind IPAddress}"
-                     FontSize="12" />
-                <LineBreak />
-                <Run Text="{x:Bind LogOnDateTime, Mode=OneWay}"
-                     FontSize="12" />
-            </TextBlock>
+                <Image Grid.RowSpan="9"
+                       Grid.Column="1"
+                       Width="60"
+                       Height="60"
+                       Margin="4,0,0,0"
+                       Source="{x:Bind DeviceFamily, Converter={StaticResource DeviceImageConverter}}">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Content="{x:Bind DeviceFamily}" />
+                    </ToolTipService.ToolTip>
+                </Image>
+                <TextBlock Text="{x:Bind Name, Mode=OneWay}"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Row="1"
+                           Text="{x:Bind WebTraffic, Mode=OneWay}"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="12" />
+                <TextBlock Grid.Row="2"
+                           Text="{x:Bind IPAddress}"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="12" />
+                <TextBlock Grid.Row="3"
+                           Text="{x:Bind LogOnDateTime, Mode=OneWay}"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="12" />
+            </Grid>
         </DataTemplate>
-        <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter" />
-        <Storyboard x:Name="showHint" Completed="showHint_Completed">
+        <Storyboard x:Name="showHint"
+                    Completed="showHint_Completed">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="borderHint"
                                            Storyboard.TargetProperty="UIElement.Opacity">
                 <DiscreteDoubleKeyFrame KeyTime="0:0:0"
@@ -70,7 +92,7 @@
                 <AppBarButton x:Uid="SettingsAppButton"
                               Label="Settings">
                     <AppBarButton.Flyout>
-                        <local:SettingsFlyout SettingsChanged="SettingsFlyout_SettingsChanged"/>
+                        <local:SettingsFlyout SettingsChanged="SettingsFlyout_SettingsChanged" />
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <AppBarButton x:Uid="AboutAppButton"

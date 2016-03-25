@@ -52,6 +52,19 @@ namespace Settings
                 {
                 }
                 passVault.Add(value);
+                SettingsHelper.SetRoaming("ID", "");
+            }
+        }
+
+        public static string ID
+        {
+            get
+            {
+                return SettingsHelper.GetRoaming("ID", "");
+            }
+            set
+            {
+                SettingsHelper.SetRoaming("ID", value??"");
             }
         }
     }

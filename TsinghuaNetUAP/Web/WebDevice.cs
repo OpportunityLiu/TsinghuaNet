@@ -8,13 +8,26 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
 using Windows.ApplicationModel.Resources;
+using System.Collections.Generic;
 
 namespace Web
 {
+    public enum DeviceFamily
+    {
+        Unknown = 0,
+        WindowsPhone,
+        Windows,
+        iPad,
+        iPhone,
+        Android,
+        Linux,
+        MacOS
+    }
+
     /// <summary>
     /// 表示连入网络的设备。
     /// </summary>
-    public sealed class WebDevice : INotifyPropertyChanged,IDisposable
+    public sealed class WebDevice : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// 初始化 <see cref="WebDevice"/> 的实例并设置相关信息。
@@ -26,6 +39,56 @@ namespace Web
             this.IPAddress = ip;
             this.Mac = mac;
             deviceDictChanged += WebDevice_deviceDictChanged;
+        }
+
+        /// <summary>
+        /// 初始化 <see cref="WebDevice"/> 的实例并设置相关信息。
+        /// </summary>
+        /// <param name="ip">IP 地址。</param>
+        /// <param name="mac">Mac 地址。</param>
+        /// <param name="deviceFamilyDescription">设备描述。</param>
+        public WebDevice(Ipv4Address ip, MacAddress mac, string deviceFamilyDescription)
+            : this(ip, mac)
+        {
+            SetDeviceFimaly(deviceFamilyDescription);
+        }
+
+        public DeviceFamily DeviceFamily
+        {
+            get;
+            set;
+        }
+
+        private static Dictionary<string, DeviceFamily> deviceFamilyDictionary = new Dictionary<string, DeviceFamily>()
+        {
+            ["Windows Phone"] = DeviceFamily.WindowsPhone,
+            ["Windows"] = DeviceFamily.Windows,
+            ["Linux"] = DeviceFamily.Linux,
+            ["Mac"] = DeviceFamily.MacOS,
+            ["Android"] = DeviceFamily.Android,
+            ["iPad"] = DeviceFamily.iPad,
+            ["iPhone"] = DeviceFamily.iPhone,
+            
+        };
+
+        public void SetDeviceFimaly(string deviceFamilyDescription)
+        {
+            if(string.IsNullOrWhiteSpace(deviceFamilyDescription))
+            {
+                DeviceFamily = DeviceFamily.Unknown;
+                return;
+            }
+            deviceFamilyDescription = deviceFamilyDescription.Trim();
+            foreach(var item in deviceFamilyDictionary)
+            {
+                if(deviceFamilyDescription.StartsWith(item.Key))
+                {
+                    DeviceFamily = item.Value;
+                    return;
+                }
+            }
+
+            DeviceFamily = DeviceFamily.Unknown;
         }
 
         private void WebDevice_deviceDictChanged()

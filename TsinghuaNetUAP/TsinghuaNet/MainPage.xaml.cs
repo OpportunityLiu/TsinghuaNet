@@ -19,6 +19,8 @@ using Windows.System;
 using Windows.UI.ViewManagement;
 using System.Threading;
 using System.Linq;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -173,7 +175,7 @@ namespace TsinghuaNet
             refresh(autoLogOn);
         }
 
-        private void TextBlock_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        private void Grid_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             if(e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
                 return;
@@ -184,7 +186,7 @@ namespace TsinghuaNet
             ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
         }
 
-        private void TextBlock_Holding(object sender, HoldingRoutedEventArgs e)
+        private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
         {
             switch(e.HoldingState)
             {
@@ -271,6 +273,20 @@ namespace TsinghuaNet
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             return ((int)value) > 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class DeviceImageConverter : Windows.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var va = (DeviceFamily)value;
+            return new BitmapImage(new Uri($"ms-appx:///Images/{va.ToString()}-{App.Current.RequestedTheme.ToString()}.png"));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
