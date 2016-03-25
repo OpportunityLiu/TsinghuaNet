@@ -5,8 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Loaded="Page_Loaded"
       NavigationCacheMode="Required">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <EntranceNavigationTransitionInfo />
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
     <Grid x:Name="root"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
           SizeChanged="root_SizeChanged">
@@ -19,6 +25,10 @@
                     <VisualState.Setters>
                         <Setter Target="listView.(Grid.Row)"
                                 Value="1" />
+                        <Setter Target="listView.(Grid.Column)"
+                                Value="0" />
+                        <Setter Target="listView.(Grid.ColumnSpan)"
+                                Value="3" />
                         <Setter Target="titleBar.(Grid.Row)"
                                 Value="1" />
                         <Setter Target="webViewPlaceholder.(Grid.Row)"
@@ -27,6 +37,8 @@
                                 Value="*" />
                         <Setter Target="row1.Height"
                                 Value="32" />
+                        <Setter Target="backButton.Visibility"
+                                Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState>
@@ -36,6 +48,10 @@
                     <VisualState.Setters>
                         <Setter Target="listView.(Grid.Row)"
                                 Value="0" />
+                        <Setter Target="listView.(Grid.Column)"
+                                Value="1" />
+                        <Setter Target="listView.(Grid.ColumnSpan)"
+                                Value="1" />
                         <Setter Target="titleBar.(Grid.Row)"
                                 Value="0" />
                         <Setter Target="webViewPlaceholder.(Grid.Row)"
@@ -44,6 +60,8 @@
                                 Value="32" />
                         <Setter Target="row1.Height"
                                 Value="*" />
+                        <Setter Target="backButton.Visibility"
+                                Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -68,7 +86,8 @@
                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                  HorizontalAlignment="Left">
+                  HorizontalAlignment="Left"
+                  EntranceNavigationTransitionInfo.IsTargetElement="True">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Padding"
@@ -125,9 +144,16 @@
                     <ItemsStackPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <ListView.Footer>
-                <Button Grid.Column="1"
+            <ListView.Header>
+                <Button x:Name="backButton"
                         Style="{StaticResource NavigationBackButtonSmallStyle}"
+                        Width="48"
+                        Height="32"
+                        FontSize="12"
+                        Click="BackButton_Click" />
+            </ListView.Header>
+            <ListView.Footer>
+                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                         Content="&#xE948;"
                         Width="32"
                         Height="32"
