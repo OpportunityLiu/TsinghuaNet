@@ -141,8 +141,11 @@ namespace TsinghuaNet
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var def = e.SuspendingOperation.GetDeferral();
-            var sc = WebConnect.Current.SaveCache();
-            await sc;
+            if(WebConnect.Current != null)
+            {
+                var sc = WebConnect.Current.SaveCache();
+                await sc;
+            }
             def.Complete();
         }
     }

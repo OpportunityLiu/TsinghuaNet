@@ -32,8 +32,6 @@ namespace TsinghuaNet
         {
             this.InitializeComponent();
             Bindings.Initialize();
-            if(webViewCollection.Count == 0)
-                AddEmptyView();
         }
 
         private ObservableCollection<WebContent> webViewCollection = new ObservableCollection<WebContent>();
@@ -102,7 +100,6 @@ namespace TsinghuaNet
                         listView.SelectedIndex = 0;
                     else
                     {
-                        AddEmptyView();
                         Frame.GoBack();
                     }
                 }
@@ -128,10 +125,14 @@ namespace TsinghuaNet
             systemNavigationManager.BackRequested += SystemNavigationManager_BackRequested;
 
             Window.Current.SetTitleBar(titleBar);
+
+            if(webViewCollection.Count == 0)
+                AddEmptyView();
         }
 
         private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
         {
+            e.Handled = true;
             Frame.GoBack();
         }
 

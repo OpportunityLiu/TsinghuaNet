@@ -71,7 +71,7 @@ namespace TsinghuaNet
             }
             catch(Exception)
             {
-                textBlockHint.Text =LocalizedStrings.Errors.ConnectError;
+                textBlockHint.Text = LocalizedStrings.Errors.ConnectError;
                 progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 return false;
             }

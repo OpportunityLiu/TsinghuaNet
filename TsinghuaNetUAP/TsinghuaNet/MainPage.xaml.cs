@@ -38,36 +38,56 @@ namespace TsinghuaNet
 
         private bool autoLogOn;
 
-        private async void Page_Loaded(object sender, RoutedEventArgs args)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var account=  Settings.AccountManager.Account;
-            if(account == null)
+            base.OnNavigatedTo(e);
+            if(e.NavigationMode == NavigationMode.New)
             {
-                // 未找到储存的密码
-                changeUser_Click(null, null);
+                var account = Settings.AccountManager.Account;
+                if(account == null)
+                {
+                    // 未找到储存的密码
+                    changeUser_Click(null, null);
+                }
+                else
+                {
+                    WebConnect.Current = new WebConnect(account);
+                    //准备磁贴更新
+                    WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
+                }
+
+                if(WebConnect.Current != null)
+                {
+                    this.DataContext = WebConnect.Current;
+                    try
+                    {
+                        await WebConnect.Current.LoadCache();
+                        this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
+                    }
+                    catch(Exception)
+                    {
+                    }
+                    refresh(autoLogOn);
+                }
+                SettingsFlyout_SettingsChanged(null, "AutoLogOn");
+                App.Current.Resuming += (s, args) => refresh(this.autoLogOn);
             }
             else
             {
-                WebConnect.Current = new WebConnect(account);
-                //准备磁贴更新
-                WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
+                if(WebConnect.Current != null)
+                {
+                    refresh(autoLogOn);
+                }
             }
+        }
 
+        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
             if(WebConnect.Current != null)
             {
-                this.DataContext = WebConnect.Current;
-                try
-                {
-                    await WebConnect.Current.LoadCache();
-                    this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
-                }
-                catch(Exception)
-                {
-                }
-                refresh(autoLogOn);
+                await WebConnect.Current.SaveCache();
             }
-            SettingsFlyout_SettingsChanged(null, "AutoLogOn");
-            App.Current.Resuming += (s, e) => refresh(this.autoLogOn);
         }
 
         private WebDevice selectedDevice;
