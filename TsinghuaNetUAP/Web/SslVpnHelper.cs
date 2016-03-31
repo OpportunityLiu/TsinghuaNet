@@ -17,7 +17,9 @@ namespace Web
             inner = new HttpBaseProtocolFilter();
         }
 
-        IHttpFilter inner;
+        private IHttpFilter inner;
+
+        private bool initialized;
 
         public IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> SendRequestAsync(HttpRequestMessage request)
         {

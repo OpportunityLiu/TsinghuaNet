@@ -73,7 +73,7 @@ namespace TsinghuaNet
             get;
             private set;
         }
-
+        
         private void launch(IActivatedEventArgs e)
         {
 
@@ -94,12 +94,20 @@ namespace TsinghuaNet
                 });
             }
 
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var sb = StatusBar.GetForCurrentView();
+                sb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                sb.BackgroundOpacity = 1;
+                sb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+            }
+
             var view = ApplicationView.GetForCurrentView();
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
             view.TitleBar.BackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
             view.TitleBar.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
             view.TitleBar.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-            view.TitleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
 
             var currentWindow = Window.Current;
             if(currentWindow.Content == null)
