@@ -141,120 +141,6 @@ namespace Web
 
         private readonly string userName, password, passwordMd5;
 
-        private static class logOnHelper
-        {
-            private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
-            private static readonly Uri useregUri = new Uri("http://usereg.tsinghua.edu.cn/do.php");
-
-            /// <summary>
-            /// 检测当前客户端在线情况。
-            /// </summary>
-            /// <param name="http">使用的连接</param>
-            /// <returns>在线情况</returns>
-            public static IAsyncOperation<bool> CheckOnline(HttpClient http)
-            {
-                return Run(async token =>
-                {
-                    try
-                    {
-                        var action = http.PostStrAsync(logOnUri, "action=check_online");
-                        token.Register(action.Cancel);
-                        var result = await action;
-                        return "online" == result;
-                    }
-                    catch(OperationCanceledException) { throw; }
-                    catch(Exception ex)
-                    {
-                        throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                    }
-                });
-            }
-
-            /// <summary>
-            /// 登陆当前客户端。
-            /// </summary>
-            /// <param name="http">使用的连接</param>
-            /// <param name="userName">用户名</param>
-            /// <param name="passwordMd5">加密后的密码</param>
-            /// <exception cref="LogOnException">登陆失败</exception>
-            public static IAsyncAction LogOn(HttpClient http, string userName, string passwordMd5)
-            {
-                return Run(async token =>
-                {
-                    try
-                    {
-                        var action = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
-                        token.Register(action.Cancel);
-                        //post = http.PostStrAsync(new Uri("http://166.111.204.120:69/cgi-bin/srun_portal"), $"action=login&username={userName}&password={passwordMd5}&drop=0&pop=0&type=2&n=117&mbytes=0&minutes=0&ac_id=1&mac={MacAddress.Current}&chap=1");
-                        var res = await action;
-                        if(!res.StartsWith("E"))
-                            return;
-                        else
-                            throw LogOnException.GetByErrorString(res);
-                    }
-                    catch(OperationCanceledException) { throw; }
-                    catch(LogOnException) { throw; }
-                    catch(Exception ex)
-                    {
-                        throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                    }
-                });
-            }
-
-            /// <summary>
-            /// 登陆到 Usereg。
-            /// </summary>
-            /// <param name="http">使用的连接</param>
-            /// <param name="userName">用户名</param>
-            /// <param name="passwordMd5">加密后的密码</param>
-            private static IAsyncAction signIn(HttpClient http, string userName, string passwordMd5)
-            {
-                return Run(async token =>
-                {
-                    var postAction = http.PostStrAsync(useregUri, $"action=login&user_login_name={userName}&user_password={passwordMd5}");
-                    token.Register(postAction.Cancel);
-                    var logOnRes = await postAction;
-                    switch(logOnRes)
-                    {
-                    case "ok":
-                        break;
-                    case "用户不存在":
-                        throw new LogOnException(LogOnExceptionType.UserNameError);
-                    case "密码错误":
-                        throw new LogOnException(LogOnExceptionType.PasswordError);
-                    default:
-                        throw new LogOnException(logOnRes);
-                    }
-                });
-            }
-
-            public static IAsyncAction SignInUsereg(HttpClient http, string userName, string passwordMd5)
-            {
-                return Run(async token =>
-                {
-                    var signInAction = signIn(http, userName, passwordMd5);
-                    token.Register(() => signInAction?.Cancel());
-                    try
-                    {
-                        await signInAction;
-                    }
-                    catch(LogOnException ex) when(ex.ExceptionType == LogOnExceptionType.UnknownError)
-                    {
-                        await Task.Delay(500);
-                        signInAction = signIn(http, userName, passwordMd5);
-                        await signInAction;//重试
-                    }
-                    catch(LogOnException) { throw; }
-                    catch(OperationCanceledException) { throw; }
-                    catch(Exception ex)
-                    {
-                        throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                    }
-                });
-            }
-
-        }
-
         /// <summary>
         /// 异步登陆网络。
         /// </summary>
@@ -293,10 +179,10 @@ namespace Web
                     {
                         http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
                     }
-                    action = logOnHelper.CheckOnline(http);
+                    action = LogOnHelper.CheckOnline(http);
                     if(await action)
                         return false;
-                    check = logOnHelper.LogOn(http, userName, passwordMd5);
+                    check = LogOnHelper.LogOn(http, userName, passwordMd5);
                     await check;
                     return true;
                 }
@@ -337,7 +223,7 @@ namespace Web
                 });
                 try
                 {
-                    act = logOnHelper.SignInUsereg(http, userName, passwordMd5);
+                    act = LogOnHelper.SignInUsereg(http, userName, passwordMd5);
                     await act;
                     //获取用户信息
                     ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
