@@ -53,10 +53,19 @@ namespace Web
             SetDeviceFimaly(deviceFamilyDescription);
         }
 
+        private DeviceFamily deviceFamily;
+
         public DeviceFamily DeviceFamily
         {
-            get;
-            set;
+            get
+            {
+                return deviceFamily;
+            }
+            set
+            {
+                deviceFamily = value;
+                PropertyChanging();
+            }
         }
 
         private static Dictionary<string, DeviceFamily> deviceFamilyDictionary = new Dictionary<string, DeviceFamily>()

@@ -15,6 +15,8 @@ using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.IO;
+using Windows.Storage.Streams;
+using Windows.Web.Http;
 
 namespace TsinghuaNet
 {

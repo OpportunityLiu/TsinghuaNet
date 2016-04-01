@@ -7,6 +7,7 @@ using Windows.Web.Http;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Threading;
+using Windows.Web.Http.Filters;
 
 namespace Web
 {
@@ -52,25 +53,21 @@ namespace Web
             });
         }
 
-        private static Uri testUri = new Uri("http://info.tsinghua.edu.cn");
-
-        public static IAsyncOperation<bool> NeedSslVpn(this HttpClient httpClient)
+        public static IAsyncOperation<bool> NeedSslVpn()
         {
-            if(httpClient == null)
-                throw new ArgumentNullException(nameof(httpClient));
             return Run(async token =>
             {
-                var postTask = httpClient.GetAsync(testUri, HttpCompletionOption.ResponseHeadersRead);
-                token.Register(() => postTask.Cancel());
-                using(var get = await postTask)
+                using(var client = new HttpClient(new HttpBaseProtocolFilter() { AllowAutoRedirect = false }))
                 {
-                    var code = (int)get.StatusCode;
-                    if(code < 200 || code >= 400)
-                        throw new System.Net.Http.HttpRequestException(get.StatusCode.ToString());
-                    else if(code < 300)
-                        return get.RequestMessage.RequestUri.ToString().EndsWith("indexOutJump.jsp");
-                    else
-                        return (int)get.StatusCode >= 300;
+                    var request = client.GetAsync(new Uri("http://info.tsinghua.edu.cn"), HttpCompletionOption.ResponseHeadersRead);
+                    token.Register(request.Cancel);
+                    var result = await request;
+                    var sc = (int)result.StatusCode;
+                    if(200 <= sc && sc < 300)
+                        return false;
+                    if(300 <= sc && sc < 400)
+                        return true;
+                    throw new InvalidOperationException("Status code of info is out of expected range.");
                 }
             });
         }

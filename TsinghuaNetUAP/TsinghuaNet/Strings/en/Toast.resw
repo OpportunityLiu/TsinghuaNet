@@ -122,6 +122,7 @@
     &lt;visual&gt;
         &lt;binding template='ToastGeneric'&gt;
             &lt;text&gt;Download has failed.&lt;/text&gt;
+            &lt;text&gt;{0}&lt;/text&gt;
         &lt;/binding&gt;
     &lt;/visual&gt;
 &lt;/toast&gt;</value>
@@ -131,6 +132,7 @@
     &lt;visual&gt;
         &lt;binding template='ToastGeneric'&gt;
             &lt;text&gt;Done!&lt;/text&gt;
+            &lt;text&gt;{0}&lt;/text&gt;
         &lt;/binding&gt;
     &lt;/visual&gt;
 &lt;/toast&gt;</value>

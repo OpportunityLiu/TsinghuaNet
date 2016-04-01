@@ -106,7 +106,6 @@
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionHelper.cs" />
     <Compile Include="DeviceNameDictionary.cs" />
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="HttpHelper.cs" />
@@ -114,7 +113,7 @@
     <Compile Include="LogOnHelper.cs" />
     <Compile Include="MD5Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SslVpnHelper.cs" />
+    <Compile Include="SslVpnFilter.cs" />
     <Compile Include="Strings\Strings.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

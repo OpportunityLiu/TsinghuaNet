@@ -42,9 +42,9 @@
                        Width="60"
                        Height="60"
                        Margin="4,0,0,0"
-                       Source="{x:Bind DeviceFamily, Converter={StaticResource DeviceImageConverter}}">
+                       Source="{x:Bind DeviceFamily, Mode=OneWay, Converter={StaticResource DeviceImageConverter}}">
                     <ToolTipService.ToolTip>
-                        <ToolTip Content="{x:Bind DeviceFamily}" />
+                        <ToolTip Content="{x:Bind DeviceFamily, Mode=OneWay}" />
                     </ToolTipService.ToolTip>
                 </Image>
                 <TextBlock Text="{x:Bind Name, Mode=OneWay}"
@@ -318,7 +318,9 @@
                 Opacity="0"
                 Padding="16,8">
             <TextBlock x:Name="textBlockHint"
-                       Style="{StaticResource BodyTextBlockStyle}" />
+                       Style="{StaticResource BodyTextBlockStyle}"
+                       MaxLines="2"
+                       TextTrimming="CharacterEllipsis" />
         </Border>
     </Grid>
 </Page>
