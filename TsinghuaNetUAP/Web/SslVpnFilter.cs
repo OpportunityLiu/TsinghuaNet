@@ -79,7 +79,7 @@ namespace Web
             }
             else if(needVpn(request.RequestUri))
             {
-                request.RequestUri = encodeForVpn(request.RequestUri);
+                request.RequestUri = EncodeForVpn(request.RequestUri, true);
                 return inner.SendRequestAsync(request);
             }
             else
@@ -88,10 +88,10 @@ namespace Web
             }
         }
 
-        private static Uri encodeForVpn(Uri uri)
+        public static Uri EncodeForVpn(Uri uri, bool raw)
         {
             return new Uri(
-            $"https://sslvpn.tsinghua.edu.cn{uri.AbsolutePath},DanaInfo={uri.Authority},CT=sxml,{(uri.Port == 80 ? "" : $"Port={uri.Port},")}+{uri.Query}"
+            $"https://sslvpn.tsinghua.edu.cn{uri.AbsolutePath},DanaInfo={uri.Authority},{(raw ? "CT=sxml," : "")}{(uri.Port == 80 ? "" : $"Port={uri.Port},")}+{uri.Query}"
             );
         }
 
