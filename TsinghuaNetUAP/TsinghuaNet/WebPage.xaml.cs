@@ -38,7 +38,7 @@ namespace TsinghuaNet
 
         private WebContent NewWebContent(Uri uri)
         {
-            var newView = new WebContent(uri);
+            var newView = uri == null ? new WebContent() : new WebContent(uri);
             newView.NewWindowRequested += webView_NewWindowRequested;
             return newView;
         }
@@ -47,7 +47,7 @@ namespace TsinghuaNet
         {
             var account = Settings.AccountManager.Account;
             account.RetrievePassword();
-            var webView = NewWebContent(new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.UserName}&pw={account.Password}"));
+            var webView = NewWebContent(null);
             webViewCollection.Add(webView);
             listView.SelectedItem = webView;
         }

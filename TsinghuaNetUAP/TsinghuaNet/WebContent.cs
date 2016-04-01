@@ -79,6 +79,13 @@ namespace TsinghuaNet
             }
         }
 
+        private static Uri getHomepage()
+        {
+            var account = Settings.AccountManager.Account;
+            account.RetrievePassword();
+            return new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.UserName}&pw={account.Password}");
+        }
+
         public WebContent(Uri uri)
         {
             View.DOMContentLoaded += View_DOMContentLoaded;
@@ -90,6 +97,11 @@ namespace TsinghuaNet
             View.Navigate(uri);
         }
 
+        public WebContent() 
+            : this(getHomepage())
+        {
+        }
+
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
         {
             await downloader.Download(args.Uri);
@@ -97,121 +109,18 @@ namespace TsinghuaNet
 
         private void View_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
-
         }
 
         private void View_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
         {
-            switch(e.WebErrorStatus)
+            if(e.Uri == new Uri("https://sslvpn.tsinghua.edu.cn/dana/home/starter0.cgi"))
             {
-            case Windows.Web.WebErrorStatus.Unknown:
-                break;
-            case Windows.Web.WebErrorStatus.CertificateCommonNameIsIncorrect:
-                break;
-            case Windows.Web.WebErrorStatus.CertificateExpired:
-                break;
-            case Windows.Web.WebErrorStatus.CertificateContainsErrors:
-                break;
-            case Windows.Web.WebErrorStatus.CertificateRevoked:
-                break;
-            case Windows.Web.WebErrorStatus.CertificateIsInvalid:
-                break;
-            case Windows.Web.WebErrorStatus.ServerUnreachable:
-                break;
-            case Windows.Web.WebErrorStatus.Timeout:
-                break;
-            case Windows.Web.WebErrorStatus.ErrorHttpInvalidServerResponse:
-                break;
-            case Windows.Web.WebErrorStatus.ConnectionAborted:
-                break;
-            case Windows.Web.WebErrorStatus.ConnectionReset:
-                break;
-            case Windows.Web.WebErrorStatus.Disconnected:
-                break;
-            case Windows.Web.WebErrorStatus.HttpToHttpsOnRedirection:
-                break;
-            case Windows.Web.WebErrorStatus.HttpsToHttpOnRedirection:
-                break;
-            case Windows.Web.WebErrorStatus.CannotConnect:
-                break;
-            case Windows.Web.WebErrorStatus.HostNameNotResolved:
-                break;
-            case Windows.Web.WebErrorStatus.OperationCanceled:
-                break;
-            case Windows.Web.WebErrorStatus.RedirectFailed:
-                break;
-            case Windows.Web.WebErrorStatus.UnexpectedStatusCode:
-                break;
-            case Windows.Web.WebErrorStatus.UnexpectedRedirection:
-                break;
-            case Windows.Web.WebErrorStatus.UnexpectedClientError:
-                break;
-            case Windows.Web.WebErrorStatus.UnexpectedServerError:
-                break;
-            case Windows.Web.WebErrorStatus.MultipleChoices:
-                break;
-            case Windows.Web.WebErrorStatus.MovedPermanently:
-                break;
-            case Windows.Web.WebErrorStatus.Found:
-                break;
-            case Windows.Web.WebErrorStatus.SeeOther:
-                break;
-            case Windows.Web.WebErrorStatus.NotModified:
-                break;
-            case Windows.Web.WebErrorStatus.UseProxy:
-                break;
-            case Windows.Web.WebErrorStatus.TemporaryRedirect:
-                break;
-            case Windows.Web.WebErrorStatus.BadRequest:
-                break;
-            case Windows.Web.WebErrorStatus.Unauthorized:
-                break;
-            case Windows.Web.WebErrorStatus.PaymentRequired:
-                break;
-            case Windows.Web.WebErrorStatus.Forbidden:
-                break;
-            case Windows.Web.WebErrorStatus.NotFound:
-                break;
-            case Windows.Web.WebErrorStatus.MethodNotAllowed:
-                break;
-            case Windows.Web.WebErrorStatus.NotAcceptable:
-                break;
-            case Windows.Web.WebErrorStatus.ProxyAuthenticationRequired:
-                break;
-            case Windows.Web.WebErrorStatus.RequestTimeout:
-                break;
-            case Windows.Web.WebErrorStatus.Conflict:
-                break;
-            case Windows.Web.WebErrorStatus.Gone:
-                break;
-            case Windows.Web.WebErrorStatus.LengthRequired:
-                break;
-            case Windows.Web.WebErrorStatus.PreconditionFailed:
-                break;
-            case Windows.Web.WebErrorStatus.RequestEntityTooLarge:
-                break;
-            case Windows.Web.WebErrorStatus.RequestUriTooLong:
-                break;
-            case Windows.Web.WebErrorStatus.UnsupportedMediaType:
-                break;
-            case Windows.Web.WebErrorStatus.RequestedRangeNotSatisfiable:
-                break;
-            case Windows.Web.WebErrorStatus.ExpectationFailed:
-                break;
-            case Windows.Web.WebErrorStatus.InternalServerError:
-                break;
-            case Windows.Web.WebErrorStatus.NotImplemented:
-                break;
-            case Windows.Web.WebErrorStatus.BadGateway:
-                break;
-            case Windows.Web.WebErrorStatus.ServiceUnavailable:
-                break;
-            case Windows.Web.WebErrorStatus.GatewayTimeout:
-                break;
-            case Windows.Web.WebErrorStatus.HttpVersionNotSupported:
-                break;
-            default:
-                break;
+                View.Navigate(new Uri("https://sslvpn.tsinghua.edu.cn/dana/home/index.cgi"));
+            }
+            else if(e.Uri == new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/logout.cgi"))
+            {
+                View.Navigate(getHomepage());
+                logged = false;
             }
         }
 
