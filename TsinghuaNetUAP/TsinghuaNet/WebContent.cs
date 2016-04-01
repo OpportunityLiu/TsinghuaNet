@@ -253,6 +253,16 @@ namespace TsinghuaNet
                                 }}, 'json')"
                     });
                 }
+                else if(args.Uri == new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/url_default/welcome.cgi"))
+                {
+                    logged = true;
+                    var ignore = View.InvokeScriptAsync("eval", new string[]
+                    {
+                        $@"username.value = '{Settings.AccountManager.ID}';
+                        password.value = '{pass}';
+                        frmLogin_4.submit();"
+                    });
+                }
             }
             UpdateTitle();
         }

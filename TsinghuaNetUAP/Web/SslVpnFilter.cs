@@ -60,6 +60,8 @@ namespace Web
                     if(welcomUri.IsBaseOf(res.RequestMessage.RequestUri))
                     {
                         var dataMatch = Regex.Match(await res.Content.ReadAsStringAsync(), @"<input.+?name=""FormDataStr"".+?value=""([^""]+?)"">");
+                        if(!dataMatch.Success)
+                            throw new InvalidOperationException("can't log on sslvpn");
                         req = inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
                         {
                             Content = new HttpFormUrlEncodedContent(new Dictionary<string, string>

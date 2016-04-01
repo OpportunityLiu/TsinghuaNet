@@ -1,2 +1,11 @@
-﻿a{cursor:pointer;}
-body{margin-top:20px;}
+﻿a {
+    cursor: pointer;
+}
+
+    a:hover {
+        text-decoration: none;
+    }
+
+body {
+    margin-top: 20px;
+}

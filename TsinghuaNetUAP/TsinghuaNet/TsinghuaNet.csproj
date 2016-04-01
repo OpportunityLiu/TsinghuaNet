@@ -115,7 +115,12 @@
     <Content Include="Images\Windows-Light.png" />
     <Content Include="Images\WindowsPhone-Dark.png" />
     <Content Include="Images\WindowsPhone-Light.png" />
+    <Content Include="WebPages\Data.lang-en.js" />
+    <Content Include="WebPages\DataInvariant.js" />
+    <Content Include="WebPages\Data.lang-zh-cn.js" />
     <Content Include="WebPages\Image\its.png" />
+    <Content Include="WebPages\Image\sslvpn.png" />
+    <Content Include="WebPages\Juicer\juicer-min.js" />
     <Content Include="WebPages\Style.css" />
     <None Include="project.json" />
     <PRIResource Include="Strings\en\Errors.resw">
@@ -219,8 +224,7 @@
     <Content Include="WebPages\bootstrap\js\bootstrap.min.js" />
     <Content Include="WebPages\bootstrap\js\npm.js" />
     <Content Include="WebPages\HomePage.js" />
-    <Content Include="WebPages\HomePage.lang-en.html" />
-    <Content Include="WebPages\HomePage.lang-zh-cn.html" />
+    <Content Include="WebPages\HomePage.html" />
     <Content Include="WebPages\Image\info.png" />
     <Content Include="WebPages\Image\learn.png" />
     <Content Include="WebPages\jQuery\jquery.js" />

@@ -20,4 +20,7 @@ $(function () {
     $("#its").click(function () {
         location.href = "http://its.tsinghua.edu.cn";
     });
+    $("#sslvpn").click(function () {
+        location.href = "https://sslvpn.tsinghua.edu.cn/dana-na/auth/url_default/welcome.cgi";
+    });
 })
