@@ -58,7 +58,18 @@ namespace Web
                     token.Register(() => req.Cancel());
                     var res = await req;
                     if(welcomUri.IsBaseOf(res.RequestMessage.RequestUri))
-                        throw new InvalidOperationException("SslVpn is using by othe program.");
+                    {
+                        var dataMatch = Regex.Match(await res.Content.ReadAsStringAsync(), @"<input.+?name=""FormDataStr"".+?value=""([^""]+?)"">");
+                        req = inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
+                        {
+                            Content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
+                            {
+                                ["FormDataStr"] = dataMatch.Groups[1].Value,
+                                ["btnContinue"] = ""
+                            })
+                        });
+                        res = await req;
+                    }
                     req = SendRequestAsync(request);
                     req.Progress = (sender, prog) => progress.Report(prog);
                     return await req;
