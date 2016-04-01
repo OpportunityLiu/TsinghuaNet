@@ -141,6 +141,9 @@
   <data name="ChangeUserAppButton.Label" xml:space="preserve">
     <value>Change user</value>
   </data>
+  <data name="DropFailed" xml:space="preserve">
+    <value>Failed to log off, please try again after refreshed.</value>
+  </data>
   <data name="DropHint.Text" xml:space="preserve">
     <value>The selected device will be forced to log off.</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="DropPage.Title" xml:space="preserve">
     <value>Log off</value>
+  </data>
+  <data name="DropSuccess" xml:space="preserve">
+    <value>Log off successfully.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Oops</value>

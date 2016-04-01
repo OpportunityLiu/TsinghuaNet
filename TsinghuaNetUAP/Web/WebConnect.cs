@@ -152,16 +152,18 @@ namespace Web
         {
             return Run(async token =>
             {
-                IAsyncOperation<bool> action = null;
-                var check = ConnectionHelper.CheckConnection("net.tsinghua.edu.cn", 2500);
+                IAsyncOperation<bool> boolFunc = null;
+                IAsyncAction voidFunc = null;
+                boolFunc = HttpHelper.NeedSslVpn();
                 token.Register(() =>
                 {
-                    action?.Cancel();
-                    check.Cancel();
+                    boolFunc?.Cancel();
+                    voidFunc?.Cancel();
                 });
                 try
                 {
-                    await check;
+                    if(await boolFunc)
+                        return false;
                 }
                 catch(Exception ex)
                 {
@@ -169,7 +171,6 @@ namespace Web
                 }
                 using(var http = new HttpClient())
                 {
-
                     http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
                     if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
                     {
@@ -179,11 +180,11 @@ namespace Web
                     {
                         http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
                     }
-                    action = LogOnHelper.CheckOnline(http);
-                    if(await action)
+                    boolFunc = LogOnHelper.CheckOnline(http);
+                    if(await boolFunc)
                         return false;
-                    check = LogOnHelper.LogOn(http, userName, passwordMd5);
-                    await check;
+                    voidFunc = LogOnHelper.LogOn(http, userName, passwordMd5);
+                    await voidFunc;
                     return true;
                 }
             });
@@ -213,16 +214,21 @@ namespace Web
         {
             return Run(async token =>
             {
-                var http = new HttpClient();
-                IAsyncAction act = null;
-                IAsyncOperation<string> ope = null;
-                token.Register(() =>
-                {
-                    act?.Cancel();
-                    ope?.Cancel();
-                });
+                var networkFin = false;
+                HttpClient http = null;
                 try
                 {
+                    if(await HttpHelper.NeedSslVpn())
+                        http = new HttpClient(new SslVpnFilter());
+                    else
+                        http = new HttpClient();
+                    IAsyncAction act = null;
+                    IAsyncOperation<string> ope = null;
+                    token.Register(() =>
+                    {
+                        act?.Cancel();
+                        ope?.Cancel();
+                    });
                     act = LogOnHelper.SignInUsereg(http, userName, passwordMd5);
                     await act;
                     //获取用户信息
@@ -257,8 +263,10 @@ namespace Web
                                        HttpClient = http
                                    }).ToArray();
                     deviceList.FirstOrDefault()?.HttpClient?.Dispose();
+                    networkFin = true;
                     var common = devices.Join(deviceList, n => n, o => o, (n, o) =>
                     {
+                        o.DeviceFamily = n.DeviceFamily;
                         o.DropToken = n.DropToken;
                         o.HttpClient = n.HttpClient;
                         o.LogOnDateTime = n.LogOnDateTime;
@@ -293,8 +301,8 @@ namespace Web
                 }
                 finally
                 {
-                    if(deviceList.Count == 0)
-                        http.Dispose();
+                    if(deviceList.Count == 0 || !networkFin)
+                        http?.Dispose();
                 }
             });
         }

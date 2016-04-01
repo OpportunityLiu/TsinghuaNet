@@ -116,6 +116,28 @@
         }
 
         /// <summary>
+        /// 下线失败，请刷新后再试
+        /// </summary>
+        public static string DropFailed
+        {
+            get
+            {
+                return GetString("DropFailed");
+            }
+        }
+
+        /// <summary>
+        /// 下线成功
+        /// </summary>
+        public static string DropSuccess
+        {
+            get
+            {
+                return GetString("DropSuccess");
+            }
+        }
+
+        /// <summary>
         /// 错误
         /// </summary>
         public static string Error

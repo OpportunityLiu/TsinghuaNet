@@ -141,6 +141,9 @@
   <data name="ChangeUserAppButton.Label" xml:space="preserve">
     <value>更换用户</value>
   </data>
+  <data name="DropFailed" xml:space="preserve">
+    <value>下线失败，请刷新后再试</value>
+  </data>
   <data name="DropHint.Text" xml:space="preserve">
     <value>选定的设备将被强制下线。</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="DropPage.Title" xml:space="preserve">
     <value>强制下线</value>
+  </data>
+  <data name="DropSuccess" xml:space="preserve">
+    <value>下线成功</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>错误</value>

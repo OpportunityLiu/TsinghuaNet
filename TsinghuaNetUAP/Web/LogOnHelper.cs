@@ -103,7 +103,7 @@ namespace Web
             {
                 try
                 {
-                    await sendUdpRequest("liuzhengyuan13").ConfigureAwait(false);
+                    await sendUdpRequest(userName).ConfigureAwait(false);
                     if(!waiter.WaitOne(1000))
                     {
                         throw new LogOnException(LogOnExceptionType.ConnectError);

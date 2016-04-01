@@ -115,9 +115,9 @@ namespace TsinghuaNet
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 if(await selectedDevice.DropAsync())
-                    sendHint("下线成功");
+                    sendHint(LocalizedStrings.Resources.DropSuccess);
                 else
-                    sendHint("下线失败，请刷新后再试");
+                    sendHint(LocalizedStrings.Resources.DropFailed);
                 refresh(false);
             }
         }
@@ -274,7 +274,10 @@ namespace TsinghuaNet
             else
                 showHint.SpeedRatio = 3;
             if(hintQueue.Count == 0)
+            {
+                textBlockHint.Text = "";
                 return;
+            }
             textBlockHint.Text = hintQueue.Dequeue();
             showHint.Begin();
         }
