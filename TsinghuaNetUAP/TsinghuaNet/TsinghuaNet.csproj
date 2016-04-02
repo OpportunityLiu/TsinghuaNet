@@ -27,7 +27,7 @@
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>20928BF1B9C04B953D8CC5D02186EE155A3DB1CC</PackageCertificateThumbprint>
     <ApplicationInsightsResourceId>/subscriptions/929bc9d2-fb82-4b6d-8a03-2d697be3cfb8/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/TsinghuaNet</ApplicationInsightsResourceId>
-    <HockeyAppResourceId>62ee431307cc475db0144c96f2d07b60</HockeyAppResourceId>
+    <HockeyAppResourceId>42bdf568c96e4ae1ab90a8835c48a88c</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
