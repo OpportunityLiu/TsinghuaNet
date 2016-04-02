@@ -27,46 +27,22 @@
         /// <summary>
         /// 用户名或密码错误。
         /// </summary>
-        public static string AuthError
-        {
-            get
-            {
-                return GetString("AuthError");
-            }
-        }
+        public static string AuthError => GetString("AuthError");
 
         /// <summary>
         /// 连接错误。
         /// </summary>
-        public static string ConnectError
-        {
-            get
-            {
-                return GetString("ConnectError");
-            }
-        }
+        public static string ConnectError => GetString("ConnectError");
 
         /// <summary>
         /// 请输入密码。
         /// </summary>
-        public static string EmptyPassword
-        {
-            get
-            {
-                return GetString("EmptyPassword");
-            }
-        }
+        public static string EmptyPassword => GetString("EmptyPassword");
 
         /// <summary>
         /// 请输入用户名。
         /// </summary>
-        public static string EmptyUserName
-        {
-            get
-            {
-                return GetString("EmptyUserName");
-            }
-        }
+        public static string EmptyUserName => GetString("EmptyUserName");
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -96,123 +72,57 @@
         /// <summary>
         /// 版本 {0}.{1}.{2}.{3}
         /// </summary>
-        public static string AppVersionFormat
-        {
-            get
-            {
-                return GetString("AppVersionFormat");
-            }
-        }
+        public static string AppVersionFormat => GetString("AppVersionFormat");
 
         /// <summary>
         /// 取消
         /// </summary>
-        public static string Cancel
-        {
-            get
-            {
-                return GetString("Cancel");
-            }
-        }
+        public static string Cancel => GetString("Cancel");
 
         /// <summary>
         /// 下线失败，请刷新后再试
         /// </summary>
-        public static string DropFailed
-        {
-            get
-            {
-                return GetString("DropFailed");
-            }
-        }
+        public static string DropFailed => GetString("DropFailed");
 
         /// <summary>
         /// 下线成功
         /// </summary>
-        public static string DropSuccess
-        {
-            get
-            {
-                return GetString("DropSuccess");
-            }
-        }
+        public static string DropSuccess => GetString("DropSuccess");
 
         /// <summary>
         /// 错误
         /// </summary>
-        public static string Error
-        {
-            get
-            {
-                return GetString("Error");
-            }
-        }
+        public static string Error => GetString("Error");
 
         /// <summary>
         /// 确定
         /// </summary>
-        public static string Ok
-        {
-            get
-            {
-                return GetString("Ok");
-            }
-        }
+        public static string Ok => GetString("Ok");
 
         /// <summary>
         /// Opportunity
         /// </summary>
-        public static string PackageAuthor
-        {
-            get
-            {
-                return GetString("PackageAuthor");
-            }
-        }
+        public static string PackageAuthor => GetString("PackageAuthor");
 
         /// <summary>
         /// Tsinghua Net 是一个第三方的清华大学校园网认证客户端。
         /// </summary>
-        public static string PackageDescription
-        {
-            get
-            {
-                return GetString("PackageDescription");
-            }
-        }
+        public static string PackageDescription => GetString("PackageDescription");
 
         /// <summary>
         /// Tsinghua Net
         /// </summary>
-        public static string PackageName
-        {
-            get
-            {
-                return GetString("PackageName");
-            }
-        }
+        public static string PackageName => GetString("PackageName");
 
         /// <summary>
         /// 登陆失败
         /// </summary>
-        public static string ToastFailed
-        {
-            get
-            {
-                return GetString("ToastFailed");
-            }
-        }
+        public static string ToastFailed => GetString("ToastFailed");
 
         /// <summary>
         /// 登陆成功
         /// </summary>
-        public static string ToastSuccess
-        {
-            get
-            {
-                return GetString("ToastSuccess");
-            }
-        }
+        public static string ToastSuccess => GetString("ToastSuccess");
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -244,34 +154,24 @@
         ///     &lt;visual&gt;
         ///         &lt;binding template='ToastGeneric'&gt;
         ///             &lt;text&gt;下载失败&lt;/text&gt;
+        ///             &lt;text&gt;{0}&lt;/text&gt;
         ///         &lt;/binding&gt;
         ///     &lt;/visual&gt;
         /// &lt;/toast&gt;
         /// </summary>
-        public static string DownloadFailed
-        {
-            get
-            {
-                return GetString("DownloadFailed");
-            }
-        }
+        public static string DownloadFailed => GetString("DownloadFailed");
 
         /// <summary>
         /// &lt;toast&gt;
         ///   &lt;visual&gt;
         ///     &lt;binding template=&amp;quot;ToastGeneric&amp;quot;&gt;
         ///       &lt;text&gt;下载完成&lt;/text&gt;
+        ///       &lt;text&gt;{0}&lt;/text&gt;
         ///     &lt;/binding&gt;
         ///   &lt;/visual&gt;
         /// &lt;/toast&gt;
         /// </summary>
-        public static string DownloadSucceed
-        {
-            get
-            {
-                return GetString("DownloadSucceed");
-            }
-        }
+        public static string DownloadSucceed => GetString("DownloadSucceed");
     }
 
 }

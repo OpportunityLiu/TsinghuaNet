@@ -31,6 +31,7 @@ namespace TsinghuaNet
         {
             WindowsAppInitializer.InitializeAsync(WindowsCollectors.Metadata | WindowsCollectors.Session |
                 WindowsCollectors.PageView | WindowsCollectors.UnhandledException);
+            Microsoft.HockeyApp.HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c");
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
@@ -125,7 +126,7 @@ namespace TsinghuaNet
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             launch(e);
         }

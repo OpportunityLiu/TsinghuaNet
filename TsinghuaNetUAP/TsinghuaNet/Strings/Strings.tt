@@ -126,13 +126,7 @@ namespace <#=nameSpace#>
             }
 #>
         /// </summary>
-        public static string <#=name.Key#>
-        {
-            get
-            {
-                return GetString("<#=name.Key#>");
-            }
-        }
+        public static string <#=name.Key#> => GetString("<#=name.Key#>");
 <#
         }
 #>
