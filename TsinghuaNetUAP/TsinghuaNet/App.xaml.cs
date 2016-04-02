@@ -13,6 +13,7 @@ using Windows.Storage;
 using Windows.System;
 using System.IO;
 using Windows.UI;
+using Microsoft.HockeyApp;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -29,9 +30,20 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
-            WindowsAppInitializer.InitializeAsync(WindowsCollectors.Metadata | WindowsCollectors.Session |
-                WindowsCollectors.PageView | WindowsCollectors.UnhandledException);
-            Microsoft.HockeyApp.HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c");
+            HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c", new TelemetryConfiguration()
+            {
+                Collectors = WindowsCollectors.Metadata | WindowsCollectors.PageView | WindowsCollectors.Session | WindowsCollectors.UnhandledException | WindowsCollectors.WatsonData,
+                DescriptionLoader = ex =>
+                {
+                    var sb = new System.Text.StringBuilder();
+                    foreach(var item in ex.Data)
+                    {
+                        sb.AppendLine(item.ToString());
+                        sb.AppendLine();
+                    }
+                    return sb.ToString();
+                }
+            });
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
