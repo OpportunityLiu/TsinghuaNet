@@ -60,10 +60,12 @@ namespace TsinghuaNet
             listView.SelectedIndex = oldIndex + 1;
         }
 
-        private void root_SizeChanged(object sender, SizeChangedEventArgs e)
+        CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+
+        protected override Size MeasureOverride(Size availableSize)
         {
-            var width = e.NewSize.Width;
-            var height = e.NewSize.Height;
+            var height = availableSize.Height;
+            var width = availableSize.Width;
             if(width >= 1024)
             {
                 webViewBorder.Height = height - 32;
@@ -74,7 +76,6 @@ namespace TsinghuaNet
                 webViewBorder.Width = 1024;
                 webViewBorder.Height = (height - 32) / width * 1024;
             }
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             if(width >= 500)
             {
                 coreTitleBar.ExtendViewIntoTitleBar = true;
@@ -83,6 +84,7 @@ namespace TsinghuaNet
             {
                 coreTitleBar.ExtendViewIntoTitleBar = false;
             }
+            return base.MeasureOverride(availableSize);
         }
 
         private void CloseViewButton_Click(object sender, RoutedEventArgs e)
@@ -115,14 +117,11 @@ namespace TsinghuaNet
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 await StatusBar.GetForCurrentView().HideAsync();
             }
-
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            
             coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
 
             var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
@@ -133,6 +132,8 @@ namespace TsinghuaNet
 
             if(webViewCollection.Count == 0)
                 AddEmptyView();
+
+            base.OnNavigatedTo(e);
         }
 
         private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -140,7 +141,7 @@ namespace TsinghuaNet
             e.Handled = true;
             Frame.GoBack();
         }
-
+        
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
@@ -149,21 +150,19 @@ namespace TsinghuaNet
             {
                 await StatusBar.GetForCurrentView().ShowAsync();
             }
-
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            
             coreTitleBar.LayoutMetricsChanged -= CoreTitleBar_LayoutMetricsChanged;
-
             coreTitleBar.ExtendViewIntoTitleBar = false;
 
             var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
             systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             systemNavigationManager.BackRequested -= SystemNavigationManager_BackRequested;
         }
-
+        
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {
-                colL.Width = new GridLength(sender.SystemOverlayLeftInset);
-                colR.Width = new GridLength(sender.SystemOverlayRightInset);
+            colL.Width = new GridLength(sender.SystemOverlayLeftInset);
+            colR.Width = new GridLength(sender.SystemOverlayRightInset);
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

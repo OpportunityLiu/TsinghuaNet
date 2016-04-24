@@ -152,40 +152,44 @@ namespace Web
         {
             return Run(async token =>
             {
-                IAsyncOperation<bool> boolFunc = null;
-                IAsyncAction voidFunc = null;
-                boolFunc = HttpHelper.NeedSslVpn();
-                token.Register(() =>
-                {
-                    boolFunc?.Cancel();
-                    voidFunc?.Cancel();
-                });
                 try
                 {
+                    IAsyncOperation<bool> boolFunc = null;
+                    IAsyncAction voidFunc = null;
+                    boolFunc = HttpHelper.NeedSslVpn();
+                    token.Register(() =>
+                    {
+                        boolFunc?.Cancel();
+                        voidFunc?.Cancel();
+                    });
                     if(await boolFunc)
                         return false;
+                    using(var http = new HttpClient())
+                    {
+                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
+                        if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+                        {
+                            http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows Phone 10.0"));
+                        }
+                        else
+                        {
+                            http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
+                        }
+                        boolFunc = LogOnHelper.CheckOnline(http);
+                        if(await boolFunc)
+                            return false;
+                        voidFunc = LogOnHelper.LogOn(http, userName, passwordMd5);
+                        await voidFunc;
+                        return true;
+                    }
+                }
+                catch(LogOnException)
+                {
+                    throw;
                 }
                 catch(Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
-                }
-                using(var http = new HttpClient())
-                {
-                    http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
-                    if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
-                    {
-                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows Phone 10.0"));
-                    }
-                    else
-                    {
-                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                    }
-                    boolFunc = LogOnHelper.CheckOnline(http);
-                    if(await boolFunc)
-                        return false;
-                    voidFunc = LogOnHelper.LogOn(http, userName, passwordMd5);
-                    await voidFunc;
-                    return true;
                 }
             });
         }
