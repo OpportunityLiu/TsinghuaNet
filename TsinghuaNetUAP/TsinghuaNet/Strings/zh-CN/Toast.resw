@@ -122,7 +122,6 @@
     &lt;visual&gt;
         &lt;binding template='ToastGeneric'&gt;
             &lt;text&gt;下载失败&lt;/text&gt;
-            &lt;text&gt;{0}&lt;/text&gt;
         &lt;/binding&gt;
     &lt;/visual&gt;
 &lt;/toast&gt;</value>
@@ -132,7 +131,6 @@
   &lt;visual&gt;
     &lt;binding template="ToastGeneric"&gt;
       &lt;text&gt;下载完成&lt;/text&gt;
-      &lt;text&gt;{0}&lt;/text&gt;
     &lt;/binding&gt;
   &lt;/visual&gt;
 &lt;/toast&gt;</value>

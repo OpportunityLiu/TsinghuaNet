@@ -66,7 +66,17 @@ namespace Web
                     if(200 <= sc && sc < 300)
                         return false;
                     if(300 <= sc && sc < 400)
-                        return true;
+                    {
+                        string loc;
+                        if(!result.Headers.TryGetValue("location", out loc))
+                            goto err;
+                        var locUri = new Uri(loc);
+                        if(locUri.Host == "info.tsinghua.edu.cn")
+                            return true;
+                        else
+                            return false;
+                    }
+                    err:
                     throw new InvalidOperationException("Status code of info is out of expected range.");
                 }
             });

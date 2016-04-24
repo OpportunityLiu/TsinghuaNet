@@ -34,9 +34,10 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
+            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent("MainPage created.");
         }
 
-        private bool autoLogOn;
+        private bool autoLogOn;// = Settings.SettingsHelper.GetLocal("AutoLogOn", false);
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -124,7 +125,7 @@ namespace TsinghuaNet
 
         private IAsyncAction currentAction;
 
-        public void refresh(bool logOn = true)
+        public void refresh(bool logOn)
         {
             var current = WebConnect.Current;
             this.DataContext = current;
@@ -231,15 +232,6 @@ namespace TsinghuaNet
 
         private void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
-            var coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
-            if(this.ActualWidth >= 500)
-            {
-                coreTitleBar.ExtendViewIntoTitleBar = true;
-            }
-            else
-            {
-                coreTitleBar.ExtendViewIntoTitleBar = false;
-            }
             if(Frame.CanGoForward)
             {
                 Frame.GoForward();

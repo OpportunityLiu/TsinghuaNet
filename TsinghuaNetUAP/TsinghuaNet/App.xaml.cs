@@ -1,6 +1,4 @@
-﻿using Microsoft.ApplicationInsights;
-using System;
-using System.Linq;
+﻿using System;
 using Web;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -8,10 +6,7 @@ using Windows.ApplicationModel.Background;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
-using Windows.System;
-using System.IO;
 using Windows.UI;
 using Microsoft.HockeyApp;
 
@@ -36,11 +31,23 @@ namespace TsinghuaNet
                 DescriptionLoader = ex =>
                 {
                     var sb = new System.Text.StringBuilder();
-                    foreach(var item in ex.Data)
+                    do
                     {
-                        sb.AppendLine(item.ToString());
+                        sb.AppendLine($"Type: {ex.GetType()}");
+                        sb.AppendLine($"HResult: {ex.HResult}");
+                        sb.AppendLine($"Message: {ex.Message}");
                         sb.AppendLine();
-                    }
+                        sb.AppendLine("Data:");
+                        foreach(var item in ex.Data)
+                        {
+                            sb.AppendLine(item.ToString());
+                            sb.AppendLine();
+                        }
+                        sb.AppendLine("Stacktrace:");
+                        sb.AppendLine(ex.StackTrace);
+                        ex = ex.InnerException;
+                        sb.AppendLine("_____________________");
+                    } while(ex != null);
                     return sb.ToString();
                 }
             });
@@ -86,7 +93,7 @@ namespace TsinghuaNet
             get;
             private set;
         }
-        
+
         private void launch(IActivatedEventArgs e)
         {
 

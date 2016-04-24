@@ -17,6 +17,7 @@ namespace Web
     internal static class LogOnHelper
     {
         private static readonly Uri logOnUri = new Uri("http://net.tsinghua.edu.cn/do_login.php");
+        private static readonly Uri srunUri = new Uri("http://166.111.204.120:69/cgi-bin/srun_portal");
         private static readonly Uri useregUri = new Uri("http://usereg.tsinghua.edu.cn/do.php");
         private static DatagramSocket udpClient;
 
@@ -120,17 +121,20 @@ namespace Web
                     }
                     Array.Copy(challenge, 0, pass, 33, challenge.Length);
                     var sendPass = MD5Helper.GetMd5Hash(pass);
-                    var action = http.PostStrAsync(new Uri("http://166.111.204.120:69/cgi-bin/srun_portal"), $"action=login&username={userName}&password={sendPass}&drop=0&type=11&n=120&ac_id=1&mac={MacAddress.Current}&chap=1");
+                    var action = http.PostStrAsync(srunUri, $"action=login&username={userName}&password={sendPass}&drop=0&type=11&n=120&ac_id=1&mac={MacAddress.Current}&chap=1");
                     token.Register(action.Cancel);
                     var res = await action;
                     if(res.StartsWith("login_error"))
-                        throw LogOnException.GetByErrorString(res.Split("#".ToCharArray(), 2)[1]);
-                    action = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
-                    res = await action;
-                    if(!res.StartsWith("E"))
-                        return;
-                    else
-                        throw LogOnException.GetByErrorString(res);
+                        throw LogOnException.GetByErrorString(res.Substring(res.IndexOf('#') + 1));
+
+                    //模拟网页方式登陆相关代码
+                    
+                    //action = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
+                    //res = await action;
+                    //if(!res.StartsWith("E"))
+                    //    return;
+                    //else
+                    //    throw LogOnException.GetByErrorString(res);
                 }
                 catch(OperationCanceledException) { throw; }
                 catch(LogOnException) { throw; }

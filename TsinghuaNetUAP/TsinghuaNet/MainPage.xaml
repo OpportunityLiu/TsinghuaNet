@@ -37,7 +37,7 @@
                                         Click="Drop_Click" />
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
-                <Image Grid.RowSpan="9"
+                <!--<Image Grid.RowSpan="9"
                        Grid.Column="1"
                        Width="60"
                        Height="60"
@@ -46,7 +46,7 @@
                     <ToolTipService.ToolTip>
                         <ToolTip Content="{x:Bind DeviceFamily, Mode=OneWay}" />
                     </ToolTipService.ToolTip>
-                </Image>
+                </Image>-->
                 <TextBlock Text="{x:Bind Name, Mode=OneWay}"
                            TextTrimming="CharacterEllipsis" />
                 <TextBlock Grid.Row="1"

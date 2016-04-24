@@ -14,8 +14,7 @@
         </TransitionCollection>
     </Page.Transitions>
     <Grid x:Name="root"
-          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-          SizeChanged="root_SizeChanged">
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState>
