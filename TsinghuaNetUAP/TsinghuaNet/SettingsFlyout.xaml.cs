@@ -31,11 +31,7 @@ namespace TsinghuaNet
 
         private void raiseEvent(string settingsName)
         {
-            var temp = SettingsChanged;
-            if(temp != null)
-            {
-                temp(this, settingsName);
-            }
+            SettingsChanged?.Invoke(this, settingsName);
         }
 
         private void Flyout_Opening(object sender, object e)

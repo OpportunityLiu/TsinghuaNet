@@ -154,7 +154,6 @@
         ///     &lt;visual&gt;
         ///         &lt;binding template='ToastGeneric'&gt;
         ///             &lt;text&gt;下载失败&lt;/text&gt;
-        ///             &lt;text&gt;{0}&lt;/text&gt;
         ///         &lt;/binding&gt;
         ///     &lt;/visual&gt;
         /// &lt;/toast&gt;
@@ -162,14 +161,7 @@
         public static string DownloadFailed => GetString("DownloadFailed");
 
         /// <summary>
-        /// &lt;toast&gt;
-        ///   &lt;visual&gt;
-        ///     &lt;binding template=&amp;quot;ToastGeneric&amp;quot;&gt;
-        ///       &lt;text&gt;下载完成&lt;/text&gt;
-        ///       &lt;text&gt;{0}&lt;/text&gt;
-        ///     &lt;/binding&gt;
-        ///   &lt;/visual&gt;
-        /// &lt;/toast&gt;
+        /// 下载完成
         /// </summary>
         public static string DownloadSucceed => GetString("DownloadSucceed");
     }

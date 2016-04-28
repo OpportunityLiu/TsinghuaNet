@@ -112,6 +112,7 @@
     <Compile Include="LogOnException.cs" />
     <Compile Include="LogOnHelper.cs" />
     <Compile Include="MD5Helper.cs" />
+    <Compile Include="ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SslVpnFilter.cs" />
     <Compile Include="Strings\Strings.cs">
