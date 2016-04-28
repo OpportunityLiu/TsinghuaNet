@@ -27,7 +27,7 @@ namespace Web
     /// <summary>
     /// 表示连入网络的设备。
     /// </summary>
-    public sealed class WebDevice : INotifyPropertyChanged, IDisposable
+    public sealed class WebDevice : ObservableObject, IDisposable
     {
         /// <summary>
         /// 初始化 <see cref="WebDevice"/> 的实例并设置相关信息。
@@ -63,8 +63,7 @@ namespace Web
             }
             set
             {
-                deviceFamily = value;
-                PropertyChanging();
+                Set(ref deviceFamily, value);
             }
         }
 
@@ -102,7 +101,7 @@ namespace Web
 
         private void WebDevice_deviceDictChanged()
         {
-            this.PropertyChanging("Name");
+            RaisePropertyChanged("Name");
         }
 
         public string DropToken
@@ -139,8 +138,7 @@ namespace Web
             }
             set
             {
-                traffic = value;
-                PropertyChanging();
+                Set(ref traffic, value);
             }
         }
 
@@ -166,8 +164,7 @@ namespace Web
             }
             set
             {
-                logOn = value;
-                PropertyChanging();
+                Set(ref logOn, value);
             }
         }
 
@@ -253,7 +250,7 @@ namespace Web
                     deviceDict[this.Mac] = value;
                 }
                 saveDeviceList();
-                this.PropertyChanging();
+                RaisePropertyChanged();
             }
         }
 
@@ -299,17 +296,6 @@ namespace Web
                 }
             });
         }
-
-        #region INotifyPropertyChanged 成员
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private async void PropertyChanging([CallerMemberName] string propertyName = "")
-        {
-            await DispatcherHelper.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
-        }
-
-        #endregion
 
         #region IDisposable Support
 

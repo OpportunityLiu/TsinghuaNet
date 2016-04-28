@@ -94,7 +94,7 @@ namespace TsinghuaNet
             private set;
         }
 
-        private void launch(IActivatedEventArgs e)
+        private void launch(IActivatedEventArgs e, bool prelaunch)
         {
 
 #if DEBUG
@@ -133,10 +133,9 @@ namespace TsinghuaNet
             if(currentWindow.Content == null)
             {
                 var f = new Frame();
-                f.Navigate(typeof(MainPage));
+                f.Navigate(typeof(MainPage), prelaunch);
                 currentWindow.Content = f;
             }
-
             currentWindow.Activate();
         }
 
@@ -145,14 +144,16 @@ namespace TsinghuaNet
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            launch(e);
+            NotificationService.NotificationService.HandleLaunching(e.TileId);
+            launch(e, e.PrelaunchActivated);
         }
 
         protected override void OnActivated(IActivatedEventArgs e)
         {
-            launch(e);
+            NotificationService.NotificationService.HandleLaunching((e as ToastNotificationActivatedEventArgs)?.Argument);
+            launch(e, false);
         }
 
         private void OnResuming(object sender, object e)

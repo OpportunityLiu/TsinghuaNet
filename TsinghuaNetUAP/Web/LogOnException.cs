@@ -82,11 +82,11 @@ namespace Web
 
         private static readonly Dictionary<LogOnExceptionType, string> logOnErrorMessageDict = new Dictionary<LogOnExceptionType, string>()
         {
-            [LogOnExceptionType.UnknownError] = LocalizedStrings.Errors.GetString("UnknownError"),
-            [LogOnExceptionType.ConnectError] = LocalizedStrings.Errors.GetString("ConnectError"),
-            [LogOnExceptionType.UserNameError] = LocalizedStrings.Errors.GetString("UserNameError"),
-            [LogOnExceptionType.PasswordError] = LocalizedStrings.Errors.GetString("PasswordError"),
-            [LogOnExceptionType.AuthError] = LocalizedStrings.Errors.GetString("AuthError")
+            [LogOnExceptionType.UnknownError] = LocalizedStrings.Errors.UnknownError,
+            [LogOnExceptionType.ConnectError] = LocalizedStrings.Errors.ConnectError,
+            [LogOnExceptionType.UserNameError] = LocalizedStrings.Errors.UserNameError,
+            [LogOnExceptionType.PasswordError] = LocalizedStrings.Errors.PasswordError,
+            [LogOnExceptionType.AuthError] = LocalizedStrings.Errors.AuthError
         };
 
         public LogOnExceptionType ExceptionType

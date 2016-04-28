@@ -409,7 +409,7 @@ namespace Web
         {
             int re = (((value2 << 8) + value3 << 8) + value4 << 8) + value5;
             int re2 = value0 + (value1 << 8);
-            return re ^ re2;
+            return re ^ (re2 * 91019);
         }
 
         public bool Equals(MacAddress other)

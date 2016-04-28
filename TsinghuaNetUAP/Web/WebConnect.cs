@@ -20,7 +20,7 @@ namespace Web
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
     /// </summary>
-    public sealed class WebConnect : INotifyPropertyChanged, IDisposable
+    public sealed class WebConnect : ObservableObject, IDisposable
     {
         /// <summary>
         /// 检查账户有效性。
@@ -341,8 +341,7 @@ namespace Web
             }
             private set
             {
-                balance = value;
-                propertyChanging();
+                Set(ref balance, value);
             }
         }
 
@@ -359,8 +358,7 @@ namespace Web
             }
             private set
             {
-                webTraffic = value;
-                propertyChanging();
+                Set(ref webTraffic, value);
             }
         }
 
@@ -393,29 +391,10 @@ namespace Web
             }
             private set
             {
-                updateTime = value;
-                propertyChanging();
-                propertyChanging("WebTrafficExact");
+                Set(ref updateTime, value);
+                RaisePropertyChanged("WebTrafficExact");
             }
         }
-
-        #region INotifyPropertyChanged 成员
-
-        /// <summary>
-        /// 属性更改时引发。
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// 引发 <see cref="PropertyChanged"/> 事件。
-        /// </summary>
-        /// <param name="propertyName">更改的属性名，默认值表示调用方名称。</param>
-        private async void propertyChanging([CallerMemberName] string propertyName = "")
-        {
-            await DispatcherHelper.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
-        }
-
-        #endregion
 
         #region IDisposable Support
 

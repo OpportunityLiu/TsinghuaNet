@@ -42,6 +42,8 @@ namespace TsinghuaNet
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            var prelaunch = (bool)e.Parameter;
+            SettingsFlyout_SettingsChanged(null, "AutoLogOn");
             if(e.NavigationMode == NavigationMode.New)
             {
                 var account = Settings.AccountManager.Account;
@@ -68,16 +70,17 @@ namespace TsinghuaNet
                     catch(Exception)
                     {
                     }
+                    if(!prelaunch)
                     refresh(autoLogOn);
                 }
-                SettingsFlyout_SettingsChanged(null, "AutoLogOn");
                 App.Current.Resuming += (s, args) => refresh(this.autoLogOn);
             }
             else
             {
                 if(WebConnect.Current != null)
                 {
-                    refresh(autoLogOn);
+                    if(!prelaunch)
+                        refresh(autoLogOn);
                 }
             }
         }

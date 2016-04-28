@@ -14,7 +14,8 @@
                       x:DataType="web:WebDevice">
             <Grid Holding="Grid_Holding"
                   RightTapped="Grid_RightTapped"
-                  Padding="8">
+                  Padding="8"
+                  AutomationProperties.Name="{x:Bind Name, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />

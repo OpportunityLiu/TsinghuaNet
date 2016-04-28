@@ -17,20 +17,20 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.IO;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
+using System.Reflection;
 
 namespace TsinghuaNet
 {
-    class WebContent : INotifyPropertyChanged
+    class WebContent : Web.ObservableObject
     {
         private static class downloader
         {
-            private static ToastNotification succeedToast, failedToast;
+            private static ToastNotification failedToast;
+
+            private static List<StorageFile> downloadedFiles = new List<StorageFile>();
 
             static downloader()
             {
-                var sXml = new XmlDocument();
-                sXml.LoadXml(LocalizedStrings.Toast.DownloadSucceed);
-                succeedToast = new ToastNotification(sXml);
                 var fXml = new XmlDocument();
                 fXml.LoadXml(LocalizedStrings.Toast.DownloadFailed);
                 failedToast = new ToastNotification(fXml);
@@ -38,7 +38,7 @@ namespace TsinghuaNet
 
             private static string toValidFileName(string raw)
             {
-                var split = raw.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.None);
+                var split = raw.Trim().Trim(Path.GetInvalidFileNameChars()).Split(Path.GetInvalidFileNameChars(), StringSplitOptions.None);
                 if(split.Length == 1)
                     return raw;
                 return string.Join(".", split);
@@ -48,11 +48,7 @@ namespace TsinghuaNet
             {
                 return Run(async token =>
                 {
-                    var d = new BackgroundDownloader()
-                    {
-                        SuccessToastNotification = succeedToast,
-                        FailureToastNotification = failedToast
-                    };
+                    var d = new BackgroundDownloader() { FailureToastNotification = failedToast };
                     var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp");
                     var o = d.CreateDownload(fileUri, file);
                     var op = o.StartAsync();
@@ -66,15 +62,30 @@ namespace TsinghuaNet
                         }
                         else if(resI.Headers.TryGetValue("Content-Disposition", out name))
                         {
-                            var filename = Regex.Match(name, @"filename\s?=\s?""(.+)""");
+                            var filename = Regex.Match(name, @"filename\s*=\s*(?:(?<Opena>"")|(?<Openb>))(?<match>.+?)(?:(?<Closea-Opena>"")|(?<CLoseb-Openb>))\s*$");
                             if(filename.Success)
                             {
-                                name = filename.Groups[1].Value;
+                                name = filename.Groups["match"].Value;
                             }
                         }
                         name = name ?? resI.ActualUri.ToString();
-                        await file.RenameAsync(toValidFileName(name));
+                        name = toValidFileName(name);
+                        await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
+                        downloadedFiles.Add(file);
+                        NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, null, name);
                     };
+                });
+            }
+
+            private static MethodInfo handler = typeof(downloader).GetMethod(nameof(OpenDownloadedFile));
+
+            public static IAsyncAction OpenDownloadedFile(string file)
+            {
+                return Run(async token =>
+                {
+                    var sf = downloadedFiles.FirstOrDefault(f => f.Name == file);
+                    if(sf != null)
+                        await Launcher.LaunchFileAsync(sf);
                 });
             }
         }
@@ -97,7 +108,7 @@ namespace TsinghuaNet
             View.Navigate(uri);
         }
 
-        public WebContent() 
+        public WebContent()
             : this(getHomepage())
         {
         }
@@ -194,21 +205,6 @@ namespace TsinghuaNet
         protected void UpdateTitle()
         {
             Set(ref title, View.DocumentTitle, nameof(Title));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected void Set<T>(ref T field,T newValue, [CallerMemberName]string propertyName = null)
-        {
-            if(Equals(field,newValue))
-                return;
-            field = newValue;
-            RaisePropertyChanged(propertyName);
         }
     }
 }
