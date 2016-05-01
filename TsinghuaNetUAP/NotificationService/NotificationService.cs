@@ -89,24 +89,20 @@ namespace NotificationService
         /// <param name="title">标题，加粗显示。</param>
         /// <param name="text">内容。</param>
         /// <param name="param">启动参数</param>
-        public static void SendToastNotification(string title, string text, MethodInfo handler, object instance, string param)
+        public static void SendToastNotification(string title, string text, MethodInfo handler, string param)
         {
             var toast = new XmlDocument();
-            string hName = null;
-            int iIndex = 0;
+            string aName = null, cName = null, mName = null;
             if(handler != null)
             {
-                hName = handler.DeclaringType.FullName + "." + handler.Name;
-                _LaunchHandlerDictionry[hName] = handler;
-
-                if(instance != null)
-                {
-                    iIndex = (int)DateTime.Now.ToBinary() | instance.GetHashCode();
-                    _LaunchInstanceDictionry[iIndex] = instance;
-                }
+                if(!handler.IsStatic)
+                    throw new ArgumentException("Must be static method", nameof(handler));
+                aName = handler.DeclaringType.GetTypeInfo().Assembly.FullName;
+                cName = handler.DeclaringType.FullName;
+                mName = handler.Name;
             }
             toast.LoadXml($@"
-<toast launch='{(handler != null ? $@"h={hName};i={iIndex};p={param}" : "")}'>
+<toast launch='{(handler != null ? $@"a={aName};c={cName};m={mName};p={param}" : "")}'>
     <visual>
         <binding template='ToastGeneric'>
             <text>{title}</text>
@@ -125,33 +121,29 @@ namespace NotificationService
         /// <param name="text">内容。</param>
         public static void SendToastNotification(string title, string text)
         {
-            SendToastNotification(title, text, null, null, "");
+            SendToastNotification(title, text, null, "");
         }
 
-        private static Dictionary<string, MethodInfo> _LaunchHandlerDictionry = new Dictionary<string, MethodInfo>();
         private static Dictionary<int, object> _LaunchInstanceDictionry = new Dictionary<int, object>();
 
         public static void HandleLaunching(string param)
         {
-            var match = Regex.Match(param ?? "", @"^\s*h=(?<name>.+?)\s*;\s*i=(?<instance>.+?)\s*;\s*p=(?<param>.+?)\s*$");
+            if(param == "App")
+                return;
+            var match = Regex.Match(param ?? "", @"^\s*a=(?<aName>.+?)\s*;\s*c=(?<cName>.+?)\s*;\s*m=(?<mName>.+?)\s*;\s*p=(?<param>.+?)\s*$");
             if(match.Success)
             {
-                var handler = _LaunchHandlerDictionry[match.Groups["name"].Value];
+                var aName = new AssemblyName(match.Groups["aName"].Value);
+                var a = Assembly.Load(aName);
+                var c = a.GetType(match.Groups["cName"].Value);
+                var m = c.GetMethod(match.Groups["mName"].Value);
                 var p = match.Groups["param"].Value;
-                var i = int.Parse(match.Groups["instance"].Value);
                 object[] pa = null;
                 if(string.IsNullOrEmpty(p))
                     pa = new object[0];
                 else
                     pa = new object[] { p };
-                if(i == 0)
-                    handler.Invoke(null, pa);
-                else
-                {
-                    var instance = _LaunchInstanceDictionry[i];
-                    _LaunchInstanceDictionry.Remove(i);
-                    handler.Invoke(instance, pa);
-                }
+                m.Invoke(null, pa);
             }
         }
     }

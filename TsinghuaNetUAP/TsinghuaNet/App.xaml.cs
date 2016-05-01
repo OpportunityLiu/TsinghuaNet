@@ -103,7 +103,8 @@ namespace TsinghuaNet
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            if(ApplicationData.Current.Version < 2)
+
+            if(!prelaunch && ApplicationData.Current.Version < 2)
             {
                 var ignore = ApplicationData.Current.SetVersionAsync(2, args =>
                 {
@@ -169,13 +170,13 @@ namespace TsinghuaNet
         /// <param name="e">Details about the suspend request.</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var def = e.SuspendingOperation.GetDeferral();
             if(WebConnect.Current != null)
             {
+                var def = e.SuspendingOperation.GetDeferral();
                 var sc = WebConnect.Current.SaveCache();
                 await sc;
+                def.Complete();
             }
-            def.Complete();
         }
     }
 }

@@ -18,6 +18,7 @@ using System.IO;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 using System.Reflection;
+using Windows.Storage.AccessCache;
 
 namespace TsinghuaNet
 {
@@ -26,8 +27,6 @@ namespace TsinghuaNet
         private static class downloader
         {
             private static ToastNotification failedToast;
-
-            private static List<StorageFile> downloadedFiles = new List<StorageFile>();
 
             static downloader()
             {
@@ -71,21 +70,28 @@ namespace TsinghuaNet
                         name = name ?? resI.ActualUri.ToString();
                         name = toValidFileName(name);
                         await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
-                        downloadedFiles.Add(file);
-                        NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, null, name);
+                        var fToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(file);
+                        NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, fToken);
                     };
                 });
             }
 
             private static MethodInfo handler = typeof(downloader).GetMethod(nameof(OpenDownloadedFile));
 
-            public static IAsyncAction OpenDownloadedFile(string file)
+            public static IAsyncAction OpenDownloadedFile(string fileToken)
             {
                 return Run(async token =>
                 {
-                    var sf = downloadedFiles.FirstOrDefault(f => f.Name == file);
-                    if(sf != null)
-                        await Launcher.LaunchFileAsync(sf);
+                    try
+                    {
+                        var file = await StorageApplicationPermissions.MostRecentlyUsedList.GetFileAsync(fileToken);
+                        if(StorageApplicationPermissions.MostRecentlyUsedList.CheckAccess(file))
+                            await Launcher.LaunchFileAsync(file);
+                    }
+                    //没找到就算了
+                    catch(Exception)
+                    {
+                    }
                 });
             }
         }
