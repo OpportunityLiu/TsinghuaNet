@@ -71,9 +71,11 @@
             <RowDefinition x:Name="row1" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="colL" Width="0"/>
+            <ColumnDefinition x:Name="colL"
+                              Width="0" />
             <ColumnDefinition x:Name="colC" />
-            <ColumnDefinition x:Name="colR" Width="0"/>
+            <ColumnDefinition x:Name="colR"
+                              Width="0" />
         </Grid.ColumnDefinitions>
         <Border x:Name="titleBar"
                 Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"

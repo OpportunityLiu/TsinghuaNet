@@ -125,61 +125,28 @@ namespace TsinghuaNet
             }
         }
 
-        private IAsyncAction currentAction;
-
-        public void refresh(bool logOn)
+        public async void refresh(bool logOn)
         {
             var current = WebConnect.Current;
             this.DataContext = current;
             if(current == null)
                 return;
-            currentAction?.Cancel();
-            this.currentAction = Run(async token =>
+            this.progressBarUsage.IsIndeterminate = true;
+            try
             {
-                //防止进度条闪烁
-                var progressTokens = new CancellationTokenSource();
-                var progressToken = progressTokens.Token;
-                var progress = Task.Delay(1000, progressToken).ContinueWith(async task =>
-                {
-                    if(!progressToken.IsCancellationRequested && currentAction?.Status != AsyncStatus.Completed)
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                        {
-                            if(!progressToken.IsCancellationRequested && currentAction?.Status != AsyncStatus.Completed)
-                                this.progressBarUsage.IsIndeterminate = true;
-                        });
-                }, progressToken);
-                IAsyncInfo action = null;
-                token.Register(() =>
-                {
-                    progressTokens.Cancel();
-                    action?.Cancel();
-                });
-                if(logOn)
-                {
-                    action = current.LogOnAsync();
-                    try
-                    {
-                        if(await (IAsyncOperation<bool>)action)
-                            sendHint(LocalizedStrings.Resources.ToastSuccess);
-                    }
-                    catch(LogOnException ex)
-                    {
-                        sendHint(ex.Message);
-                    }
-                }
-                action = current.RefreshAsync();
-                try
-                {
-                    await (IAsyncAction)action;
-                }
-                catch(LogOnException ex)
-                {
-                    sendHint(ex.Message);
-                }
-                progressTokens.Cancel();
+                if(logOn && await current.LogOnAsync())
+                    sendHint(LocalizedStrings.Resources.ToastSuccess);
+                await current.RefreshAsync();
+            }
+            catch(LogOnException ex)
+            {
+                sendHint(ex.Message);
+            }
+            finally
+            {
                 this.progressBarUsage.IsIndeterminate = false;
                 this.progressBarUsage.Value = current.WebTrafficExact.TotalGB;
-            });
+            }
         }
 
         private async void changeUser_Click(object sender, RoutedEventArgs e)

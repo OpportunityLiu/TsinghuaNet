@@ -32,7 +32,7 @@ namespace Web
         {
             return Run(async token =>
             {
-                using(var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()))
+                using(var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()).WithHeaders())
                 {
                     var result = await http.GetStringAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"));
                     return !result.Contains("window.alert");
@@ -164,17 +164,8 @@ namespace Web
                     });
                     if(await boolFunc)
                         return false;
-                    using(var http = new HttpClient())
+                    using(var http = new HttpClient().WithHeaders())
                     {
-                        http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
-                        if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
-                        {
-                            http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows Phone 10.0"));
-                        }
-                        else
-                        {
-                            http.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
-                        }
                         boolFunc = LogOnHelper.CheckOnline(http);
                         if(await boolFunc)
                             return false;
@@ -223,9 +214,9 @@ namespace Web
                 try
                 {
                     if(await HttpHelper.NeedSslVpn())
-                        http = new HttpClient(new SslVpnFilter());
+                        http = new HttpClient(new SslVpnFilter()).WithHeaders();
                     else
-                        http = new HttpClient();
+                        http = new HttpClient().WithHeaders();
                     IAsyncAction act = null;
                     IAsyncOperation<string> ope = null;
                     token.Register(() =>
