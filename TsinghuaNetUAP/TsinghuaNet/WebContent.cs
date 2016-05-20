@@ -111,7 +111,13 @@ namespace TsinghuaNet
             View.NavigationFailed += View_NavigationFailed;
             View.NavigationCompleted += View_NavigationCompleted;
             View.UnviewableContentIdentified += View_UnviewableContentIdentified;
+            View.ScriptNotify += View_ScriptNotify;
             View.Navigate(uri);
+        }
+
+        private void View_ScriptNotify(object sender, NotifyEventArgs e)
+        {
+
         }
 
         public WebContent()

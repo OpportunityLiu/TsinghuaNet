@@ -8,11 +8,28 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Threading;
 using Windows.Web.Http.Filters;
+using Windows.Web.Http.Headers;
 
 namespace Web
 {
     public static class HttpHelper
     {
+        public static HttpClient WithHeaders(this HttpClient client)
+        {
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Mozilla", "5.0"));
+            if(Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+                client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows Phone 10.0"));
+            else
+                client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Windows NT 10.0"));
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("AppleWebKit", "537.36"));
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("KHTML, like Gecko"));
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Chrome", "48.0.2564.82"));
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Safari", "537.36"));
+            client.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("Edge", "14.14332"));
+            client.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("*/*"));
+            return client;
+        }
+
         public static IAsyncOperation<string> PostStrAsync(this HttpClient httpClient, Uri uri, string request)
         {
             if(httpClient == null)
@@ -21,7 +38,7 @@ namespace Web
             {
                 using(var re = new HttpStringContent(request))
                 {
-                    re.Headers.ContentType = new Windows.Web.Http.Headers.HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
+                    re.Headers.ContentType = new HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
                     var postTask = httpClient.PostAsync(uri, re);
                     token.Register(() => postTask.Cancel());
                     using(var get = await postTask)
@@ -57,27 +74,36 @@ namespace Web
         {
             return Run(async token =>
             {
-                using(var client = new HttpClient(new HttpBaseProtocolFilter() { AllowAutoRedirect = false }))
+                try
                 {
-                    var request = client.GetAsync(new Uri("http://info.tsinghua.edu.cn"), HttpCompletionOption.ResponseHeadersRead);
-                    token.Register(request.Cancel);
-                    var result = await request;
-                    var sc = (int)result.StatusCode;
-                    if(200 <= sc && sc < 300)
-                        return false;
-                    if(300 <= sc && sc < 400)
+                    using(var client = new HttpClient(new HttpBaseProtocolFilter() { AllowAutoRedirect = false}).WithHeaders())
                     {
-                        string loc;
-                        if(!result.Headers.TryGetValue("location", out loc))
-                            goto err;
-                        var locUri = new Uri(loc);
-                        if(locUri.Host == "info.tsinghua.edu.cn")
-                            return true;
-                        else
+                        var request = client.GetAsync(new Uri("http://info.tsinghua.edu.cn"), HttpCompletionOption.ResponseHeadersRead);
+                        token.Register(request.Cancel);
+                        var result = await request;
+                        var sc = (int)result.StatusCode;
+                        if(200 <= sc && sc < 300)
                             return false;
-                    }
+                        if(300 <= sc && sc < 400)
+                        {
+                            string loc;
+                            if(!result.Headers.TryGetValue("location", out loc))
+                                goto err;
+                            var locUri = new Uri(loc);
+                            if(locUri.Host == "info.tsinghua.edu.cn")
+                                return true;
+                            else
+                                return false;
+                        }
                     err:
-                    throw new InvalidOperationException("Status code of info is out of expected range.");
+                        throw new InvalidOperationException("Status code of info is out of expected range.");
+                    }
+
+                }
+                catch(Exception)
+                {
+
+                    throw;
                 }
             });
         }
