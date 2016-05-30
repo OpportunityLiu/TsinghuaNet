@@ -48,7 +48,7 @@ namespace TsinghuaNet
                 return Run(async token =>
                 {
                     var d = new BackgroundDownloader() { FailureToastNotification = failedToast };
-                    var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp");
+                    var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp", CreationCollisionOption.GenerateUniqueName);
                     var o = d.CreateDownload(fileUri, file);
                     var op = o.StartAsync();
                     op.Completed = async (sender, e) =>
