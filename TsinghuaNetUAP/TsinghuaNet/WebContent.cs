@@ -164,6 +164,7 @@ namespace TsinghuaNet
         {
             if(!logged)
             {
+                logged = true;
                 var account = Settings.AccountManager.Account;
                 var id = account.UserName;
                 account.RetrievePassword();
@@ -171,7 +172,6 @@ namespace TsinghuaNet
                 account = null;
                 if(args.Uri == new Uri("http://its.tsinghua.edu.cn"))
                 {
-                    logged = true;
                     var ignore = View.InvokeScriptAsync("eval", new string[]
                     {
                         $@" $.post(
@@ -187,13 +187,24 @@ namespace TsinghuaNet
                 }
                 else if(args.Uri == new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/url_default/welcome.cgi"))
                 {
-                    logged = true;
                     var ignore = View.InvokeScriptAsync("eval", new string[]
                     {
                         $@"username.value = '{Settings.AccountManager.ID}';
                         password.value = '{pass}';
                         frmLogin_4.submit();"
                     });
+                }
+                else if(args.Uri == new Uri("http://zhjwxk.cic.tsinghua.edu.cn/xklogin.do"))
+                {
+                    var ignore = View.InvokeScriptAsync("eval", new string[]
+                    {
+                        $@"j_username.value = '{id}';
+                        j_password.value = '{pass}';"
+                    });
+                }
+                else
+                {
+                    logged = false;
                 }
             }
             UpdateTitle();
