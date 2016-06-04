@@ -25,6 +25,7 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
+#if !DEBUG
             HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c", new TelemetryConfiguration()
             {
                 Collectors = WindowsCollectors.Metadata | WindowsCollectors.PageView | WindowsCollectors.Session | WindowsCollectors.UnhandledException | WindowsCollectors.WatsonData,
@@ -38,10 +39,9 @@ namespace TsinghuaNet
                         sb.AppendLine($"Message: {ex.Message}");
                         sb.AppendLine();
                         sb.AppendLine("Data:");
-                        foreach(var item in ex.Data)
+                        foreach(var item in ex.Data.Keys)
                         {
-                            sb.AppendLine(item.ToString());
-                            sb.AppendLine();
+                            sb.AppendLine($"    {item}: {ex.Data[item]}");
                         }
                         sb.AppendLine("Stacktrace:");
                         sb.AppendLine(ex.StackTrace);
@@ -51,6 +51,7 @@ namespace TsinghuaNet
                     return sb.ToString();
                 }
             });
+#endif
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
