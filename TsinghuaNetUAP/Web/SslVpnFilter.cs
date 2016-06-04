@@ -124,8 +124,15 @@ namespace Web
             {
                 if(disposing)
                 {
-                    await inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
-                    inner.Dispose();
+                    try
+                    {
+                        await inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
+                    }
+                    catch(Exception) { }
+                    finally
+                    {
+                        inner.Dispose();
+                    }
                 }
                 inner = null;
                 disposedValue = true;
