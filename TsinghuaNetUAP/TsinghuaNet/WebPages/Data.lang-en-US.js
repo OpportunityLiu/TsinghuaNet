@@ -1,4 +1,4 @@
-﻿document.all(0).lang = "en";
+﻿document.all(0).lang = "en-US";
 document.title = "New Tab";
 
 setLocalName("learn", "Web learning");

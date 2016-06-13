@@ -162,11 +162,9 @@
                         Click="NewViewButton_Click" />
             </ListView.Footer>
         </ListView>
-        <Viewbox x:Name="webViewPlaceholder"
-                 Grid.ColumnSpan="3">
-            <Border x:Name="webViewBorder"
-                    Child="{Binding SelectedItem.View, ElementName=listView, Mode=OneWay}" />
-        </Viewbox>
+        <local:WebContentHolder x:Name="webViewPlaceholder"
+                                Grid.ColumnSpan="3"
+                                WebContent="{Binding SelectedItem.View, ElementName=listView, Mode=OneWay}" />
     </Grid>
 
 </Page>

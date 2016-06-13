@@ -56,16 +56,6 @@ namespace TsinghuaNet
         {
             var height = availableSize.Height;
             var width = availableSize.Width;
-            if(width >= 1024)
-            {
-                this.webViewBorder.Height = height - 32;
-                this.webViewBorder.Width = width;
-            }
-            else
-            {
-                this.webViewBorder.Width = 1024;
-                this.webViewBorder.Height = (height - 32) / width * 1024;
-            }
             if(width >= 500)
             {
                 this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
@@ -149,8 +139,10 @@ namespace TsinghuaNet
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {
+#pragma warning disable UWP001 // Platform-specific
             this.colL.Width = new GridLength(sender.SystemOverlayLeftInset);
             this.colR.Width = new GridLength(sender.SystemOverlayRightInset);
+#pragma warning restore UWP001 // Platform-specific
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
