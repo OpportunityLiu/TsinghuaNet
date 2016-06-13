@@ -125,6 +125,7 @@ namespace TsinghuaNet
             }
 
             var view = ApplicationView.GetForCurrentView();
+            view.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
             view.TitleBar.BackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
             view.TitleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
