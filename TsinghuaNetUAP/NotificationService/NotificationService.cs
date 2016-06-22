@@ -37,50 +37,75 @@ namespace NotificationService
                 var devices = connect.DeviceList.ToArray();
                 if(devices.Length == 0)
                 {
-                    var tile = new XmlDocument();
-                    tile.LoadXml($@"
+                    addTile(manager, $@"
 <tile>
     <visual branding='name'>
         <binding template='TileMedium'>
-            <text hint-style='body'>{usage}</text>
-            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.Resources.NoDevices}</text>
+            <text hint-style='body'>
+                {usage}
+            </text>
+            <text hint-style='caption' hint-wrap='true'>
+                {LocalizedStrings.Resources.NoDevices}
+            </text>
         </binding>
         <binding template='TileWide'>
-            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}</text>
-            <text hint-style='caption' hint-wrap='true'>{LocalizedStrings.Resources.NoDevices}</text>
+            <text hint-style='body'>
+                {string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}
+            </text>
+            <text hint-style='caption' hint-wrap='true'>
+                {LocalizedStrings.Resources.NoDevices}
+            </text>
         </binding>
     </visual>
 </tile>");
-                    var tileNotification = new TileNotification(tile);
-                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
-                    manager.Update(tileNotification);
                     return;
                 }
                 foreach(var item in devices)
                 {
-                    var tile = new XmlDocument();
-                    tile.LoadXml($@"
+                    addTile(manager, $@"
 <tile>
     <visual branding='name'>
         <binding template='TileMedium'>
-            <text hint-style='body'>{usage}</text>
-            <text hint-style='caption'>{item.Name}</text>
-            <text hint-style='captionsubtle'>{item.LogOnDateTime.TimeOfDay}</text>
-            <text hint-style='captionsubtle'>{item.IPAddress}</text>
+            <text hint-style='body'>
+                {usage}
+            </text>
+            <text hint-style='caption'>
+                {item.Name}
+            </text>
+            <text hint-style='captionsubtle'>
+                {item.LogOnDateTime.TimeOfDay}
+            </text>
+            <text hint-style='captionsubtle'>
+                {item.IPAddress}
+            </text>
         </binding>
         <binding template='TileWide'>
-            <text hint-style='body'>{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}</text>
-            <text hint-style='caption'>{item.Name}</text>
-            <text hint-style='captionsubtle'>{item.LogOnDateTime}</text>
-            <text hint-style='captionsubtle'>{item.IPAddress}</text>
+            <text hint-style='body'>
+                {string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}
+            </text>
+            <text hint-style='caption'>
+                {item.Name}
+            </text>
+            <text hint-style='captionsubtle'>
+                {item.LogOnDateTime}
+            </text>
+            <text hint-style='captionsubtle'>
+                {item.IPAddress}
+            </text>
         </binding>
     </visual>
 </tile>");
-                    var tileNotification = new TileNotification(tile);
-                    tileNotification.ExpirationTime = new DateTimeOffset(DateTime.Now.AddDays(1));
-                    manager.Update(tileNotification);
                 }
             }).AsAsyncAction();
+        }
+
+        private static void addTile(TileUpdater manager, string content)
+        {
+            var tile = new XmlDocument();
+            tile.LoadXml(content);
+            var tileNotification = new TileNotification(tile);
+            tileNotification.ExpirationTime = DateTimeOffset.Now.AddDays(1);
+            manager.Update(tileNotification);
         }
 
         /// <summary>
