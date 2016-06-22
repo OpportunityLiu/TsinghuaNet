@@ -19,6 +19,7 @@ using Windows.Storage.Streams;
 using Windows.Web.Http;
 using System.Reflection;
 using Windows.Storage.AccessCache;
+using Windows.Web.Http.Headers;
 
 namespace TsinghuaNet
 {
@@ -55,17 +56,12 @@ namespace TsinghuaNet
                     {
                         var resI = o.GetResponseInformation();
                         string name;
-                        if(resI == null)
+                        if(resI.Headers.TryGetValue("Content-Disposition", out name))
                         {
-                            name = file.Name;
-                        }
-                        else if(resI.Headers.TryGetValue("Content-Disposition", out name))
-                        {
-                            var filename = Regex.Match(name, @"filename\s*=\s*(?:(?<Opena>"")|(?<Openb>))(?<match>.+?)(?:(?<Closea-Opena>"")|(?<CLoseb-Openb>))\s*$");
-                            if(filename.Success)
-                            {
-                                name = filename.Groups["match"].Value;
-                            }
+                            var h = HttpContentDispositionHeaderValue.Parse(name);
+                            name = h.FileName;
+                            if(string.IsNullOrWhiteSpace(name))
+                                name = null;
                         }
                         name = name ?? resI.ActualUri.ToString();
                         name = toValidFileName(name);

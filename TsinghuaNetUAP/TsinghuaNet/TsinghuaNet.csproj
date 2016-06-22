@@ -116,7 +116,7 @@
     <Content Include="Images\Windows-Light.png" />
     <Content Include="Images\WindowsPhone-Dark.png" />
     <Content Include="Images\WindowsPhone-Light.png" />
-    <Content Include="WebPages\Data.lang-en-US.js" />
+    <Content Include="WebPages\Data.lang-en.js" />
     <Content Include="WebPages\DataInvariant.js" />
     <Content Include="WebPages\Data.lang-zh-CN.js" />
     <Content Include="WebPages\Image\its.png" />
@@ -124,7 +124,7 @@
     <Content Include="WebPages\Juicer\juicer-min.js" />
     <Content Include="WebPages\Style.css" />
     <None Include="project.json" />
-    <PRIResource Include="Strings\en-US\Errors.resw">
+    <PRIResource Include="Strings\en\Errors.resw">
       <SubType>Designer</SubType>
     </PRIResource>
     <PRIResource Include="Strings\zh-CN\Errors.resw">
@@ -179,8 +179,8 @@
     </AppxManifest>
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\zh-CN\Toast.resw" />
-    <PRIResource Include="Strings\en-US\Resources.resw" />
-    <PRIResource Include="Strings\en-US\Toast.resw" />
+    <PRIResource Include="Strings\en\Resources.resw" />
+    <PRIResource Include="Strings\en\Toast.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\150x150.scale-100.png" />
