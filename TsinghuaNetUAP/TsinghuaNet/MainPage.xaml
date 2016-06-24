@@ -118,9 +118,14 @@
                                      Text="Version x.x.x.x" />
                                 <LineBreak />
                                 <LineBreak />
-                                <Hyperlink Click="Hyperlink_Click">
+                                <Hyperlink Click="ReviewLink_Click">
                                     <Run x:Uid="RateLink"
                                          Text="Rate and review" />
+                                </Hyperlink>
+                                <LineBreak />
+                                <Hyperlink x:Name="hyperlinkFeedback" Click="FeedbackLink_Click">
+                                    <Run x:Uid="FeedbackLink"
+                                         Text="Feedback" />
                                 </Hyperlink>
                             </TextBlock>
                         </Flyout>
