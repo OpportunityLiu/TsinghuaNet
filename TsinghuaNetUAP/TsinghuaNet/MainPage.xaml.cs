@@ -21,6 +21,7 @@ using System.Threading;
 using System.Linq;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.Services.Store.Engagement;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -194,11 +195,6 @@ namespace TsinghuaNet
             }
         }
 
-        private async void Hyperlink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
-        {
-            await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
-        }
-
         private void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
             if(Frame.CanGoForward)
@@ -265,6 +261,16 @@ namespace TsinghuaNet
                 else
                     appBarButtonLogOn.Visibility = Visibility.Visible;
             }
+        }
+
+        private async void ReviewLink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
+        }
+
+        private async void FeedbackLink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            await Feedback.LaunchFeedbackAsync();
         }
     }
 

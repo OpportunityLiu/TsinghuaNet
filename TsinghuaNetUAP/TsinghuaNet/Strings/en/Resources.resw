@@ -165,6 +165,9 @@
   <data name="Error" xml:space="preserve">
     <value>Oops</value>
   </data>
+  <data name="FeedbackLink.Text" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
   <data name="LogOnAppButton.Label" xml:space="preserve">
     <value>Login</value>
   </data>

@@ -165,6 +165,9 @@
   <data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
+  <data name="FeedbackLink.Text" xml:space="preserve">
+    <value>反馈</value>
+  </data>
   <data name="LogOnAppButton.Label" xml:space="preserve">
     <value>登陆</value>
   </data>
