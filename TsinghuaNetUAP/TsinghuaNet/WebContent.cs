@@ -124,10 +124,12 @@ namespace TsinghuaNet
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
         {
             await downloader.Download(args.Uri);
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEvents.Log("File downloaded", null);
         }
 
         private void View_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEvents.Log("Web page viewed", null);
         }
 
         private void View_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
