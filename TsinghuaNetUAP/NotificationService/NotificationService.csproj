@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="NotificationService.cs" />
     <Content Include="Properties\NotificationService.rd.xml" />
+    <None Include="project.json" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>
