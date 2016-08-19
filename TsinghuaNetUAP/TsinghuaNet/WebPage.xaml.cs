@@ -34,8 +34,6 @@ namespace TsinghuaNet
 
         private void AddEmptyView()
         {
-            var account = Settings.AccountManager.Account;
-            account.RetrievePassword();
             var webView = this.NewWebContent(null);
             this.webViewCollection.Add(webView);
             this.listView.SelectedItem = webView;

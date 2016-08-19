@@ -95,6 +95,8 @@ namespace TsinghuaNet
         private static Uri getHomepage()
         {
             var account = Settings.AccountManager.Account;
+            if(account == null)
+                return new Uri("about:blank");
             account.RetrievePassword();
             return new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.UserName}&pw={account.Password}");
         }
@@ -124,12 +126,12 @@ namespace TsinghuaNet
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
         {
             await downloader.Download(args.Uri);
-            Microsoft.Services.Store.Engagement.StoreServicesCustomEvents.Log("File downloaded", null);
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("File downloaded");
         }
 
         private void View_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
-            Microsoft.Services.Store.Engagement.StoreServicesCustomEvents.Log("Web page viewed", null);
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("Web page viewed");
         }
 
         private void View_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
