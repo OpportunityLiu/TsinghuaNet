@@ -150,6 +150,7 @@ namespace Web
         /// </returns>
         public IAsyncOperation<bool> LogOnAsync()
         {
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("Log on requested");
             return Run(async token =>
             {
                 try
@@ -207,6 +208,7 @@ namespace Web
         /// </summary>
         public IAsyncAction RefreshAsync()
         {
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("Refresh requested");
             return Run(async token =>
             {
                 var networkFin = false;
