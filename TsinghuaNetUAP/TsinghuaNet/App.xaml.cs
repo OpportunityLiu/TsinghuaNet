@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.UI;
 using Microsoft.HockeyApp;
+using Windows.ApplicationModel.Core;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -136,6 +137,7 @@ namespace TsinghuaNet
             {
                 var f = new Frame();
                 f.Navigate(typeof(MainPage), prelaunch);
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
                 currentWindow.Content = f;
             }
             currentWindow.Activate();

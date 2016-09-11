@@ -24,6 +24,7 @@ namespace TsinghuaNet
         }
 
         private readonly ObservableCollection<WebContent> webViewCollection = new ObservableCollection<WebContent>();
+        private bool isShown = false;
 
         private WebContent NewWebContent(Uri uri)
         {
@@ -52,17 +53,20 @@ namespace TsinghuaNet
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var height = availableSize.Height;
-            var width = availableSize.Width;
-            if(width >= 500)
+            if(isShown)
             {
-                this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                this.coreTitleBar.ExtendViewIntoTitleBar = true;
-            }
-            else
-            {
-                this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                this.coreTitleBar.ExtendViewIntoTitleBar = false;
+                var height = availableSize.Height;
+                var width = availableSize.Width;
+                if(width >= 500)
+                {
+                    this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    this.coreTitleBar.ExtendViewIntoTitleBar = true;
+                }
+                else
+                {
+                    this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                    this.coreTitleBar.ExtendViewIntoTitleBar = false;
+                }
             }
             return base.MeasureOverride(availableSize);
         }
@@ -97,11 +101,7 @@ namespace TsinghuaNet
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                await StatusBar.GetForCurrentView().HideAsync();
-            }
-
+            this.isShown = true;
             this.coreTitleBar.LayoutMetricsChanged += this.CoreTitleBar_LayoutMetricsChanged;
             this.systemNavigationManager.BackRequested += this.SystemNavigationManager_BackRequested;
 
@@ -111,6 +111,11 @@ namespace TsinghuaNet
                 this.AddEmptyView();
 
             base.OnNavigatedTo(e);
+
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                await StatusBar.GetForCurrentView().HideAsync();
+            }
         }
 
         private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -121,18 +126,19 @@ namespace TsinghuaNet
 
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+            this.isShown = false;
+            this.coreTitleBar.LayoutMetricsChanged -= this.CoreTitleBar_LayoutMetricsChanged;
+            this.coreTitleBar.ExtendViewIntoTitleBar = false;
+
+            this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            this.systemNavigationManager.BackRequested -= this.SystemNavigationManager_BackRequested;
+
             base.OnNavigatingFrom(e);
 
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 await StatusBar.GetForCurrentView().ShowAsync();
             }
-
-            this.coreTitleBar.LayoutMetricsChanged -= this.CoreTitleBar_LayoutMetricsChanged;
-            this.coreTitleBar.ExtendViewIntoTitleBar = false;
-
-            this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            this.systemNavigationManager.BackRequested -= this.SystemNavigationManager_BackRequested;
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)

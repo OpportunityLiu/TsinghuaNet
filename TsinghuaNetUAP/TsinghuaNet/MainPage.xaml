@@ -122,6 +122,7 @@
                                     <Run x:Uid="RateLink"
                                          Text="Rate and review" />
                                 </Hyperlink>
+                                <LineBreak />
                             </TextBlock>
                         </Flyout>
                     </AppBarButton.Flyout>
