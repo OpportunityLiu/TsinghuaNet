@@ -141,6 +141,7 @@ namespace TsinghuaNet
                 currentWindow.Content = f;
             }
             currentWindow.Activate();
+            JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("73b1e2713a63168b47cc5ae252d1337b");
         }
 
         /// <summary>
@@ -160,8 +161,9 @@ namespace TsinghuaNet
             launch(e, false);
         }
 
-        private void OnResuming(object sender, object e)
+        private async void OnResuming(object sender, object e)
         {
+            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("73b1e2713a63168b47cc5ae252d1337b");
         }
 
         /// <summary>
@@ -177,6 +179,7 @@ namespace TsinghuaNet
             {
                 var def = e.SuspendingOperation.GetDeferral();
                 var sc = WebConnect.Current.SaveCache();
+                await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
                 await sc;
                 def.Complete();
             }

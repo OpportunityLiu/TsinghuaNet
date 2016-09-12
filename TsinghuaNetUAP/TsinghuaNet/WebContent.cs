@@ -65,6 +65,7 @@ namespace TsinghuaNet
                         }
                         name = name ?? resI.ActualUri.ToString();
                         name = toValidFileName(name);
+                        JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile", name);
                         await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
                         var fToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(file);
                         NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, fToken);
@@ -228,6 +229,7 @@ namespace TsinghuaNet
         protected void UpdateTitle()
         {
             Set(ref title, View.DocumentTitle, nameof(Title));
+            JYAnalyticsUniversal.JYAnalytics.TrackEvent("LoadWebPage", View.DocumentTitle);
         }
     }
 }
