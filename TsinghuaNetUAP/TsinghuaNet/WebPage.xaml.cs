@@ -38,6 +38,7 @@ namespace TsinghuaNet
             var webView = this.NewWebContent(null);
             this.webViewCollection.Add(webView);
             this.listView.SelectedItem = webView;
+            JYAnalyticsUniversal.JYAnalytics.TrackEvent("OpenWebPage");
         }
 
         private void webView_NewWindowRequested(WebContent sender, WebViewNewWindowRequestedEventArgs args)
