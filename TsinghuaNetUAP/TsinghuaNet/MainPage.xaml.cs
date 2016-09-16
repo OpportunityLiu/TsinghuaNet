@@ -34,14 +34,14 @@ namespace TsinghuaNet
         public MainPage()
         {
             this.InitializeComponent();
-            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent("MainPage created.");
         }
 
-        private bool autoLogOn;// = Settings.SettingsHelper.GetLocal("AutoLogOn", false);
+        private bool autoLogOn;
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(nameof(MainPage));
             SettingsFlyout_SettingsChanged(null, "AutoLogOn");
             if(e.NavigationMode == NavigationMode.New)
             {
@@ -87,6 +87,7 @@ namespace TsinghuaNet
         protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(nameof(MainPage));
             if(WebConnect.Current != null)
             {
                 await WebConnect.Current.SaveCache();

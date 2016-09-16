@@ -135,7 +135,6 @@ namespace NotificationService
         </binding>
     </visual>
 </toast>");
-            ToastNotificationManager.History.Clear();
             ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(toast));
         }
 

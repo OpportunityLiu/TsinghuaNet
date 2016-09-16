@@ -8,7 +8,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.UI;
-using Microsoft.HockeyApp;
 using Windows.ApplicationModel.Core;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
@@ -26,32 +25,6 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
-#if !DEBUG
-            HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c", new TelemetryConfiguration()
-            {
-                Collectors = WindowsCollectors.Metadata | WindowsCollectors.Session | WindowsCollectors.UnhandledException
-            }).SetExceptionDescriptionLoader(ex =>
-            {
-                var sb = new System.Text.StringBuilder();
-                do
-                {
-                    sb.AppendLine($"Type: {ex.GetType()}");
-                    sb.AppendLine($"HResult: {ex.HResult}");
-                    sb.AppendLine($"Message: {ex.Message}");
-                    sb.AppendLine();
-                    sb.AppendLine("Data:");
-                    foreach(var item in ex.Data.Keys)
-                    {
-                        sb.AppendLine($"    {item}: {ex.Data[item]}");
-                    }
-                    sb.AppendLine("Stacktrace:");
-                    sb.AppendLine(ex.StackTrace);
-                    ex = ex.InnerException;
-                    sb.AppendLine("_____________________");
-                } while(ex != null);
-                return sb.ToString();
-            });
-#endif
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
@@ -175,14 +148,13 @@ namespace TsinghuaNet
         /// <param name="e">Details about the suspend request.</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            var def = e.SuspendingOperation.GetDeferral();
             if(WebConnect.Current != null)
             {
-                var def = e.SuspendingOperation.GetDeferral();
-                var sc = WebConnect.Current.SaveCache();
-                await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
-                await sc;
-                def.Complete();
+                await WebConnect.Current.SaveCache();
             }
+            await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
+            def.Complete();
         }
     }
 }

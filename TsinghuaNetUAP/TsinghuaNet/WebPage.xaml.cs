@@ -112,6 +112,7 @@ namespace TsinghuaNet
                 this.AddEmptyView();
 
             base.OnNavigatedTo(e);
+            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(nameof(WebPage));
 
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
@@ -140,6 +141,12 @@ namespace TsinghuaNet
             {
                 await StatusBar.GetForCurrentView().ShowAsync();
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(nameof(WebPage));
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
