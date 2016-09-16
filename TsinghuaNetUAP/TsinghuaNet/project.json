@@ -1,6 +1,5 @@
 ﻿{
   "dependencies": {
-    "HockeySDK.UWP": "4.1.4",
     "JyAnalytics": "1.0.10",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "PlatformSpecific.Analyzer": "2.0.3"

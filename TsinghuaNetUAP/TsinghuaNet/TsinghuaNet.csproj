@@ -134,7 +134,6 @@
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.woff2" />

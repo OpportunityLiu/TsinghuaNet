@@ -48,6 +48,7 @@ namespace TsinghuaNet
             {
                 return Run(async token =>
                 {
+                    JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile");
                     var d = new BackgroundDownloader() { FailureToastNotification = failedToast };
                     var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp", CreationCollisionOption.GenerateUniqueName);
                     var o = d.CreateDownload(fileUri, file);
@@ -65,7 +66,6 @@ namespace TsinghuaNet
                         }
                         name = name ?? resI.ActualUri.ToString();
                         name = toValidFileName(name);
-                        JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile", name);
                         await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
                         var fToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(file);
                         NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, fToken);
@@ -127,12 +127,10 @@ namespace TsinghuaNet
         private async void View_UnviewableContentIdentified(WebView sender, WebViewUnviewableContentIdentifiedEventArgs args)
         {
             await downloader.Download(args.Uri);
-            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("File downloaded");
         }
 
         private void View_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
-            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("Web page viewed");
         }
 
         private void View_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
@@ -229,7 +227,7 @@ namespace TsinghuaNet
         protected void UpdateTitle()
         {
             Set(ref title, View.DocumentTitle, nameof(Title));
-            JYAnalyticsUniversal.JYAnalytics.TrackEvent("LoadWebPage", View.DocumentTitle);
+            JYAnalyticsUniversal.JYAnalytics.TrackEvent("LoadWebPage");
         }
     }
 }
