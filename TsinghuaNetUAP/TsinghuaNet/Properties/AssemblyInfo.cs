@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Opportunity")]
 [assembly: AssemblyProduct("TsinghuaNet")]
-[assembly: AssemblyCopyright("Copyright Opportunity ©  2015")]
+[assembly: AssemblyCopyright("Copyright Opportunity ©  2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(false)]
