@@ -42,18 +42,18 @@ namespace NotificationService
     <visual branding='name'>
         <binding template='TileMedium'>
             <text hint-style='body'>
-                {usage}
+                <![CDATA[{usage}]]>
             </text>
             <text hint-style='caption' hint-wrap='true'>
-                {LocalizedStrings.Resources.NoDevices}
+                <![CDATA[{LocalizedStrings.Resources.NoDevices}]]>
             </text>
         </binding>
         <binding template='TileWide'>
             <text hint-style='body'>
-                {string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}
+                <![CDATA[{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}]]>
             </text>
             <text hint-style='caption' hint-wrap='true'>
-                {LocalizedStrings.Resources.NoDevices}
+                <![CDATA[{LocalizedStrings.Resources.NoDevices}]]>
             </text>
         </binding>
     </visual>
@@ -67,30 +67,30 @@ namespace NotificationService
     <visual branding='name'>
         <binding template='TileMedium'>
             <text hint-style='body'>
-                {usage}
+                <![CDATA[{usage}]]>
             </text>
             <text hint-style='caption'>
-                {item.Name}
+                <![CDATA[{item.Name}]]>
             </text>
             <text hint-style='captionsubtle'>
-                {item.LogOnDateTime.TimeOfDay}
+                <![CDATA[{item.LogOnDateTime.TimeOfDay}]]>
             </text>
             <text hint-style='captionsubtle'>
-                {item.IPAddress}
+                <![CDATA[{item.IPAddress}]]>
             </text>
         </binding>
         <binding template='TileWide'>
             <text hint-style='body'>
-                {string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}
+                <![CDATA[{string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.Usage, usage)}]]>
             </text>
             <text hint-style='caption'>
-                {item.Name}
+                <![CDATA[{item.Name}]]>
             </text>
             <text hint-style='captionsubtle'>
-                {item.LogOnDateTime}
+                <![CDATA[{item.LogOnDateTime}]]>
             </text>
             <text hint-style='captionsubtle'>
-                {item.IPAddress}
+                <![CDATA[{item.IPAddress}]]>
             </text>
         </binding>
     </visual>
@@ -130,8 +130,8 @@ namespace NotificationService
 <toast launch='{(handler != null ? $@"a={aName};c={cName};m={mName};p={param}" : "")}'>
     <visual>
         <binding template='ToastGeneric'>
-            <text>{title}</text>
-            <text>{text}</text>
+            <text><![CDATA[{title}]]></text>
+            <text><![CDATA[{text}]]></text>
         </binding>
     </visual>
 </toast>");
