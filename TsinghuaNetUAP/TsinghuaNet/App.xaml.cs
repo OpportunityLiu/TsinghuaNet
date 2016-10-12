@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.UI;
 using Windows.ApplicationModel.Core;
+using Microsoft.HockeyApp;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -25,6 +26,30 @@ namespace TsinghuaNet
         /// </summary>
         public App()
         {
+            HockeyClient.Current.Configure("42bdf568c96e4ae1ab90a8835c48a88c", new TelemetryConfiguration()
+            {
+                Collectors = WindowsCollectors.Metadata | WindowsCollectors.Session | WindowsCollectors.UnhandledException
+            }).SetExceptionDescriptionLoader(ex =>
+            {
+                var sb = new System.Text.StringBuilder();
+                do
+                {
+                    sb.AppendLine($"Type: {ex.GetType()}");
+                    sb.AppendLine($"HResult: {ex.HResult}");
+                    sb.AppendLine($"Message: {ex.Message}");
+                    sb.AppendLine();
+                    sb.AppendLine("Data:");
+                    foreach(var item in ex.Data.Keys)
+                    {
+                        sb.AppendLine($"    {item}: {ex.Data[item]}");
+                    }
+                    sb.AppendLine("Stacktrace:");
+                    sb.AppendLine(ex.StackTrace);
+                    ex = ex.InnerException;
+                    sb.AppendLine("_____________________");
+                } while(ex != null);
+                return sb.ToString();
+            });
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;

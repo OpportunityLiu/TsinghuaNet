@@ -130,8 +130,12 @@ namespace NotificationService
 <toast launch='{(handler != null ? $@"a={aName};c={cName};m={mName};p={param}" : "")}'>
     <visual>
         <binding template='ToastGeneric'>
-            <text><![CDATA[{title}]]></text>
-            <text><![CDATA[{text}]]></text>
+            <text>
+                <![CDATA[{title}]]>
+            </text>
+            <text>
+                <![CDATA[{text}]]>
+            </text>
         </binding>
     </visual>
 </toast>");
