@@ -102,6 +102,8 @@ namespace TsinghuaNet
 
         SignInDialog signInDialog;
 
+        SettingsDialog settingsDialog;
+
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
             var renameDialog = LazyInitializer.EnsureInitialized(ref this.renameDialog);
@@ -266,6 +268,16 @@ namespace TsinghuaNet
         private async void ReviewLink_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
         {
             await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NBLGGGZ5Q4J"));
+        }
+
+        private async void appBarButtonSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if(settingsDialog == null)
+            {
+                settingsDialog = new SettingsDialog();
+                settingsDialog.SettingsChanged += SettingsFlyout_SettingsChanged;
+            }
+            await settingsDialog.ShowAsync();
         }
     }
 
