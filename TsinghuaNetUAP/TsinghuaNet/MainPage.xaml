@@ -91,11 +91,8 @@
         <CommandBar x:Name="commandBar">
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="SettingsAppButton"
-                              Label="Settings">
-                    <AppBarButton.Flyout>
-                        <local:SettingsFlyout SettingsChanged="SettingsFlyout_SettingsChanged" />
-                    </AppBarButton.Flyout>
-                </AppBarButton>
+                              Label="Settings"
+                              Click="appBarButtonSettings_Click" />
                 <AppBarButton x:Uid="AboutAppButton"
                               x:Name="appBarButtonAbout"
                               Label="About">
