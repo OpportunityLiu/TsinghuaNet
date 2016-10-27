@@ -116,6 +116,7 @@
     <Content Include="Images\Windows-Light.png" />
     <Content Include="Images\WindowsPhone-Dark.png" />
     <Content Include="Images\WindowsPhone-Light.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="WebPages\Data.lang-en.js" />
     <Content Include="WebPages\DataInvariant.js" />
     <Content Include="WebPages\Data.lang-zh-CN.js" />
