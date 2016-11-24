@@ -51,13 +51,12 @@ namespace TsinghuaNet
                     JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile");
                     var d = new BackgroundDownloader() { FailureToastNotification = failedToast };
                     var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp", CreationCollisionOption.GenerateUniqueName);
-                    var o = d.CreateDownload(fileUri, file);
-                    var op = o.StartAsync();
-                    op.Completed = async (sender, e) =>
+                    var downloadOperation = d.CreateDownload(fileUri, file);
+                    downloadOperation.StartAsync().Completed = async (sender, e) =>
                     {
-                        var resI = o.GetResponseInformation();
-                        string name;
-                        if(resI.Headers.TryGetValue("Content-Disposition", out name))
+                        string name = null;
+                        var resI = downloadOperation.GetResponseInformation();
+                        if(resI != null && resI.Headers.TryGetValue("Content-Disposition", out name))
                         {
                             var h = HttpContentDispositionHeaderValue.Parse(name);
                             name = h.FileName;
