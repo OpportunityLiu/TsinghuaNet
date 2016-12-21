@@ -12,9 +12,7 @@
         <local:DeviceImageConverter x:Key="DeviceImageConverter" />
         <DataTemplate x:Key="OnlineDeviceItemTemplate"
                       x:DataType="web:WebDevice">
-            <Grid Holding="Grid_Holding"
-                  RightTapped="Grid_RightTapped"
-                  Padding="8"
+            <Grid Padding="8"
                   AutomationProperties.Name="{x:Bind Name, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -267,6 +265,7 @@
                           Grid.Row="5"
                           Grid.ColumnSpan="3"
                           IsItemClickEnabled="True"
+                          ItemClick="listViewOnlineDevices_ItemClick"
                           ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
                           ItemsSource="{Binding DeviceList}"
                           SelectionMode="None"

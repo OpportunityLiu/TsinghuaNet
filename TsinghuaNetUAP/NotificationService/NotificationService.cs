@@ -18,6 +18,17 @@ namespace NotificationService
 {
     public static class NotificationService
     {
+        public static void SetBadgeNumber(int num)
+        {
+            var badgeXml = new XmlDocument();
+            badgeXml.LoadXml($@"<badge value='{num}'/>");
+            var badge = new BadgeNotification(badgeXml);
+            badge.ExpirationTime = DateTimeOffset.Now.AddDays(1);
+            var badgeUpdater = BadgeUpdateManager.CreateBadgeUpdaterForApplication();
+            badgeUpdater.Update(badge);
+
+        }
+
         public static async void UpdateTile(object sender, PropertyChangedEventArgs e)
         {
             var c = sender as WebConnect;
@@ -30,11 +41,11 @@ namespace NotificationService
             return Task.Run(() =>
             {
                 var manager = TileUpdateManager.CreateTileUpdaterForApplication();
-                if(connect == null)
-                    manager.Clear();
+                manager.Clear();
                 var usage = connect.WebTrafficExact.ToString();
                 manager.EnableNotificationQueue(true);
                 var devices = connect.DeviceList.ToArray();
+                SetBadgeNumber(devices.Length);
                 if(devices.Length == 0)
                 {
                     addTile(manager, $@"

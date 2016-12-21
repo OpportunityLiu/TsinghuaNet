@@ -168,35 +168,6 @@ namespace TsinghuaNet
             refresh(autoLogOn);
         }
 
-        private void Grid_RightTapped(object sender, RightTappedRoutedEventArgs e)
-        {
-            if(e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
-                return;
-            var s = (FrameworkElement)sender;
-            selectedDevice = (WebDevice)s.DataContext;
-            var p = e.GetPosition(s);
-            p.Y = s.ActualHeight;
-            ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
-        }
-
-        private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
-        {
-            switch(e.HoldingState)
-            {
-            case HoldingState.Canceled:
-                FlyoutBase.GetAttachedFlyout((FrameworkElement)sender).Hide();
-                break;
-            case HoldingState.Started:
-                var s = (FrameworkElement)sender;
-                selectedDevice = (WebDevice)s.DataContext;
-                var p = e.GetPosition(s);
-                p.X = p.X > 100 ? p.X - 100 : 0;
-                p.Y = s.ActualHeight;
-                ((MenuFlyout)FlyoutBase.GetAttachedFlyout(s)).ShowAt(s, p);
-                break;
-            }
-        }
-
         private void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
             if(Frame.CanGoForward)
@@ -278,6 +249,12 @@ namespace TsinghuaNet
                 settingsDialog.SettingsChanged += SettingsFlyout_SettingsChanged;
             }
             await settingsDialog.ShowAsync();
+        }
+
+        private void listViewOnlineDevices_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var c = (ListViewItem)listViewOnlineDevices.ContainerFromItem(e.ClickedItem);
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)c.ContentTemplateRoot);
         }
     }
 
