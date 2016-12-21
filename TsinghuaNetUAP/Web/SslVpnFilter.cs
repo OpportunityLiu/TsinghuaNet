@@ -14,9 +14,12 @@ namespace Web
 {
     public class SslVpnFilter : IHttpFilter
     {
+        private static int sslVpnFilterCount = 0;
+
         public SslVpnFilter()
         {
             inner = new HttpBaseProtocolFilter();
+            sslVpnFilterCount++;
         }
 
         private static Uri logOffUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/logout.cgi");
@@ -126,7 +129,9 @@ namespace Web
                 {
                     try
                     {
-                        await inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
+                        sslVpnFilterCount--;
+                        if(sslVpnFilterCount == 0)
+                            await inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
                     }
                     catch(Exception) { }
                     finally
