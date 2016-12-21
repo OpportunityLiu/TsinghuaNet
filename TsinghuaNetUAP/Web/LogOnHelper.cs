@@ -61,7 +61,7 @@ namespace Web
                 reader.ReadBytes(challenge);
                 var padding = new byte[32];
                 reader.ReadBytes(padding);
-                udpClient.Dispose();
+                sender.Dispose();
                 udpClient = null;
                 waiter.Set();
             }
@@ -128,7 +128,7 @@ namespace Web
                         throw LogOnException.GetByErrorString(res.Substring(res.IndexOf('#') + 1));
 
                     //模拟网页方式登陆相关代码
-                    
+
                     //action = http.PostStrAsync(logOnUri, $"action=login&username={userName}&password={{MD5_HEX}}{passwordMd5}&type=1&ac_id=1&mac={MacAddress.Current}");
                     //res = await action;
                     //if(!res.StartsWith("E"))

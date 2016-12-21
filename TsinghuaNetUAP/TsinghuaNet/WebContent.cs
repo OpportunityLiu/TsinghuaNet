@@ -49,27 +49,38 @@ namespace TsinghuaNet
                 return Run(async token =>
                 {
                     JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile");
-                    var d = new BackgroundDownloader() { FailureToastNotification = failedToast };
+                    var d = new BackgroundDownloader { FailureToastNotification = failedToast };
                     var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp", CreationCollisionOption.GenerateUniqueName);
                     var downloadOperation = d.CreateDownload(fileUri, file);
                     downloadOperation.StartAsync().Completed = async (sender, e) =>
                     {
                         string name = null;
                         var resI = downloadOperation.GetResponseInformation();
-                        if(resI != null && resI.Headers.TryGetValue("Content-Disposition", out name))
+                        if(resI != null)
                         {
-                            var h = HttpContentDispositionHeaderValue.Parse(name);
-                            name = h.FileName;
-                            if(string.IsNullOrWhiteSpace(name))
-                                name = null;
+                            if(resI.Headers.TryGetValue("Content-Disposition", out name))
+                            {
+                                var h = HttpContentDispositionHeaderValue.Parse(name);
+                                name = h.FileName;
+                                if(string.IsNullOrWhiteSpace(name))
+                                    name = null;
+                            }
+                            name = name ?? getFileNameFromUri(resI.ActualUri);
                         }
-                        name = name ?? resI.ActualUri.ToString();
+                        name = name ?? getFileNameFromUri(fileUri);
                         name = toValidFileName(name);
                         await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
                         var fToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(file);
                         NotificationService.NotificationService.SendToastNotification(LocalizedStrings.Toast.DownloadSucceed, name, handler, fToken);
                     };
                 });
+            }
+
+            private static string getFileNameFromUri(Uri uri)
+            {
+                if(uri == null)
+                    return null;
+                return uri.LocalPath.Split(@"/\?".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
             }
 
             private static MethodInfo handler = typeof(downloader).GetMethod(nameof(OpenDownloadedFile));
