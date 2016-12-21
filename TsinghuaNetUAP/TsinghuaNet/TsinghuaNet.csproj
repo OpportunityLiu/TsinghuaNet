@@ -17,7 +17,7 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>TsinghuaNet_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>TsinghuaNet_TemporaryKey.pfx</PackageCertificateKeyFile>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -25,7 +25,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>20928BF1B9C04B953D8CC5D02186EE155A3DB1CC</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>E72F9118D4BD6CCB561EAD056C832C6062FD05E4</PackageCertificateThumbprint>
     <ApplicationInsightsResourceId>/subscriptions/929bc9d2-fb82-4b6d-8a03-2d697be3cfb8/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/TsinghuaNet</ApplicationInsightsResourceId>
     <HockeyAppResourceId>42bdf568c96e4ae1ab90a8835c48a88c</HockeyAppResourceId>
   </PropertyGroup>
@@ -131,7 +131,7 @@
     <PRIResource Include="Strings\zh-CN\Errors.resw">
       <SubType>Designer</SubType>
     </PRIResource>
-    <None Include="TsinghuaNet_StoreKey.pfx" />
+    <None Include="TsinghuaNet_TemporaryKey.pfx" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
