@@ -94,8 +94,6 @@ namespace TsinghuaNet
             }
         }
 
-        private WebDevice selectedDevice;
-
         DropDialog dropDialog;
 
         RenameDialog renameDialog;
@@ -106,9 +104,11 @@ namespace TsinghuaNet
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
+            var selectedDevice = (WebDevice)((FrameworkElement)sender).DataContext;
             var renameDialog = LazyInitializer.EnsureInitialized(ref this.renameDialog);
             renameDialog.NewName = selectedDevice.Name;
-            if(await renameDialog.ShowAsync() == ContentDialogResult.Primary)
+            await renameDialog.ShowAsync();
+            if(renameDialog.ChangeName)
             {
                 selectedDevice.Name = renameDialog.NewName;
             }
@@ -117,6 +117,7 @@ namespace TsinghuaNet
         private async void Drop_Click(object sender, RoutedEventArgs e)
         {
             var dropDialog = LazyInitializer.EnsureInitialized(ref this.dropDialog);
+            var selectedDevice = (WebDevice)((FrameworkElement)sender).DataContext;
             dropDialog.Title = selectedDevice.Name;
             if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
