@@ -26,7 +26,7 @@ namespace TsinghuaNet
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
-            if(e.Key == Windows.System.VirtualKey.Enter)
+            if(e.OriginalKey == Windows.System.VirtualKey.Enter || e.OriginalKey == Windows.System.VirtualKey.GamepadA)
             {
                 e.Handled = true;
                 ChangeName = true;
