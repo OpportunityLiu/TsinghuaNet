@@ -19,8 +19,8 @@ namespace TsinghuaNet
 
         private void ContentDialog_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            textBoxRename.SelectAll();
-            textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+            this.textBoxRename.SelectAll();
+            this.textBoxRename.Focus(Windows.UI.Xaml.FocusState.Programmatic);
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -29,21 +29,15 @@ namespace TsinghuaNet
             if(e.OriginalKey == Windows.System.VirtualKey.Enter || e.OriginalKey == Windows.System.VirtualKey.GamepadA)
             {
                 e.Handled = true;
-                ChangeName = true;
+                this.ChangeName = true;
                 this.Hide();
             }
         }
 
         public string NewName
         {
-            get
-            {
-                return textBoxRename.Text;
-            }
-            set
-            {
-                textBoxRename.Text = value ?? "";
-            }
+            get => this.textBoxRename.Text;
+            set => this.textBoxRename.Text = value ?? "";
         }
 
         public bool ChangeName
@@ -54,13 +48,13 @@ namespace TsinghuaNet
 
         private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            ChangeName = false;
+            this.ChangeName = false;
         }
 
         private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
             if(args.Result == ContentDialogResult.Primary)
-                ChangeName = true;
+                this.ChangeName = true;
         }
     }
 }

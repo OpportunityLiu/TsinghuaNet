@@ -11,7 +11,7 @@
     <AssemblyName>TsinghuaNet</AssemblyName>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
@@ -28,6 +28,7 @@
     <PackageCertificateThumbprint>49368DC833702BD5726FAAA48BEBDA24D7A79D37</PackageCertificateThumbprint>
     <ApplicationInsightsResourceId>/subscriptions/929bc9d2-fb82-4b6d-8a03-2d697be3cfb8/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/TsinghuaNet</ApplicationInsightsResourceId>
     <HockeyAppResourceId>42bdf568c96e4ae1ab90a8835c48a88c</HockeyAppResourceId>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -124,15 +125,12 @@
     <Content Include="WebPages\Image\sslvpn.png" />
     <Content Include="WebPages\Juicer\juicer-min.js" />
     <Content Include="WebPages\Style.css" />
-    <None Include="project.json" />
     <PRIResource Include="Strings\en\Errors.resw">
       <SubType>Designer</SubType>
     </PRIResource>
     <PRIResource Include="Strings\zh-CN\Errors.resw">
       <SubType>Designer</SubType>
     </PRIResource>
-    <None Include="TsinghuaNet_StoreKey.pfx" />
-    <None Include="TsinghuaNet_TemporaryKey.pfx" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -311,15 +309,26 @@
     <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.Services.Store.Engagement, Version=10.0">
-      <Name>Microsoft Engagement Framework</Name>
-    </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.17134.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HockeySDK.UWP">
+      <Version>4.1.6</Version>
+    </PackageReference>
+    <PackageReference Include="JyAnalytics">
+      <Version>1.0.10</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="PlatformSpecific.Analyzer">
+      <Version>2.0.3</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

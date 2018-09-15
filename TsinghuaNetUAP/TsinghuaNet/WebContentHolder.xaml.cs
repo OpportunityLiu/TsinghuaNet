@@ -43,14 +43,8 @@ namespace TsinghuaNet
 
         public object WebContent
         {
-            get
-            {
-                return GetValue(WebContentProperty);
-            }
-            set
-            {
-                SetValue(WebContentProperty, value);
-            }
+            get => this.GetValue(WebContentProperty);
+            set => this.SetValue(WebContentProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for WebContent.  This enables animation, styling, binding, etc...

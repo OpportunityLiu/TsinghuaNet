@@ -34,32 +34,32 @@ namespace TsinghuaNet
 
         private void comboBoxTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var theme = (ElementTheme)comboBoxTheme.SelectedIndex;
+            var theme = (ElementTheme)this.comboBoxTheme.SelectedIndex;
             SetLocal("Theme", theme.ToString());
-            raiseEvent("Theme");
+            this.raiseEvent("Theme");
             //((FrameworkElement)Window.Current.Content).RequestedTheme = theme;
         }
 
         private void toggleSwitchLogOn_Toggled(object sender, RoutedEventArgs e)
         {
-            SetLocal("AutoLogOn", toggleSwitchLogOn.IsOn);
-            raiseEvent("AutoLogOn");
+            SetLocal("AutoLogOn", this.toggleSwitchLogOn.IsOn);
+            this.raiseEvent("AutoLogOn");
         }
 
         private void ContentDialog_Loading(FrameworkElement sender, object args)
         {
-            toggleSwitchLogOn.IsOn = GetLocal("AutoLogOn", true);
+            this.toggleSwitchLogOn.IsOn = GetLocal("AutoLogOn", true);
 
             switch((ElementTheme)Enum.Parse(typeof(ElementTheme), GetLocal("Theme", "Default")))
             {
             case ElementTheme.Default:
-                comboBoxTheme.SelectedIndex = 0;
+                this.comboBoxTheme.SelectedIndex = 0;
                 break;
             case ElementTheme.Light:
-                comboBoxTheme.SelectedIndex = 1;
+                this.comboBoxTheme.SelectedIndex = 1;
                 break;
             case ElementTheme.Dark:
-                comboBoxTheme.SelectedIndex = 2;
+                this.comboBoxTheme.SelectedIndex = 2;
                 break;
             }
         }

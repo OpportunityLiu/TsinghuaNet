@@ -18,7 +18,7 @@ namespace Web
 
         public SslVpnFilter()
         {
-            inner = new HttpBaseProtocolFilter();
+            this.inner = new HttpBaseProtocolFilter();
             sslVpnFilterCount++;
         }
 
@@ -48,13 +48,13 @@ namespace Web
         public IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> SendRequestAsync(HttpRequestMessage request)
         {
             if(logOnRequest == null)
-                return inner.SendRequestAsync(request);
-            if(!initialized)
+                return this.inner.SendRequestAsync(request);
+            if(!this.initialized)
             {
-                initialized = true;
+                this.initialized = true;
                 return Run<HttpResponseMessage, HttpProgress>(async (token, progress) =>
                 {
-                    var req = inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
+                    var req = this.inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
                     {
                         Content = logOnRequest
                     });
@@ -65,7 +65,7 @@ namespace Web
                         var dataMatch = Regex.Match(await res.Content.ReadAsStringAsync(), @"<input.+?name=""FormDataStr"".+?value=""([^""]+?)"">");
                         if(!dataMatch.Success)
                             throw new InvalidOperationException("can't log on sslvpn");
-                        req = inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
+                        req = this.inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
                         {
                             Content = new HttpFormUrlEncodedContent(new Dictionary<string, string>
                             {
@@ -75,7 +75,7 @@ namespace Web
                         });
                         res = await req;
                     }
-                    req = SendRequestAsync(request);
+                    req = this.SendRequestAsync(request);
                     req.Progress = (sender, prog) => progress.Report(prog);
                     return await req;
                 });
@@ -83,11 +83,11 @@ namespace Web
             else if(needVpn(request.RequestUri))
             {
                 request.RequestUri = EncodeForVpn(request.RequestUri, true);
-                return inner.SendRequestAsync(request);
+                return this.inner.SendRequestAsync(request);
             }
             else
             {
-                return inner.SendRequestAsync(request);
+                return this.inner.SendRequestAsync(request);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Web
 
         protected virtual async void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if(!this.disposedValue)
             {
                 if(disposing)
                 {
@@ -131,16 +131,16 @@ namespace Web
                     {
                         sslVpnFilterCount--;
                         if(sslVpnFilterCount == 0)
-                            await inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
+                            await this.inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
                     }
                     catch(Exception) { }
                     finally
                     {
-                        inner.Dispose();
+                        this.inner.Dispose();
                     }
                 }
-                inner = null;
-                disposedValue = true;
+                this.inner = null;
+                this.disposedValue = true;
             }
         }
 
@@ -148,7 +148,7 @@ namespace Web
         public void Dispose()
         {
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
         #endregion

@@ -28,7 +28,7 @@ namespace TsinghuaNet
             case ContentDialogResult.Primary:
                 //验证
                 var d = args.GetDeferral();
-                if(!await SignIn())
+                if(!await this.SignIn())
                     args.Cancel = true;
                 d.Complete();
                 break;
@@ -42,37 +42,37 @@ namespace TsinghuaNet
 
         private async System.Threading.Tasks.Task<bool> SignIn()
         {
-            textBlockHint.Text = "";
-            var userName = textBoxUserName.Text;
+            this.textBlockHint.Text = "";
+            var userName = this.textBoxUserName.Text;
             if(string.IsNullOrEmpty(userName) || userName.All(c => char.IsDigit(c)))
             {
-                textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.Errors.EmptyUserName;
+                this.textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                this.textBlockHint.Text = LocalizedStrings.Errors.EmptyUserName;
                 return false;
             }
-            var password = passwordBoxPassword.Password;
+            var password = this.passwordBoxPassword.Password;
             if(string.IsNullOrEmpty(password))
             {
-                passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                textBlockHint.Text = LocalizedStrings.Errors.EmptyPassword;
+                this.passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                this.textBlockHint.Text = LocalizedStrings.Errors.EmptyPassword;
                 return false;
             }
-            progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
                 if(!await WebConnect.CheckAccount(userName, password))
                 {
-                    passwordBoxPassword.SelectAll();
-                    passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
-                    progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    textBlockHint.Text = LocalizedStrings.Errors.AuthError;
+                    this.passwordBoxPassword.SelectAll();
+                    this.passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+                    this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    this.textBlockHint.Text = LocalizedStrings.Errors.AuthError;
                     return false;
                 }
             }
             catch(Exception)
             {
-                textBlockHint.Text = LocalizedStrings.Errors.ConnectError;
-                progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                this.textBlockHint.Text = LocalizedStrings.Errors.ConnectError;
+                this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 return false;
             }
             var account = AccountManager.CreateAccount(userName, password);
@@ -89,10 +89,10 @@ namespace TsinghuaNet
 
         private void ContentDialog_Loading(Windows.UI.Xaml.FrameworkElement sender, object args)
         {
-            textBlockHint.Text = "";
-            progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            textBoxUserName.Text = "";
-            passwordBoxPassword.Password = "";
+            this.textBlockHint.Text = "";
+            this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            this.textBoxUserName.Text = "";
+            this.passwordBoxPassword.Password = "";
         }
     }
 }

@@ -1,19 +1,21 @@
-﻿using System;
+﻿using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Windows.Web.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Data.Json;
 using Windows.Foundation;
-using Windows.Web.Http.Headers;
 using Windows.Security.Credentials;
 using Windows.Storage;
-using Windows.Data.Json;
+using Windows.Web.Http;
+using Windows.Web.Http.Headers;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace Web
 {
@@ -32,7 +34,7 @@ namespace Web
         {
             return Run(async token =>
             {
-                using(var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()).WithHeaders())
+                using (var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()).WithHeaders())
                 {
                     var result = await http.GetStringAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"));
                     return !result.Contains("window.alert");
@@ -48,30 +50,20 @@ namespace Web
         /// <exception cref="ArgumentException">参数错误。</exception>
         public WebConnect(PasswordCredential account)
         {
-            if(account == null)
+            if (account == null)
                 throw new ArgumentNullException(nameof(account));
             this.userName = account.UserName;
             account.RetrievePassword();
             this.password = account.Password;
-            this.passwordMd5 = MD5Helper.GetMd5Hash(password);
-            this.deviceList = new ObservableCollection<WebDevice>();
-            this.DeviceList = new ReadOnlyObservableCollection<WebDevice>(this.deviceList);
+            this.passwordMd5 = MD5Helper.GetMd5Hash(this.password);
         }
 
         private static WebConnect current;
 
         public static WebConnect Current
         {
-            set
-            {
-                if(value == null)
-                    throw new ArgumentNullException("value");
-                current = value;
-            }
-            get
-            {
-                return current;
-            }
+            set => current = value ?? throw new ArgumentNullException("value");
+            get => current;
         }
 
         public IAsyncAction LoadCache()
@@ -85,16 +77,16 @@ namespace Web
                     var cacheFile = await cacheFolder.GetFileAsync("WebConnectCache.json");
                     dataStr = await FileIO.ReadTextAsync(cacheFile);
                 }
-                catch(Exception) { return; }
-                if(string.IsNullOrWhiteSpace(dataStr))
+                catch (Exception) { return; }
+                if (string.IsNullOrWhiteSpace(dataStr))
                     return;
                 JsonObject data;
-                if(!JsonObject.TryParse(dataStr, out data))
+                if (!JsonObject.TryParse(dataStr, out data))
                     return;
-                Balance = (decimal)data[nameof(Balance)].GetNumber();
-                UpdateTime = DateTime.FromBinary((long)data[nameof(UpdateTime)].GetNumber());
-                WebTraffic = new Size((ulong)data[nameof(WebTraffic)].GetNumber());
-                var devices = from item in data[nameof(DeviceList)].GetArray()
+                this.Balance = (decimal)data[nameof(this.Balance)].GetNumber();
+                this.UpdateTime = DateTime.FromBinary((long)data[nameof(this.UpdateTime)].GetNumber());
+                this.WebTraffic = new Size((ulong)data[nameof(this.WebTraffic)].GetNumber());
+                var devices = from item in data[nameof(this.DeviceList)].GetArray()
                               let device = item.GetObject()
                               let ip = Ipv4Address.Parse(device[nameof(WebDevice.IPAddress)].GetString())
                               let mac = MacAddress.Parse(device[nameof(WebDevice.Mac)].GetString())
@@ -107,9 +99,9 @@ namespace Web
                                   LogOnDateTime = deTime,
                                   DeviceFamily = deviceFamily
                               };
-                Dispose();
-                foreach(var item in devices)
-                    deviceList.Add(item);
+                this.Dispose();
+                foreach (var item in devices)
+                    this.deviceList.Add(item);
             });
         }
 
@@ -118,11 +110,11 @@ namespace Web
             return Run(async token =>
             {
                 var data = new JsonObject();
-                data[nameof(Balance)] = JsonValue.CreateNumberValue((double)this.balance);
-                data[nameof(UpdateTime)] = JsonValue.CreateNumberValue(this.updateTime.ToBinary());
-                data[nameof(WebTraffic)] = JsonValue.CreateNumberValue(this.webTraffic.Value);
+                data[nameof(this.Balance)] = JsonValue.CreateNumberValue((double)this.balance);
+                data[nameof(this.UpdateTime)] = JsonValue.CreateNumberValue(this.updateTime.ToBinary());
+                data[nameof(this.WebTraffic)] = JsonValue.CreateNumberValue(this.webTraffic.Value);
                 var devices = new JsonArray();
-                foreach(var item in this.deviceList)
+                foreach (var item in this.deviceList)
                 {
                     var device = new JsonObject();
                     device[nameof(WebDevice.IPAddress)] = JsonValue.CreateStringValue(item.IPAddress.ToString());
@@ -132,7 +124,7 @@ namespace Web
                     device[nameof(WebDevice.DeviceFamily)] = JsonValue.CreateNumberValue((int)item.DeviceFamily);
                     devices.Add(device);
                 }
-                data[nameof(DeviceList)] = devices;
+                data[nameof(this.DeviceList)] = devices;
                 var cacheFolder = ApplicationData.Current.LocalCacheFolder;
                 var cacheFile = await cacheFolder.CreateFileAsync("WebConnectCache.json", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(cacheFile, data.Stringify());
@@ -140,6 +132,55 @@ namespace Web
         }
 
         private readonly string userName, password, passwordMd5;
+
+        public IAsyncAction LogOnAsync(string ip)
+        {
+            if (ip.IsNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(ip));
+            ip = ip.Trim();
+            Microsoft.Services.Store.Engagement.StoreServicesCustomEventLogger.GetDefault().Log("Log on with ip requested");
+            return Run(async token =>
+            {
+                HttpClient http = null;
+                try
+                {
+                    if (await HttpHelper.NeedSslVpn())
+                        http = new HttpClient(new SslVpnFilter()).WithHeaders();
+                    else
+                        http = new HttpClient().WithHeaders();
+                    IAsyncAction act = null;
+                    IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> ope = null;
+                    token.Register(() =>
+                    {
+                        act?.Cancel();
+                        ope?.Cancel();
+                    });
+                    act = LogOnHelper.SignInUsereg(http, this.userName, this.passwordMd5);
+                    await act;
+                    //获取用户信息
+                    ope = http.PostAsync(new Uri("http://usereg.tsinghua.edu.cn/ip_login.php"), new HttpFormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        ["action"] = "do_login",
+                        ["drop"] = "0",
+                        ["is_pad"] = "1",
+                        ["n"] = "100",
+                        ["type"] = "10",
+                        ["user_ip"] = ip,
+                    }));
+                    var res1 = await ope;
+                }
+                catch (LogOnException) { throw; }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex)
+                {
+                    throw new LogOnException(LogOnExceptionType.ConnectError, ex);
+                }
+                finally
+                {
+                    http?.Dispose();
+                }
+            });
+        }
 
         /// <summary>
         /// 异步登陆网络。
@@ -163,23 +204,23 @@ namespace Web
                         boolFunc?.Cancel();
                         voidFunc?.Cancel();
                     });
-                    if(await boolFunc)
+                    if (await boolFunc)
                         return false;
-                    using(var http = new HttpClient().WithHeaders())
+                    using (var http = new HttpClient().WithHeaders())
                     {
                         boolFunc = LogOnHelper.CheckOnline(http);
-                        if(await boolFunc)
+                        if (await boolFunc)
                             return false;
-                        voidFunc = LogOnHelper.LogOn(http, userName, passwordMd5);
+                        voidFunc = LogOnHelper.LogOn(http, this.userName, this.passwordMd5);
                         await voidFunc;
                         return true;
                     }
                 }
-                catch(LogOnException)
+                catch (LogOnException)
                 {
                     throw;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
@@ -215,7 +256,7 @@ namespace Web
                 HttpClient http = null;
                 try
                 {
-                    if(await HttpHelper.NeedSslVpn())
+                    if (await HttpHelper.NeedSslVpn())
                         http = new HttpClient(new SslVpnFilter()).WithHeaders();
                     else
                         http = new HttpClient().WithHeaders();
@@ -226,21 +267,21 @@ namespace Web
                         act?.Cancel();
                         ope?.Cancel();
                     });
-                    act = LogOnHelper.SignInUsereg(http, userName, passwordMd5);
+                    act = LogOnHelper.SignInUsereg(http, this.userName, this.passwordMd5);
                     await act;
                     //获取用户信息
                     ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
                     var res1 = await ope;
-                    var info1 = Regex.Match(res1, @"证件号.+?(\d+).+?使用流量\(IPV4\).+?(\d+?)\(byte\).+?帐户余额.+?([0-9.]+)\(元\)", RegexOptions.Singleline).Groups;
-                    if(info1.Count != 4)
+                    var info1 = Regex.Match(res1, @"证件号.+?(\d+).+?使用流量\(IPV4\).+?(\d+?)\(byte\).+?帐户余额.+?([0-9,.]+)\(元\)", RegexOptions.Singleline).Groups;
+                    if (info1.Count != 4)
                     {
                         var ex = new InvalidOperationException("获取到的数据格式错误。");
                         ex.Data.Add("HtmlResponse", res1);
                         throw ex;
                     }
                     Settings.AccountManager.ID = info1[1].Value;
-                    WebTraffic = new Size(ulong.Parse(info1[2].Value, CultureInfo.InvariantCulture));
-                    Balance = decimal.Parse(info1[3].Value, CultureInfo.InvariantCulture);
+                    this.WebTraffic = new Size(ulong.Parse(info1[2].Value, CultureInfo.InvariantCulture));
+                    this.Balance = decimal.Parse(info1[3].Value, CultureInfo.InvariantCulture);
                     //获取登录信息
                     var res2 = await http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php"));
                     var info2 = Regex.Matches(res2, "<tr align=\"center\">.+?</tr>", RegexOptions.Singleline);
@@ -259,83 +300,48 @@ namespace Web
                                        DropToken = devToken,
                                        HttpClient = http
                                    }).ToArray();
-                    deviceList.FirstOrDefault()?.HttpClient?.Dispose();
+                    this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
                     networkFin = true;
-                    var common = devices.Join(deviceList, n => n, o => o, (n, o) =>
+                    this.deviceList.Update(devices, new deviceComparer(), (o, n) =>
                     {
                         o.DeviceFamily = n.DeviceFamily;
                         o.DropToken = n.DropToken;
                         o.HttpClient = n.HttpClient;
                         o.LogOnDateTime = n.LogOnDateTime;
                         o.WebTraffic = n.WebTraffic;
-                        return o;
-                    }, new deviceComparer());
-                    for(int i = 0; i < deviceList.Count;)
-                    {
-                        if(!common.Contains(deviceList[i]))
-                        {
-                            deviceList[i].Dispose();
-                            deviceList.RemoveAt(i);
-                        }
-                        else
-                            i++;
-                    }
-                    foreach(var item in devices)
-                    {
-                        if(!common.Contains(item, new deviceComparer()))
-                            deviceList.Add(item);
-                        else
-                            item.Dispose();
-                    }
+                    });
                     //全部成功
-                    UpdateTime = DateTime.Now;
+                    this.UpdateTime = DateTime.Now;
                 }
-                catch(LogOnException) { throw; }
-                catch(OperationCanceledException) { throw; }
-                catch(Exception ex)
+                catch (LogOnException) { throw; }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
                 finally
                 {
-                    if(deviceList.Count == 0 || !networkFin)
+                    if (this.deviceList.Count == 0 || !networkFin)
                         http?.Dispose();
                 }
             });
         }
 
-        public string UserName
-        {
-            get
-            {
-                return this.userName;
-            }
-        }
+        public string UserName => this.userName;
 
-        private ObservableCollection<WebDevice> deviceList;
-
+        private readonly ObservableList<WebDevice> deviceList = new ObservableList<WebDevice>();
         /// <summary>
         /// 使用该账户的设备列表。
         /// </summary>
-        public ReadOnlyObservableCollection<WebDevice> DeviceList
-        {
-            get;
-            private set;
-        }
+        public ObservableListView<WebDevice> DeviceList => this.deviceList.AsReadOnly();
 
         /// <summary>
         /// 当前账户余额。
         /// </summary>
         public decimal Balance
         {
-            get
-            {
-                return balance;
-            }
-            private set
-            {
-                Set(ref balance, value);
-            }
+            get => this.balance;
+            private set => Set(ref this.balance, value);
         }
 
         private decimal balance;
@@ -345,14 +351,8 @@ namespace Web
         /// </summary>
         public Size WebTraffic
         {
-            get
-            {
-                return webTraffic;
-            }
-            private set
-            {
-                Set(ref webTraffic, value);
-            }
+            get => this.webTraffic;
+            private set => Set(ref this.webTraffic, value);
         }
 
         private Size webTraffic;
@@ -364,39 +364,29 @@ namespace Web
         {
             get
             {
-                if(deviceList == null || deviceList.Count == 0)
-                    return webTraffic;
+                if (this.deviceList.IsNullOrEmpty())
+                    return this.webTraffic;
                 else
-                    return deviceList.Aggregate(webTraffic, (sum, item) => sum + item.WebTraffic);
+                    return this.deviceList.Aggregate(this.webTraffic, (sum, item) => sum + item.WebTraffic);
             }
         }
 
         private DateTime updateTime;
-
         /// <summary>
         /// 信息更新的时间。
         /// </summary>
         public DateTime UpdateTime
         {
-            get
-            {
-                return updateTime;
-            }
-            private set
-            {
-                Set(ref updateTime, value);
-                RaisePropertyChanged("WebTrafficExact");
-            }
+            get => this.updateTime;
+            private set => this.Set(nameof(this.WebTrafficExact), ref this.updateTime, value);
         }
 
         #region IDisposable Support
 
         public void Dispose()
         {
-            deviceList.FirstOrDefault()?.HttpClient?.Dispose();
-            foreach(var item in deviceList)
-                item.Dispose();
-            deviceList.Clear();
+            this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
+            this.deviceList.Clear();
         }
 
         #endregion

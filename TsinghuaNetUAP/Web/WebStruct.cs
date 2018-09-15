@@ -180,13 +180,7 @@ namespace Web
             set;
         }
 
-        public double TotalGB
-        {
-            get
-            {
-                return Value / gb;
-            }
-        }
+        public double TotalGB => this.Value / gb;
 
         /// <summary>
         /// 返回当前对象的字符串形式。
@@ -196,7 +190,7 @@ namespace Web
         {
             var culture = CultureInfo.CurrentCulture;
             var ds = culture.NumberFormat.NumberDecimalSeparator;
-            var va = Value;
+            var va = this.Value;
             Func<double, string> format = value =>
             {
                 return value.ToString("##0" + ds + "00", culture);
@@ -216,7 +210,7 @@ namespace Web
 
         public int CompareTo(Size other)
         {
-            return Value.CompareTo(other.Value);
+            return this.Value.CompareTo(other.Value);
         }
 
         public bool Equals(Size other)
@@ -321,17 +315,17 @@ namespace Web
                 switch(index)
                 {
                 case 0:
-                    return value0;
+                    return this.value0;
                 case 1:
-                    return value1;
+                    return this.value1;
                 case 2:
-                    return value2;
+                    return this.value2;
                 case 3:
-                    return value3;
+                    return this.value3;
                 case 4:
-                    return value4;
+                    return this.value4;
                 case 5:
-                    return value5;
+                    return this.value5;
                 default:
                     throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
                 }
@@ -341,22 +335,22 @@ namespace Web
                 switch(index)
                 {
                 case 0:
-                    value0 = value;
+                    this.value0 = value;
                     break;
                 case 1:
-                    value1 = value;
+                    this.value1 = value;
                     break;
                 case 2:
-                    value2 = value;
+                    this.value2 = value;
                     break;
                 case 3:
-                    value3 = value;
+                    this.value3 = value;
                     break;
                 case 4:
-                    value4 = value;
+                    this.value4 = value;
                     break;
                 case 5:
-                    value5 = value;
+                    this.value5 = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("index", "index 应为0~5。");
@@ -369,13 +363,7 @@ namespace Web
         /// <summary>
         /// 获取一个值，指示当前 <see cref="MacAddress"/> 是否与 <see cref="MacAddress.Current"/> 相等。
         /// </summary>
-        public bool IsCurrent
-        {
-            get
-            {
-                return this == Current;
-            }
-        }
+        public bool IsCurrent => this == Current;
 
         /// <summary>
         /// 返回当前 <see cref="MacAddress"/> 的字符串形式。
@@ -383,7 +371,7 @@ namespace Web
         /// <returns>当前 <see cref="MacAddress"/> 的字符串形式，以 ":" 分隔。</returns>
         public override string ToString()
         {
-            return $"{value0:x2}:{value1:x2}:{value2:x2}:{value3:x2}:{value4:x2}:{value5:x2}";
+            return $"{this.value0:x2}:{this.value1:x2}:{this.value2:x2}:{this.value3:x2}:{this.value4:x2}:{this.value5:x2}";
         }
 
         /// <summary>
@@ -407,14 +395,14 @@ namespace Web
         /// <returns>一个 32 位有符号整数，它是该实例的哈希代码。</returns>
         public override int GetHashCode()
         {
-            int re = (((value2 << 8) + value3 << 8) + value4 << 8) + value5;
-            int re2 = value0 + (value1 << 8);
+            int re = (((this.value2 << 8) + this.value3 << 8) + this.value4 << 8) + this.value5;
+            int re2 = this.value0 + (this.value1 << 8);
             return re ^ (re2 * 91019);
         }
 
         public bool Equals(MacAddress other)
         {
-            return value0 == other.value0 && value1 == other.value1 && value2 == other.value2 && value3 == other.value3 && value4 == other.value4 && value5 == other.value5;
+            return this.value0 == other.value0 && this.value1 == other.value1 && this.value2 == other.value2 && this.value3 == other.value3 && this.value4 == other.value4 && this.value5 == other.value5;
         }
 
         public static bool operator ==(MacAddress mac1, MacAddress mac2)
@@ -493,13 +481,13 @@ namespace Web
                 switch(index)
                 {
                 case 0:
-                    return value0;
+                    return this.value0;
                 case 1:
-                    return value1;
+                    return this.value1;
                 case 2:
-                    return value2;
+                    return this.value2;
                 case 3:
-                    return value3;
+                    return this.value3;
                 default:
                     throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
                 }
@@ -509,16 +497,16 @@ namespace Web
                 switch(index)
                 {
                 case 0:
-                    value0 = value;
+                    this.value0 = value;
                     break;
                 case 1:
-                    value1 = value;
+                    this.value1 = value;
                     break;
                 case 2:
-                    value2 = value;
+                    this.value2 = value;
                     break;
                 case 3:
-                    value3 = value;
+                    this.value3 = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("index", "index 应为0~3。");
@@ -534,7 +522,7 @@ namespace Web
         /// <returns>当前 <see cref="Ipv4Address"/> 的字符串形式，以 "." 分隔。</returns>
         public override string ToString()
         {
-            return string.Join(".", value0.ToString(CultureInfo.InvariantCulture), value1.ToString(CultureInfo.InvariantCulture), value2.ToString(CultureInfo.InvariantCulture), value3.ToString(CultureInfo.InvariantCulture));
+            return string.Join(".", this.value0.ToString(CultureInfo.InvariantCulture), this.value1.ToString(CultureInfo.InvariantCulture), this.value2.ToString(CultureInfo.InvariantCulture), this.value3.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -554,7 +542,7 @@ namespace Web
 
         public bool Equals(Ipv4Address other)
         {
-            return value0 == other.value0 && value1 == other.value1 && value2 == other.value2 && value3 == other.value3;
+            return this.value0 == other.value0 && this.value1 == other.value1 && this.value2 == other.value2 && this.value3 == other.value3;
         }
 
         /// <summary>
@@ -563,10 +551,10 @@ namespace Web
         /// <returns>一个 32 位有符号整数，它是该实例的哈希代码。</returns>
         public override int GetHashCode()
         {
-            int re = value0;
-            re = re << 8 + value1;
-            re = re << 8 + value2;
-            re = re << 8 + value3;
+            int re = this.value0;
+            re = re << 8 + this.value1;
+            re = re << 8 + this.value2;
+            re = re << 8 + this.value3;
             return re;
         }
 

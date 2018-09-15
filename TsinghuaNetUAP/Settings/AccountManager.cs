@@ -58,14 +58,8 @@ namespace Settings
 
         public static string ID
         {
-            get
-            {
-                return SettingsHelper.GetRoaming("ID", "");
-            }
-            set
-            {
-                SettingsHelper.SetRoaming("ID", value??"");
-            }
+            get => SettingsHelper.GetRoaming("ID", "");
+            set => SettingsHelper.SetRoaming("ID", value ?? "");
         }
     }
 }

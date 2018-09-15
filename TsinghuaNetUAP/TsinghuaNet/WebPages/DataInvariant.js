@@ -1,9 +1,9 @@
 ﻿var LocString = String(window.document.location.href);
 
 function getQueryStr(str) {
-    var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
-    if (tmp = rs) {
-        return tmp[2];
+    var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString);
+    if (rs) {
+        return rs[2];
     }
     // parameter cannot be found
     return "";
@@ -38,5 +38,5 @@ var data = {
 };
 
 function setLocalName(id, name) {
-    data.list.find(function (item) { return item.id == id }).name = name;
+    data.list.find(function (item) { return item.id === id; }).name = name;
 }

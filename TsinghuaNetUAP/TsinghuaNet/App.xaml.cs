@@ -117,18 +117,18 @@ namespace TsinghuaNet
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var sb = StatusBar.GetForCurrentView();
-                sb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                sb.BackgroundColor = (Color)this.Resources["SystemChromeMediumColor"];
                 sb.BackgroundOpacity = 1;
-                sb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                sb.ForegroundColor = (Color)this.Resources["SystemBaseMediumHighColor"];
             }
 
             var view = ApplicationView.GetForCurrentView();
             view.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
             view.SetPreferredMinSize(new Windows.Foundation.Size(320, 400));
-            view.TitleBar.BackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-            view.TitleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-            view.TitleBar.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-            view.TitleBar.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.BackgroundColor = (Color)this.Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.ButtonBackgroundColor = (Color)this.Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.InactiveBackgroundColor = (Color)this.Resources["SystemChromeMediumLowColor"];
+            view.TitleBar.ButtonInactiveBackgroundColor = (Color)this.Resources["SystemChromeMediumLowColor"];
 
             var currentWindow = Window.Current;
             if(currentWindow.Content == null)
@@ -150,13 +150,13 @@ namespace TsinghuaNet
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             NotificationService.NotificationService.HandleLaunching(e.TileId);
-            launch(e, e.PrelaunchActivated);
+            this.launch(e, e.PrelaunchActivated);
         }
 
         protected override void OnActivated(IActivatedEventArgs e)
         {
             NotificationService.NotificationService.HandleLaunching((e as ToastNotificationActivatedEventArgs)?.Argument);
-            launch(e, false);
+            this.launch(e, false);
         }
 
         private async void OnResuming(object sender, object e)

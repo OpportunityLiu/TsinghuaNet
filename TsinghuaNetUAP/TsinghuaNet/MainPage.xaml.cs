@@ -1,26 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Web;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Navigation;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.ApplicationModel;
-using System.Globalization;
-using System.ComponentModel;
-using System.Collections.Generic;
-using Windows.System;
-using Windows.UI.ViewManagement;
-using System.Threading;
-using System.Linq;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -38,19 +38,19 @@ namespace TsinghuaNet
 
         private bool autoLogOn;
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             JYAnalyticsUniversal.JYAnalytics.TrackPageStart(nameof(MainPage));
-            SettingsFlyout_SettingsChanged(null, "AutoLogOn");
-            if(e.NavigationMode == NavigationMode.New)
+            this.SettingsFlyout_SettingsChanged(null, "AutoLogOn");
+            if (e.NavigationMode == NavigationMode.New)
             {
                 var prelaunch = (bool)e.Parameter;
                 var account = Settings.AccountManager.Account;
-                if(account == null)
+                if (account == null)
                 {
                     // 未找到储存的密码
-                    changeUser_Click(null, null);
+                    this.changeUser_Click(null, null);
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace TsinghuaNet
                     WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
                 }
 
-                if(WebConnect.Current != null)
+                if (WebConnect.Current != null)
                 {
                     this.DataContext = WebConnect.Current;
                     try
@@ -67,40 +67,37 @@ namespace TsinghuaNet
                         await WebConnect.Current.LoadCache();
                         this.progressBarUsage.Value = WebConnect.Current.WebTrafficExact.TotalGB;
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                     }
-                    if(!prelaunch)
-                        refresh(autoLogOn);
+                    if (!prelaunch)
+                        this.refresh(this.autoLogOn);
                 }
-                App.Current.Resuming += (s, args) => refresh(this.autoLogOn);
+                App.Current.Resuming += (s, args) => this.refresh(this.autoLogOn);
             }
             else
             {
-                if(WebConnect.Current != null)
+                if (WebConnect.Current != null)
                 {
-                    refresh(autoLogOn);
+                    this.refresh(this.autoLogOn);
                 }
             }
         }
 
-        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(nameof(MainPage));
-            if(WebConnect.Current != null)
+            if (WebConnect.Current != null)
             {
                 await WebConnect.Current.SaveCache();
             }
         }
 
-        DropDialog dropDialog;
-
-        RenameDialog renameDialog;
-
-        SignInDialog signInDialog;
-
-        SettingsDialog settingsDialog;
+        private DropDialog dropDialog;
+        private RenameDialog renameDialog;
+        private SignInDialog signInDialog;
+        private SettingsDialog settingsDialog;
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
@@ -108,7 +105,7 @@ namespace TsinghuaNet
             var renameDialog = LazyInitializer.EnsureInitialized(ref this.renameDialog);
             renameDialog.NewName = selectedDevice.Name;
             await renameDialog.ShowAsync();
-            if(renameDialog.ChangeName)
+            if (renameDialog.ChangeName)
             {
                 selectedDevice.Name = renameDialog.NewName;
             }
@@ -119,13 +116,13 @@ namespace TsinghuaNet
             var dropDialog = LazyInitializer.EnsureInitialized(ref this.dropDialog);
             var selectedDevice = (WebDevice)((FrameworkElement)sender).DataContext;
             dropDialog.Title = selectedDevice.Name;
-            if(await dropDialog.ShowAsync() == ContentDialogResult.Primary)
+            if (await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
-                if(await selectedDevice.DropAsync())
-                    sendHint(LocalizedStrings.Resources.DropSuccess);
+                if (await selectedDevice.DropAsync())
+                    this.sendHint(LocalizedStrings.Resources.DropSuccess);
                 else
-                    sendHint(LocalizedStrings.Resources.DropFailed);
-                refresh(false);
+                    this.sendHint(LocalizedStrings.Resources.DropFailed);
+                this.refresh(false);
             }
         }
 
@@ -133,18 +130,28 @@ namespace TsinghuaNet
         {
             var current = WebConnect.Current;
             this.DataContext = current;
-            if(current == null)
+            if (current == null)
                 return;
             this.progressBarUsage.IsIndeterminate = true;
             try
             {
-                if(logOn && await current.LogOnAsync())
-                    sendHint(LocalizedStrings.Resources.ToastSuccess);
-                await current.RefreshAsync();
-            }
-            catch(LogOnException ex)
-            {
-                sendHint(ex.Message);
+                try
+                {
+                    if (logOn && await current.LogOnAsync())
+                        this.sendHint(LocalizedStrings.Resources.ToastSuccess);
+                }
+                catch (LogOnException ex)
+                {
+                    this.sendHint(ex.Message);
+                }
+                try
+                {
+                    await current.RefreshAsync();
+                }
+                catch (LogOnException ex)
+                {
+                    this.sendHint(ex.Message);
+                }
             }
             finally
             {
@@ -158,7 +165,7 @@ namespace TsinghuaNet
             var signIn = LazyInitializer.EnsureInitialized(ref this.signInDialog, () =>
             {
                 var s = new SignInDialog();
-                s.Closed += (_, args) => refresh(autoLogOn);
+                s.Closed += (_, args) => this.refresh(this.autoLogOn);
                 return s;
             });
             await signIn.ShowAsync();
@@ -166,18 +173,18 @@ namespace TsinghuaNet
 
         private void refresh_Click(object sender, RoutedEventArgs e)
         {
-            refresh(autoLogOn);
+            this.refresh(this.autoLogOn);
         }
 
         private void appBarButtonSites_Click(object sender, RoutedEventArgs e)
         {
-            if(Frame.CanGoForward)
+            if (this.Frame.CanGoForward)
             {
-                Frame.GoForward();
+                this.Frame.GoForward();
             }
             else
             {
-                Frame.Navigate(typeof(WebPage));
+                this.Frame.Navigate(typeof(WebPage));
             }
         }
 
@@ -185,55 +192,55 @@ namespace TsinghuaNet
 
         private void sendHint(string message)
         {
-            if(textBlockHint == null)
-                FindName("borderHint");
-            hintQueue.Enqueue(message ?? "");
-            if(showHint.GetCurrentState() != Windows.UI.Xaml.Media.Animation.ClockState.Active)
+            if (this.textBlockHint == null)
+                this.FindName("borderHint");
+            this.hintQueue.Enqueue(message ?? "");
+            if (this.showHint.GetCurrentState() != Windows.UI.Xaml.Media.Animation.ClockState.Active)
             {
-                showHint_Completed(showHint, null);
+                this.showHint_Completed(this.showHint, null);
             }
             else
             {
-                showHint.SpeedRatio = 3;
+                this.showHint.SpeedRatio = 3;
             }
         }
 
         private void showHint_Completed(object sender, object e)
         {
-            if(hintQueue.Count <= 1)
-                showHint.SpeedRatio = 1;
+            if (this.hintQueue.Count <= 1)
+                this.showHint.SpeedRatio = 1;
             else
-                showHint.SpeedRatio = 3;
-            if(hintQueue.Count == 0)
+                this.showHint.SpeedRatio = 3;
+            if (this.hintQueue.Count == 0)
             {
-                textBlockHint.Text = "";
+                this.textBlockHint.Text = "";
                 return;
             }
-            textBlockHint.Text = hintQueue.Dequeue();
-            showHint.Begin();
+            this.textBlockHint.Text = this.hintQueue.Dequeue();
+            this.showHint.Begin();
         }
 
         private void Flyout_Opening(object sender, object e)
         {
-            FindName("textBlockAbout");
+            this.FindName("textBlockAbout");
             var version = Package.Current.Id.Version;
-            runVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
+            this.runVersion.Text = string.Format(CultureInfo.CurrentCulture, LocalizedStrings.Resources.AppVersionFormat, version.Major, version.Minor, version.Build, version.Revision);
         }
 
         private void appBarButtonLogOn_Click(object sender, RoutedEventArgs e)
         {
-            refresh(true);
+            this.refresh(true);
         }
 
         private void SettingsFlyout_SettingsChanged(object sender, string e)
         {
-            if(e == "AutoLogOn")
+            if (e == "AutoLogOn")
             {
-                autoLogOn = Settings.SettingsHelper.GetLocal("AutoLogOn", true);
-                if(autoLogOn)
-                    appBarButtonLogOn.Visibility = Visibility.Collapsed;
+                this.autoLogOn = Settings.SettingsHelper.GetLocal("AutoLogOn", true);
+                if (this.autoLogOn)
+                    this.appBarButtonLogOn.Visibility = Visibility.Collapsed;
                 else
-                    appBarButtonLogOn.Visibility = Visibility.Visible;
+                    this.appBarButtonLogOn.Visibility = Visibility.Visible;
             }
         }
 
@@ -244,22 +251,22 @@ namespace TsinghuaNet
 
         private async void appBarButtonSettings_Click(object sender, RoutedEventArgs e)
         {
-            if(settingsDialog == null)
+            if (this.settingsDialog == null)
             {
-                settingsDialog = new SettingsDialog();
-                settingsDialog.SettingsChanged += SettingsFlyout_SettingsChanged;
+                this.settingsDialog = new SettingsDialog();
+                this.settingsDialog.SettingsChanged += this.SettingsFlyout_SettingsChanged;
             }
-            await settingsDialog.ShowAsync();
+            await this.settingsDialog.ShowAsync();
         }
 
         private void listViewOnlineDevices_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var c = (ListViewItem)listViewOnlineDevices.ContainerFromItem(e.ClickedItem);
+            var c = (ListViewItem)this.listViewOnlineDevices.ContainerFromItem(e.ClickedItem);
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)c.ContentTemplateRoot);
         }
     }
 
-    class NumberVisbilityConverter : Windows.UI.Xaml.Data.IValueConverter
+    internal class NumberVisbilityConverter : Windows.UI.Xaml.Data.IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -272,7 +279,7 @@ namespace TsinghuaNet
         }
     }
 
-    class DeviceImageConverter : Windows.UI.Xaml.Data.IValueConverter
+    internal class DeviceImageConverter : Windows.UI.Xaml.Data.IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

@@ -205,8 +205,8 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="25*" />
+                        <ColumnDefinition Width="5*" />
                         <ColumnDefinition Width="10*" />
                         <ColumnDefinition Width="10*" />
                         <ColumnDefinition Width="5*" />
@@ -219,7 +219,7 @@
                     <TextBlock Text="0"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Grid.Row="1" />
-                    <TextBlock Text="20"
+                    <TextBlock Text="25"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Grid.Row="1"
                                Grid.Column="1" />

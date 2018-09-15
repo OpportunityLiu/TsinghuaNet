@@ -54,7 +54,7 @@ namespace TsinghuaNet
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if(isShown)
+            if(this.isShown)
             {
                 var height = availableSize.Height;
                 var width = availableSize.Width;

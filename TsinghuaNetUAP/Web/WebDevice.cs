@@ -1,14 +1,16 @@
-﻿using System;
-using Windows.Web.Http;
-using System.Threading.Tasks;
-using Windows.Storage;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.UI.Xaml;
-using Windows.ApplicationModel.Resources;
+﻿using Opportunity.MvvmUniverse;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.UI.Xaml;
+using Windows.Web.Http;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace Web
 {
@@ -27,7 +29,7 @@ namespace Web
     /// <summary>
     /// 表示连入网络的设备。
     /// </summary>
-    public sealed class WebDevice : ObservableObject, IDisposable
+    public sealed class WebDevice : ObservableObject
     {
         /// <summary>
         /// 初始化 <see cref="WebDevice"/> 的实例并设置相关信息。
@@ -38,7 +40,6 @@ namespace Web
         {
             this.IPAddress = ip;
             this.Mac = mac;
-            deviceDictChanged += WebDevice_deviceDictChanged;
         }
 
         /// <summary>
@@ -50,24 +51,18 @@ namespace Web
         public WebDevice(Ipv4Address ip, MacAddress mac, string deviceFamilyDescription)
             : this(ip, mac)
         {
-            SetDeviceFimaly(deviceFamilyDescription);
+            this.SetDeviceFimaly(deviceFamilyDescription);
         }
 
         private DeviceFamily deviceFamily;
 
         public DeviceFamily DeviceFamily
         {
-            get
-            {
-                return deviceFamily;
-            }
-            set
-            {
-                Set(ref deviceFamily, value);
-            }
+            get => this.deviceFamily;
+            set => Set(ref this.deviceFamily, value);
         }
 
-        private static Dictionary<string, DeviceFamily> deviceFamilyDictionary = new Dictionary<string, DeviceFamily>()
+        private static readonly Dictionary<string, DeviceFamily> deviceFamilyDictionary = new Dictionary<string, DeviceFamily>()
         {
             ["Windows Phone"] = DeviceFamily.WindowsPhone,
             ["Windows"] = DeviceFamily.Windows,
@@ -76,32 +71,26 @@ namespace Web
             ["Android"] = DeviceFamily.Android,
             ["iPad"] = DeviceFamily.iPad,
             ["iPhone"] = DeviceFamily.iPhone,
-            
         };
 
         public void SetDeviceFimaly(string deviceFamilyDescription)
         {
-            if(string.IsNullOrWhiteSpace(deviceFamilyDescription))
+            if (string.IsNullOrWhiteSpace(deviceFamilyDescription))
             {
-                DeviceFamily = DeviceFamily.Unknown;
+                this.DeviceFamily = DeviceFamily.Unknown;
                 return;
             }
             deviceFamilyDescription = deviceFamilyDescription.Trim();
-            foreach(var item in deviceFamilyDictionary)
+            foreach (var item in deviceFamilyDictionary)
             {
-                if(deviceFamilyDescription.StartsWith(item.Key))
+                if (deviceFamilyDescription.StartsWith(item.Key))
                 {
-                    DeviceFamily = item.Value;
+                    this.DeviceFamily = item.Value;
                     return;
                 }
             }
 
-            DeviceFamily = DeviceFamily.Unknown;
-        }
-
-        private void WebDevice_deviceDictChanged()
-        {
-            RaisePropertyChanged("Name");
+            this.DeviceFamily = DeviceFamily.Unknown;
         }
 
         public string DropToken
@@ -109,7 +98,7 @@ namespace Web
             get;
             set;
         }
-        
+
         public HttpClient HttpClient
         {
             get;
@@ -132,14 +121,8 @@ namespace Web
         /// </summary>
         public Size WebTraffic
         {
-            get
-            {
-                return traffic;
-            }
-            set
-            {
-                Set(ref traffic, value);
-            }
+            get => this.traffic;
+            set => Set(ref this.traffic, value);
         }
 
         /// <summary>
@@ -158,14 +141,8 @@ namespace Web
         /// </summary>
         public DateTime LogOnDateTime
         {
-            get
-            {
-                return logOn;
-            }
-            set
-            {
-                Set(ref logOn, value);
-            }
+            get => this.logOn;
+            set => Set(ref this.logOn, value);
         }
 
         private static event Action deviceDictChanged;
@@ -177,7 +154,7 @@ namespace Web
             //同步时更新列表，并通知所有实例更新 Name 属性。
             ApplicationData.Current.DataChanged += (sender, args) =>
             {
-                if(!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
+                if (!sender.RoamingSettings.Values.ContainsKey("DeviceDict"))
                 {
                     sender.RoamingSettings.Values.Add("DeviceDict", "");
                     deviceDict = new DeviceNameDictionary();
@@ -191,8 +168,14 @@ namespace Web
                     {
                         deviceDict = new DeviceNameDictionary();
                     }
-                if (deviceDictChanged != null)
-                    deviceDictChanged();
+                var list = WebConnect.Current?.DeviceList;
+                if (!list.IsNullOrEmpty())
+                {
+                    foreach (var item in list)
+                    {
+                        item.OnPropertyChanged(nameof(Name));
+                    }
+                }
             };
             //恢复列表
             if (!ApplicationData.Current.RoamingSettings.Values.ContainsKey("DeviceDict"))
@@ -205,7 +188,7 @@ namespace Web
                 {
                     return new DeviceNameDictionary((string)ApplicationData.Current.RoamingSettings.Values["DeviceDict"]);
                 }
-                catch(ArgumentException)
+                catch (ArgumentException)
                 {
                     return new DeviceNameDictionary();
                 }
@@ -224,14 +207,14 @@ namespace Web
         {
             get
             {
-                if(this.Mac == MacAddress.Unknown)
+                if (this.Mac == MacAddress.Unknown)
                     return LocalizedStrings.Resources.UnknownDevice;
                 else
                 {
                     string r;
-                    if(deviceDict.TryGetValue(this.Mac,out r))
+                    if (deviceDict.TryGetValue(this.Mac, out r))
                         return r;
-                    else if(this.Mac.IsCurrent)
+                    else if (this.Mac.IsCurrent)
                         return LocalizedStrings.Resources.CurrentDevice;
                     else
                         return this.Mac.ToString();
@@ -239,9 +222,9 @@ namespace Web
             }
             set
             {
-                if(!CanRename)
+                if (!this.CanRename)
                     throw new InvalidOperationException("不能为未知设备设置名称");
-                if(string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     deviceDict.Remove(this.Mac);
                 }
@@ -250,20 +233,14 @@ namespace Web
                     deviceDict[this.Mac] = value;
                 }
                 saveDeviceList();
-                RaisePropertyChanged();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// 获取设备是否可以重命名的信息。
         /// </summary>
-        public bool CanRename
-        {
-            get
-            {
-                return this.Mac != MacAddress.Unknown;
-            }
-        }
+        public bool CanRename => this.Mac != MacAddress.Unknown;
 
         private static readonly Uri dropUri = new Uri("http://usereg.tsinghua.edu.cn/online_user_ipv4.php");
 
@@ -277,33 +254,24 @@ namespace Web
         {
             return Run(async token =>
             {
-                if(HttpClient == null)
+                if (this.HttpClient == null)
                     return false;
                 try
                 {
-                    var post = HttpClient.PostStrAsync(dropUri, $"action=drops&user_ip={DropToken}");
+                    var post = this.HttpClient.PostStrAsync(dropUri, $"action=drops&user_ip={this.DropToken}");
                     token.Register(post.Cancel);
                     var ans = await post;
                     return ans == "下线请求已发送";
                 }
-                catch(OperationCanceledException)
+                catch (OperationCanceledException)
                 {
                     throw;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return false;
                 }
             });
         }
-
-        #region IDisposable Support
-
-        public void Dispose()
-        {
-            deviceDictChanged -= this.WebDevice_deviceDictChanged;
-        }
-
-        #endregion
     }
 }

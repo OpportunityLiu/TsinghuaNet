@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Web;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 using Windows.ApplicationModel.Resources;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Data.Xml.Dom;
 using Windows.Foundation;
-using System.ComponentModel;
-using System.Reflection;
-using System.Text.RegularExpressions;
+using Windows.UI.Notifications;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace NotificationService
 {
@@ -31,8 +31,7 @@ namespace NotificationService
 
         public static async void UpdateTile(object sender, PropertyChangedEventArgs e)
         {
-            var c = sender as WebConnect;
-            if(c != null && e.PropertyName == nameof(WebConnect.UpdateTime))
+            if (sender is WebConnect c && e.PropertyName == nameof(WebConnect.UpdateTime))
                 await UpdateTile(c);
         }
 
@@ -46,7 +45,7 @@ namespace NotificationService
                 manager.EnableNotificationQueue(true);
                 var devices = connect.DeviceList.ToArray();
                 SetBadgeNumber(devices.Length);
-                if(devices.Length == 0)
+                if (devices.Length == 0)
                 {
                     addTile(manager, $@"
 <tile>
@@ -71,7 +70,7 @@ namespace NotificationService
 </tile>");
                     return;
                 }
-                foreach(var item in devices)
+                foreach (var item in devices)
                 {
                     addTile(manager, $@"
 <tile>
@@ -129,9 +128,9 @@ namespace NotificationService
         {
             var toast = new XmlDocument();
             string aName = null, cName = null, mName = null;
-            if(handler != null)
+            if (handler != null)
             {
-                if(!handler.IsStatic)
+                if (!handler.IsStatic)
                     throw new ArgumentException("Must be static method", nameof(handler));
                 aName = handler.DeclaringType.GetTypeInfo().Assembly.FullName;
                 cName = handler.DeclaringType.FullName;
@@ -167,10 +166,10 @@ namespace NotificationService
 
         public static void HandleLaunching(string param)
         {
-            if(param == "App")
+            if (param == "App")
                 return;
             var match = Regex.Match(param ?? "", @"^\s*a=(?<aName>.+?)\s*;\s*c=(?<cName>.+?)\s*;\s*m=(?<mName>.+?)\s*;\s*p=(?<param>.+?)\s*$");
-            if(match.Success)
+            if (match.Success)
             {
                 var aName = new AssemblyName(match.Groups["aName"].Value);
                 var a = Assembly.Load(aName);
@@ -178,7 +177,7 @@ namespace NotificationService
                 var m = c.GetMethod(match.Groups["mName"].Value);
                 var p = match.Groups["param"].Value;
                 object[] pa = null;
-                if(string.IsNullOrEmpty(p))
+                if (string.IsNullOrEmpty(p))
                     pa = new object[0];
                 else
                     pa = new object[] { p };
