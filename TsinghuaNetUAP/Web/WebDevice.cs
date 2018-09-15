@@ -145,8 +145,6 @@ namespace Web
             set => Set(ref this.logOn, value);
         }
 
-        private static event Action deviceDictChanged;
-
         private static DeviceNameDictionary deviceDict = initDeviceDict();
 
         private static DeviceNameDictionary initDeviceDict()

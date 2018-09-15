@@ -150,11 +150,11 @@
   <data name="DropMenu.Text" xml:space="preserve">
     <value>Log off</value>
   </data>
+  <data name="DropPage.CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="DropPage.PrimaryButtonText" xml:space="preserve">
     <value>OK</value>
-  </data>
-  <data name="DropPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
   </data>
   <data name="DropPage.Title" xml:space="preserve">
     <value>Log off</value>
@@ -167,6 +167,21 @@
   </data>
   <data name="LogOnAppButton.Label" xml:space="preserve">
     <value>Login</value>
+  </data>
+  <data name="LogOnInput.PlaceholderText" xml:space="preserve">
+    <value>IP address of device</value>
+  </data>
+  <data name="LogOnOtherAppButton.Label" xml:space="preserve">
+    <value>Login of other devices</value>
+  </data>
+  <data name="LogOnPage.CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="LogOnPage.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="LogOnPage.Title" xml:space="preserve">
+    <value>Log on of other devices</value>
   </data>
   <data name="LogOnToggleSeitch.Header" xml:space="preserve">
     <value>Auto login</value>
@@ -207,11 +222,11 @@
   <data name="RenameMenu.Text" xml:space="preserve">
     <value>Rename</value>
   </data>
+  <data name="RenamePage.CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="RenamePage.PrimaryButtonText" xml:space="preserve">
     <value>Rename</value>
-  </data>
-  <data name="RenamePage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
   </data>
   <data name="RenamePage.Title" xml:space="preserve">
     <value>Rename device</value>
@@ -228,11 +243,11 @@
   <data name="SignInHint.Text" xml:space="preserve">
     <value>Enter your user ID and password for Tsinghua University Network to start.</value>
   </data>
+  <data name="SignInPage.CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="SignInPage.PrimaryButtonText" xml:space="preserve">
     <value>OK</value>
-  </data>
-  <data name="SignInPage.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
   </data>
   <data name="SignInPage.Title" xml:space="preserve">
     <value>Sign in</value>

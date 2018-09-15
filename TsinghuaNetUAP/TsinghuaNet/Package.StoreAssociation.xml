@@ -2,6 +2,7 @@
 <StoreAssociation xmlns="http://schemas.microsoft.com/appx/2010/storeassociation">
   <Publisher>CN=22AA5D8B-590F-4C7F-807B-5166B66DDBE0</Publisher>
   <PublisherDisplayName>Opportunity</PublisherDisplayName>
+  <DeveloperAccountType>MSA</DeveloperAccountType>
   <GeneratePackageHash>http://www.w3.org/2001/04/xmlenc#sha256</GeneratePackageHash>
   <SupportedLocales>
     <Language Code="af" InMinimumRequirementSet="true" />
@@ -364,41 +365,12 @@
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
+    <MainPackageIdentityName>2289Opportunity.AnitamaUWP</MainPackageIdentityName>
+    <MainPackageIdentityName>2289Opportunity.AuroraMusicOnlineLyricsExtension</MainPackageIdentityName>
+    <MainPackageIdentityName>2289Opportunity.BangumiU</MainPackageIdentityName>
     <MainPackageIdentityName>2289Opportunity.E-Viewer</MainPackageIdentityName>
     <MainPackageIdentityName>2289Opportunity.SubtitleEditor</MainPackageIdentityName>
+    <MainPackageIdentityName>2289Opportunity.81331195979C</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9NBLGGGZ5Q4J">
-    <BundleInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>X86</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>X64</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>Arm</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-      <PackageInfo>
-        <OsMinVersion>6.3.0.0</OsMinVersion>
-        <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
-      </PackageInfo>
-    </BundleInfo>
-  </PackageInfoList>
+  <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9NBLGGGZ5Q4J" />
 </StoreAssociation>

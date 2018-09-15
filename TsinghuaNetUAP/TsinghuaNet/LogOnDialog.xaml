@@ -1,0 +1,19 @@
+﻿<ContentDialog x:Uid="LogOnPage"
+               x:Class="TsinghuaNet.LogOnDialog"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:local="using:TsinghuaNet"
+               IsPrimaryButtonEnabled="{x:Bind isValidIp(tbInput.Text), Mode=OneWay}"
+               PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+               Loading="ContentDialog_Loading"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               mc:Ignorable="d">
+  <TextBox x:Name="tbInput"
+           x:Uid="LogOnInput"
+           PlaceholderText=""
+           VerticalAlignment="Center"
+           AcceptsReturn="False"
+           Margin="0,4" />
+
+</ContentDialog>

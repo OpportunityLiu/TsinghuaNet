@@ -12,7 +12,7 @@
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -25,10 +25,13 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>49368DC833702BD5726FAAA48BEBDA24D7A79D37</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>E9367E36CAB4B10D5D6EEA2109EF0F07966A2102</PackageCertificateThumbprint>
     <ApplicationInsightsResourceId>/subscriptions/929bc9d2-fb82-4b6d-8a03-2d697be3cfb8/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/TsinghuaNet</ApplicationInsightsResourceId>
     <HockeyAppResourceId>42bdf568c96e4ae1ab90a8835c48a88c</HockeyAppResourceId>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -131,6 +134,7 @@
     <PRIResource Include="Strings\zh-CN\Errors.resw">
       <SubType>Designer</SubType>
     </PRIResource>
+    <None Include="TsinghuaNet_StoreKey.pfx" />
     <None Include="WebPages\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="WebPages\bootstrap\css\bootstrap.css.map" />
     <None Include="WebPages\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -142,6 +146,9 @@
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LogOnDialog.xaml.cs">
+      <DependentUpon>LogOnDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="DropDialog.xaml.cs">
       <DependentUpon>DropDialog.xaml</DependentUpon>
@@ -243,6 +250,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="LogOnDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DropDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -309,6 +320,9 @@
     <Folder Include="Themes\" />
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Microsoft.Services.Store.Engagement, Version=10.0">
+      <Name>Microsoft Engagement Framework</Name>
+    </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
@@ -325,6 +339,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Services.Store.Engagement">
+      <Version>10.1711.28001</Version>
     </PackageReference>
     <PackageReference Include="PlatformSpecific.Analyzer">
       <Version>2.0.3</Version>

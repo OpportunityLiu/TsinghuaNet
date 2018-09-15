@@ -7,36 +7,36 @@
       xmlns:web="using:Web"
       NavigationCacheMode="Required"
       mc:Ignorable="d">
-    <Page.Resources>
-        <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter" />
-        <local:DeviceImageConverter x:Key="DeviceImageConverter" />
-        <DataTemplate x:Key="OnlineDeviceItemTemplate"
-                      x:DataType="web:WebDevice">
-            <Grid Padding="8"
-                  AutomationProperties.Name="{x:Bind Name, Mode=OneWay}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <ToolTipService.ToolTip>
-                    <ToolTip Content="{x:Bind Mac}" />
-                </ToolTipService.ToolTip>
-                <FlyoutBase.AttachedFlyout>
-                    <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem x:Uid="RenameMenu"
-                                        Click="Rename_Click"
-                                        IsEnabled="{x:Bind CanRename, Mode=OneWay}" />
-                        <MenuFlyoutItem x:Uid="DropMenu"
-                                        Click="Drop_Click" />
-                    </MenuFlyout>
-                </FlyoutBase.AttachedFlyout>
-                <!--<Image Grid.RowSpan="9"
+  <Page.Resources>
+    <local:NumberVisbilityConverter x:Key="NumberVisbilityConverter" />
+    <local:DeviceImageConverter x:Key="DeviceImageConverter" />
+    <DataTemplate x:Key="OnlineDeviceItemTemplate"
+                  x:DataType="web:WebDevice">
+      <Grid Padding="8"
+            AutomationProperties.Name="{x:Bind Name, Mode=OneWay}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ToolTipService.ToolTip>
+          <ToolTip Content="{x:Bind Mac}" />
+        </ToolTipService.ToolTip>
+        <FlyoutBase.AttachedFlyout>
+          <MenuFlyout Placement="Bottom">
+            <MenuFlyoutItem x:Uid="RenameMenu"
+                            Click="Rename_Click"
+                            IsEnabled="{x:Bind CanRename, Mode=OneWay}" />
+            <MenuFlyoutItem x:Uid="DropMenu"
+                            Click="Drop_Click" />
+          </MenuFlyout>
+        </FlyoutBase.AttachedFlyout>
+        <!--<Image Grid.RowSpan="9"
                        Grid.Column="1"
                        Width="60"
                        Height="60"
@@ -46,62 +46,62 @@
                         <ToolTip Content="{x:Bind DeviceFamily, Mode=OneWay}" />
                     </ToolTipService.ToolTip>
                 </Image>-->
-                <TextBlock Text="{x:Bind Name, Mode=OneWay}"
-                           TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Row="1"
-                           Text="{x:Bind WebTraffic, Mode=OneWay}"
-                           TextTrimming="CharacterEllipsis"
-                           FontSize="12" />
-                <TextBlock Grid.Row="2"
-                           Text="{x:Bind IPAddress}"
-                           TextTrimming="CharacterEllipsis"
-                           FontSize="12" />
-                <TextBlock Grid.Row="3"
-                           Text="{x:Bind LogOnDateTime, Mode=OneWay}"
-                           TextTrimming="CharacterEllipsis"
-                           FontSize="12" />
-            </Grid>
-        </DataTemplate>
-        <Storyboard x:Name="showHint"
-                    Completed="showHint_Completed">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="borderHint"
-                                           Storyboard.TargetProperty="UIElement.Opacity">
-                <DiscreteDoubleKeyFrame KeyTime="0:0:0"
-                                        Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5"
-                                      Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseIn" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <DiscreteDoubleKeyFrame KeyTime="0:0:4"
-                                        Value="0.8" />
-                <EasingDoubleKeyFrame KeyTime="0:0:5"
-                                      Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-    </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar x:Name="commandBar">
-            <CommandBar.SecondaryCommands>
-                <AppBarButton x:Uid="SettingsAppButton"
-                              Label="Settings"
-                              Click="appBarButtonSettings_Click" />
-                <AppBarButton x:Uid="AboutAppButton"
-                              x:Name="appBarButtonAbout"
-                              Label="About">
-                    <AppBarButton.Flyout>
-                        <Flyout Opening="Flyout_Opening">
-                            <TextBlock x:Name="textBlockAbout"
-                                       x:DeferLoadStrategy="Lazy"
-                                       Width="240"
-                                       Margin="0,4"
-                                       Style="{StaticResource BodyTextBlockStyle}"
-                                       Height="120">
+        <TextBlock Text="{x:Bind Name, Mode=OneWay}"
+                   TextTrimming="CharacterEllipsis" />
+        <TextBlock Grid.Row="1"
+                   Text="{x:Bind WebTraffic, Mode=OneWay}"
+                   TextTrimming="CharacterEllipsis"
+                   FontSize="12" />
+        <TextBlock Grid.Row="2"
+                   Text="{x:Bind IPAddress}"
+                   TextTrimming="CharacterEllipsis"
+                   FontSize="12" />
+        <TextBlock Grid.Row="3"
+                   Text="{x:Bind LogOnDateTime, Mode=OneWay}"
+                   TextTrimming="CharacterEllipsis"
+                   FontSize="12" />
+      </Grid>
+    </DataTemplate>
+    <Storyboard x:Name="showHint"
+                Completed="showHint_Completed">
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="borderHint"
+                                     Storyboard.TargetProperty="UIElement.Opacity">
+        <DiscreteDoubleKeyFrame KeyTime="0:0:0"
+                                Value="0" />
+        <EasingDoubleKeyFrame KeyTime="0:0:0.5"
+                              Value="0.8">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseIn" />
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+        <DiscreteDoubleKeyFrame KeyTime="0:0:4"
+                                Value="0.8" />
+        <EasingDoubleKeyFrame KeyTime="0:0:5"
+                              Value="0">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut" />
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+  </Page.Resources>
+  <Page.BottomAppBar>
+    <CommandBar x:Name="commandBar">
+      <CommandBar.SecondaryCommands>
+        <AppBarButton x:Uid="SettingsAppButton"
+                      Label="Settings"
+                      Click="appBarButtonSettings_Click" />
+        <AppBarButton x:Uid="AboutAppButton"
+                      x:Name="appBarButtonAbout"
+                      Label="About">
+          <AppBarButton.Flyout>
+            <Flyout Opening="Flyout_Opening">
+              <TextBlock x:Name="textBlockAbout"
+                         x:DeferLoadStrategy="Lazy"
+                         Width="240"
+                         Margin="0,4"
+                         Style="{StaticResource BodyTextBlockStyle}"
+                         Height="120">
                                 <Run x:Uid="AppName"
                                      Text="Tsinghua Net"
                                      FontSize="16" />
@@ -118,209 +118,218 @@
                                          Text="Rate and review" />
                                 </Hyperlink>
                                 <LineBreak />
-                            </TextBlock>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-                <AppBarButton x:Uid="ChangeUserAppButton"
-                              x:Name="appBarButtonChangeUser"
-                              Label="ChangeUser"
-                              Click="changeUser_Click" />
-            </CommandBar.SecondaryCommands>
-            <AppBarButton x:Uid="SitesAppButton"
-                          x:Name="appBarButtonSites"
-                          Icon="Favorite"
-                          Label="Sites"
-                          Click="appBarButtonSites_Click" />
-            <AppBarButton x:Uid="LogOnAppButton"
-                          x:Name="appBarButtonLogOn"
-                          Icon="Permissions"
-                          Label="Login"
-                          Click="appBarButtonLogOn_Click" />
-            <AppBarButton x:Uid="RefreshAppButton"
-                          x:Name="appBarButtonRefresh"
-                          Icon="Refresh"
-                          Label="Refresh"
-                          Click="refresh_Click" />
-        </CommandBar>
-    </Page.BottomAppBar>
-    <Grid>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="500" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="gridRoot.Margin"
-                                Value="24,0" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+              </TextBlock>
+            </Flyout>
+          </AppBarButton.Flyout>
+        </AppBarButton>
+        <AppBarButton x:Uid="ChangeUserAppButton"
+                      x:Name="appBarButtonChangeUser"
+                      Label="ChangeUser"
+                      Click="changeUser_Click" />
+      </CommandBar.SecondaryCommands>
+      <AppBarButton x:Uid="SitesAppButton"
+                    x:Name="appBarButtonSites"
+                    Icon="Favorite"
+                    Label="Sites"
+                    ToolTipService.ToolTip="{x:Bind appBarButtonSites.Label}"
+                    Click="appBarButtonSites_Click" />
+      <AppBarButton x:Uid="LogOnAppButton"
+                    x:Name="appBarButtonLogOn"
+                    Icon="Permissions"
+                    Label="Login"
+                    ToolTipService.ToolTip="{x:Bind appBarButtonLogOn.Label}"
+                    Click="appBarButtonLogOn_Click" />
+      <AppBarButton x:Uid="LogOnOtherAppButton"
+                    x:Name="appBarButtonLogOnOther"
+                    Label="Login of other devices"
+                    ToolTipService.ToolTip="{x:Bind appBarButtonLogOnOther.Label}"
+                    Click="appBarButtonLogOnOther_Click"
+                    Icon="Send" />
+      <AppBarButton x:Uid="RefreshAppButton"
+                    x:Name="appBarButtonRefresh"
+                    Icon="Refresh"
+                    Label="Refresh"
+                    ToolTipService.ToolTip="{x:Bind appBarButtonRefresh.Label}"
+                    Click="refresh_Click" />
+    </CommandBar>
+  </Page.BottomAppBar>
+  <Grid>
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup>
+        <VisualState>
+          <VisualState.StateTriggers>
+            <AdaptiveTrigger MinWindowWidth="500" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="gridRoot.Margin"
+                    Value="24,0" />
+          </VisualState.Setters>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
-        <ScrollViewer HorizontalScrollMode="Disabled"
-                      VerticalScrollBarVisibility="Auto"
-                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Grid x:Name="gridRoot"
-                  Margin="12,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="20" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Transitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition />
-                    </TransitionCollection>
-                </Grid.Transitions>
-                <TextBlock Grid.ColumnSpan="3"
-                           Margin="0,12"
-                           Text="{Binding UserName, Mode=OneWay}"
-                           Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock x:Uid="Usage"
-                           Text="Usage"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="1" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="1"
-                           Grid.Column="2"
-                           Text="{Binding WebTrafficExact}"
-                           FontWeight="SemiBold" />
-                <Grid Margin="0,4"
-                      Grid.Row="2"
-                      Grid.ColumnSpan="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="25*" />
-                        <ColumnDefinition Width="5*" />
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="5*" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar x:Name="progressBarUsage"
-                                 Grid.ColumnSpan="5"
-                                 Value="{Binding WebTrafficExact.Value}"
-                                 Maximum="55"
-                                 Height="10" />
-                    <TextBlock Text="0"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1" />
-                    <TextBlock Text="25"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="1" />
-                    <TextBlock Text="30"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="2" />
-                    <TextBlock Text="40"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="3" />
-                    <TextBlock Text="50"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Grid.Row="1"
-                               Grid.Column="4" />
-                </Grid>
-                <TextBlock x:Uid="Balance"
-                           Text="Balance"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="3" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="3"
-                           Grid.Column="2"
-                           FontWeight="SemiBold">
+    <ScrollViewer HorizontalScrollMode="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      <Grid x:Name="gridRoot"
+            Margin="12,0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Transitions>
+          <TransitionCollection>
+            <EntranceThemeTransition />
+          </TransitionCollection>
+        </Grid.Transitions>
+        <TextBlock Grid.ColumnSpan="3"
+                   Margin="0,12"
+                   Text="{Binding UserName, Mode=OneWay}"
+                   Style="{ThemeResource TitleTextBlockStyle}" />
+        <TextBlock x:Uid="Usage"
+                   Text="Usage"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="1" />
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="1"
+                   Grid.Column="2"
+                   Text="{Binding WebTrafficExact}"
+                   FontWeight="SemiBold" />
+        <Grid Margin="0,4"
+              Grid.Row="2"
+              Grid.ColumnSpan="3">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="5*" />
+          </Grid.ColumnDefinitions>
+          <ProgressBar x:Name="progressBarUsage"
+                       Grid.ColumnSpan="5"
+                       Value="{Binding WebTrafficExact.Value}"
+                       Maximum="55"
+                       Height="10" />
+          <TextBlock Text="0"
+                     Style="{ThemeResource CaptionTextBlockStyle}"
+                     Grid.Row="1" />
+          <TextBlock Text="25"
+                     Style="{ThemeResource CaptionTextBlockStyle}"
+                     Grid.Row="1"
+                     Grid.Column="1" />
+          <TextBlock Text="30"
+                     Style="{ThemeResource CaptionTextBlockStyle}"
+                     Grid.Row="1"
+                     Grid.Column="2" />
+          <TextBlock Text="40"
+                     Style="{ThemeResource CaptionTextBlockStyle}"
+                     Grid.Row="1"
+                     Grid.Column="3" />
+          <TextBlock Text="50"
+                     Style="{ThemeResource CaptionTextBlockStyle}"
+                     Grid.Row="1"
+                     Grid.Column="4" />
+        </Grid>
+        <TextBlock x:Uid="Balance"
+                   Text="Balance"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="3" />
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="3"
+                   Grid.Column="2"
+                   FontWeight="SemiBold">
 					<Run Text="{Binding Balance}" />
 					<Run x:Uid="Yuan"
-                         Text="Yuan" />
-                </TextBlock>
-                <TextBlock x:Uid="UpdateTime"
-                           Text="UpdateTime"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="4" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="0,4"
-                           Grid.Row="4"
-                           Grid.Column="2"
-                           Text="{Binding UpdateTime}"
-                           FontWeight="SemiBold" />
-                <ListView x:Name="listViewOnlineDevices"
-                          Grid.Row="5"
-                          Grid.ColumnSpan="3"
-                          IsItemClickEnabled="True"
-                          ItemClick="listViewOnlineDevices_ItemClick"
-                          ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
-                          ItemsSource="{Binding DeviceList}"
-                          SelectionMode="None"
-                          VerticalAlignment="Top">
-                    <ListView.Template>
-                        <ControlTemplate TargetType="ListView">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Background="{TemplateBinding Background}">
-                                <ItemsPresenter FooterTransitions="{TemplateBinding FooterTransitions}"
-                                                FooterTemplate="{TemplateBinding FooterTemplate}"
-                                                Footer="{TemplateBinding Footer}"
-                                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                                Header="{TemplateBinding Header}"
-                                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
-                                                Padding="{TemplateBinding Padding}" />
-                            </Border>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment"
-                                    Value="Stretch" />
-                            <Setter Property="Padding"
-                                    Value="0" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Header>
-                        <TextBlock x:Uid="OnlineDevices"
-                                   Text="OnlineDevices"
-                                   Style="{ThemeResource BodyTextBlockStyle}"
-                                   Margin="0,4" />
-                    </ListView.Header>
-                    <ListView.Footer>
-                        <TextBlock x:Uid="NoDevices"
-                                   x:Name="textBlockNoDevices"
-                                   Text="No online devices."
-                                   Style="{ThemeResource CaptionTextBlockStyle}"
-                                   HorizontalAlignment="Center"
-                                   Margin="8"
-                                   Visibility="{Binding ElementName=listViewOnlineDevices, Path=ItemsSource.Count, Converter={StaticResource NumberVisbilityConverter}}" />
-                    </ListView.Footer>
-                </ListView>
-            </Grid>
-        </ScrollViewer>
-        <Border x:Name="borderHint"
-                x:DeferLoadStrategy="Lazy"
-                Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
-                VerticalAlignment="Bottom"
-                Opacity="0"
-                Padding="16,8">
-            <TextBlock x:Name="textBlockHint"
-                       Style="{StaticResource BodyTextBlockStyle}"
-                       MaxLines="2"
-                       TextTrimming="CharacterEllipsis" />
-        </Border>
-    </Grid>
+               Text="Yuan" />
+        </TextBlock>
+        <TextBlock x:Uid="UpdateTime"
+                   Text="UpdateTime"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="4" />
+        <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
+                   Margin="0,4"
+                   Grid.Row="4"
+                   Grid.Column="2"
+                   Text="{Binding UpdateTime}"
+                   FontWeight="SemiBold" />
+        <ListView x:Name="listViewOnlineDevices"
+                  Grid.Row="5"
+                  Grid.ColumnSpan="3"
+                  IsItemClickEnabled="True"
+                  ItemClick="listViewOnlineDevices_ItemClick"
+                  ItemTemplate="{StaticResource OnlineDeviceItemTemplate}"
+                  ItemsSource="{Binding DeviceList}"
+                  SelectionMode="None"
+                  VerticalAlignment="Top">
+          <ListView.Template>
+            <ControlTemplate TargetType="ListView">
+              <Border BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      Background="{TemplateBinding Background}">
+                <ItemsPresenter FooterTransitions="{TemplateBinding FooterTransitions}"
+                                FooterTemplate="{TemplateBinding FooterTemplate}"
+                                Footer="{TemplateBinding Footer}"
+                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                Header="{TemplateBinding Header}"
+                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                                Padding="{TemplateBinding Padding}" />
+              </Border>
+            </ControlTemplate>
+          </ListView.Template>
+          <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+              <Setter Property="HorizontalContentAlignment"
+                      Value="Stretch" />
+              <Setter Property="Padding"
+                      Value="0" />
+            </Style>
+          </ListView.ItemContainerStyle>
+          <ListView.Header>
+            <TextBlock x:Uid="OnlineDevices"
+                       Text="OnlineDevices"
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       Margin="0,4" />
+          </ListView.Header>
+          <ListView.Footer>
+            <TextBlock x:Uid="NoDevices"
+                       x:Name="textBlockNoDevices"
+                       Text="No online devices."
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       HorizontalAlignment="Center"
+                       Margin="8"
+                       Visibility="{Binding ElementName=listViewOnlineDevices, Path=ItemsSource.Count, Converter={StaticResource NumberVisbilityConverter}}" />
+          </ListView.Footer>
+        </ListView>
+      </Grid>
+    </ScrollViewer>
+    <Border x:Name="borderHint"
+            x:DeferLoadStrategy="Lazy"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+            VerticalAlignment="Bottom"
+            Opacity="0"
+            Padding="16,8">
+      <TextBlock x:Name="textBlockHint"
+                 Style="{StaticResource BodyTextBlockStyle}"
+                 MaxLines="2"
+                 TextTrimming="CharacterEllipsis" />
+    </Border>
+  </Grid>
 </Page>

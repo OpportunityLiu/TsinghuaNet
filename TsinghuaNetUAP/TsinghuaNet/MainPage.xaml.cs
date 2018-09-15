@@ -31,9 +31,12 @@ namespace TsinghuaNet
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public static MainPage Current { get; private set; }
+
         public MainPage()
         {
             this.InitializeComponent();
+            Current = this;
         }
 
         private bool autoLogOn;
@@ -98,6 +101,7 @@ namespace TsinghuaNet
         private RenameDialog renameDialog;
         private SignInDialog signInDialog;
         private SettingsDialog settingsDialog;
+        private LogOnDialog logOnDialog;
 
         private async void Rename_Click(object sender, RoutedEventArgs e)
         {
@@ -119,9 +123,9 @@ namespace TsinghuaNet
             if (await dropDialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 if (await selectedDevice.DropAsync())
-                    this.sendHint(LocalizedStrings.Resources.DropSuccess);
+                    this.SendHint(LocalizedStrings.Resources.DropSuccess);
                 else
-                    this.sendHint(LocalizedStrings.Resources.DropFailed);
+                    this.SendHint(LocalizedStrings.Resources.DropFailed);
                 this.refresh(false);
             }
         }
@@ -138,11 +142,11 @@ namespace TsinghuaNet
                 try
                 {
                     if (logOn && await current.LogOnAsync())
-                        this.sendHint(LocalizedStrings.Resources.ToastSuccess);
+                        this.SendHint(LocalizedStrings.Resources.ToastSuccess);
                 }
                 catch (LogOnException ex)
                 {
-                    this.sendHint(ex.Message);
+                    this.SendHint(ex.Message);
                 }
                 try
                 {
@@ -150,7 +154,7 @@ namespace TsinghuaNet
                 }
                 catch (LogOnException ex)
                 {
-                    this.sendHint(ex.Message);
+                    this.SendHint(ex.Message);
                 }
             }
             finally
@@ -190,7 +194,7 @@ namespace TsinghuaNet
 
         private Queue<string> hintQueue = new Queue<string>();
 
-        private void sendHint(string message)
+        public void SendHint(string message)
         {
             if (this.textBlockHint == null)
                 this.FindName("borderHint");
@@ -263,6 +267,15 @@ namespace TsinghuaNet
         {
             var c = (ListViewItem)this.listViewOnlineDevices.ContainerFromItem(e.ClickedItem);
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)c.ContentTemplateRoot);
+        }
+
+        private async void appBarButtonLogOnOther_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.logOnDialog == null)
+            {
+                this.logOnDialog = new LogOnDialog();
+            }
+            await this.logOnDialog.ShowAsync();
         }
     }
 

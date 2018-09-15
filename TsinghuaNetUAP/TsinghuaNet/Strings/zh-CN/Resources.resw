@@ -150,11 +150,11 @@
   <data name="DropMenu.Text" xml:space="preserve">
     <value>下线</value>
   </data>
+  <data name="DropPage.CloseButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
   <data name="DropPage.PrimaryButtonText" xml:space="preserve">
     <value>确定</value>
-  </data>
-  <data name="DropPage.SecondaryButtonText" xml:space="preserve">
-    <value>取消</value>
   </data>
   <data name="DropPage.Title" xml:space="preserve">
     <value>强制下线</value>
@@ -166,10 +166,25 @@
     <value>错误</value>
   </data>
   <data name="LogOnAppButton.Label" xml:space="preserve">
-    <value>登陆</value>
+    <value>登录</value>
+  </data>
+  <data name="LogOnInput.PlaceholderText" xml:space="preserve">
+    <value>设备的 IP 地址</value>
+  </data>
+  <data name="LogOnOtherAppButton.Label" xml:space="preserve">
+    <value>为其他设备登录</value>
+  </data>
+  <data name="LogOnPage.CloseButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="LogOnPage.PrimaryButtonText" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="LogOnPage.Title" xml:space="preserve">
+    <value>为其他设备登录</value>
   </data>
   <data name="LogOnToggleSeitch.Header" xml:space="preserve">
-    <value>自动登陆</value>
+    <value>自动登录</value>
   </data>
   <data name="Mac.Text" xml:space="preserve">
     <value>MAC</value>
@@ -207,11 +222,11 @@
   <data name="RenameMenu.Text" xml:space="preserve">
     <value>重命名</value>
   </data>
+  <data name="RenamePage.CloseButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
   <data name="RenamePage.PrimaryButtonText" xml:space="preserve">
     <value>重命名</value>
-  </data>
-  <data name="RenamePage.SecondaryButtonText" xml:space="preserve">
-    <value>取消</value>
   </data>
   <data name="RenamePage.Title" xml:space="preserve">
     <value>重命名设备</value>
@@ -228,14 +243,14 @@
   <data name="SignInHint.Text" xml:space="preserve">
     <value>输入清华大学校园网用户名与密码以开始使用。</value>
   </data>
+  <data name="SignInPage.CloseButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
   <data name="SignInPage.PrimaryButtonText" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="SignInPage.SecondaryButtonText" xml:space="preserve">
-    <value>取消</value>
-  </data>
   <data name="SignInPage.Title" xml:space="preserve">
-    <value>登陆</value>
+    <value>登录</value>
   </data>
   <data name="SitesAppButton.Label" xml:space="preserve">
     <value>校内网站</value>
@@ -265,10 +280,10 @@
     <value>(重启应用后生效)</value>
   </data>
   <data name="ToastFailed" xml:space="preserve">
-    <value>登陆失败</value>
+    <value>登录失败</value>
   </data>
   <data name="ToastSuccess" xml:space="preserve">
-    <value>登陆成功</value>
+    <value>登录成功</value>
   </data>
   <data name="UpdateTime.Text" xml:space="preserve">
     <value>更新时间</value>
