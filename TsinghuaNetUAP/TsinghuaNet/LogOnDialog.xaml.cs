@@ -19,6 +19,11 @@ namespace TsinghuaNet
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            await logOn();
+        }
+
+        private async System.Threading.Tasks.Task logOn()
+        {
             var connect = WebConnect.Current;
             if (connect is null)
                 return;
@@ -42,6 +47,18 @@ namespace TsinghuaNet
         private void ContentDialog_Loading(Windows.UI.Xaml.FrameworkElement sender, object args)
         {
             this.tbInput.Text = "";
+        }
+
+        private async void tbInput_KeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (!IsPrimaryButtonEnabled)
+                return;
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                e.Handled = true;
+                Hide();
+                await logOn();
+            }
         }
     }
 }

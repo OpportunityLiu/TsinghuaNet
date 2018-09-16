@@ -12,6 +12,7 @@
   <TextBox x:Name="tbInput"
            x:Uid="LogOnInput"
            PlaceholderText=""
+           KeyUp="tbInput_KeyUp"
            VerticalAlignment="Center"
            AcceptsReturn="False"
            Margin="0,4" />

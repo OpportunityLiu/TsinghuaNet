@@ -227,7 +227,7 @@ namespace Web
             });
         }
 
-        private struct deviceComparer : IEqualityComparer<WebDevice>
+        private struct DeviceComparer : IEqualityComparer<WebDevice>
         {
             #region IEqualityComparer<WebDevice> 成员
 
@@ -302,7 +302,7 @@ namespace Web
                                    }).ToArray();
                     this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
                     networkFin = true;
-                    this.deviceList.Update(devices, new deviceComparer(), (o, n) =>
+                    this.deviceList.Update(devices, new DeviceComparer(), (o, n) =>
                     {
                         o.DeviceFamily = n.DeviceFamily;
                         o.DropToken = n.DropToken;
