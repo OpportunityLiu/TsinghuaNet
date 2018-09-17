@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Text.RegularExpressions;
 
 namespace Web
 {
@@ -22,14 +22,14 @@ namespace Web
             sslVpnFilterCount++;
         }
 
-        private static Uri logOffUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/logout.cgi");
-        private static Uri logOnUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/login.cgi");
-        private static Uri welcomUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/url_default/welcome.cgi");
-        private static IHttpContent logOnRequest = getLogOnRequest();
+        private static readonly Uri logOffUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/logout.cgi");
+        private static readonly Uri logOnUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/login.cgi");
+        private static readonly Uri welcomUri = new Uri("https://sslvpn.tsinghua.edu.cn/dana-na/auth/url_default/welcome.cgi");
+        private static readonly IHttpContent logOnRequest = getLogOnRequest();
 
         private static IHttpContent getLogOnRequest()
         {
-            if(string.IsNullOrEmpty(Settings.AccountManager.ID))
+            if (string.IsNullOrEmpty(Settings.AccountManager.ID))
                 return null;
             var pass = Settings.AccountManager.Account;
             pass.RetrievePassword();
@@ -47,9 +47,9 @@ namespace Web
 
         public IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> SendRequestAsync(HttpRequestMessage request)
         {
-            if(logOnRequest == null)
+            if (logOnRequest is null)
                 return this.inner.SendRequestAsync(request);
-            if(!this.initialized)
+            if (!this.initialized)
             {
                 this.initialized = true;
                 return Run<HttpResponseMessage, HttpProgress>(async (token, progress) =>
@@ -60,10 +60,10 @@ namespace Web
                     });
                     token.Register(() => req.Cancel());
                     var res = await req;
-                    if(welcomUri.IsBaseOf(res.RequestMessage.RequestUri))
+                    if (welcomUri.IsBaseOf(res.RequestMessage.RequestUri))
                     {
                         var dataMatch = Regex.Match(await res.Content.ReadAsStringAsync(), @"<input.+?name=""FormDataStr"".+?value=""([^""]+?)"">");
-                        if(!dataMatch.Success)
+                        if (!dataMatch.Success)
                             throw new InvalidOperationException("can't log on sslvpn");
                         req = this.inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Post, logOnUri)
                         {
@@ -80,7 +80,7 @@ namespace Web
                     return await req;
                 });
             }
-            else if(needVpn(request.RequestUri))
+            else if (needVpn(request.RequestUri))
             {
                 request.RequestUri = EncodeForVpn(request.RequestUri, true);
                 return this.inner.SendRequestAsync(request);
@@ -98,7 +98,7 @@ namespace Web
             );
         }
 
-        static readonly HashSet<string> noVpnSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> noVpnSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "learn",
             "sslvpn",
@@ -111,9 +111,9 @@ namespace Web
         private static bool needVpn(Uri uri)
         {
             var match = Regex.Match(uri.Authority, @"^(.*?\.|)(.+?)\.tsinghua\.edu\.cn");
-            if(!match.Success)
+            if (!match.Success)
                 return false;
-            if(noVpnSet.Contains(match.Groups[2].Value))
+            if (noVpnSet.Contains(match.Groups[2].Value))
                 return false;
             return true;
         }
@@ -123,17 +123,17 @@ namespace Web
 
         protected virtual async void Dispose(bool disposing)
         {
-            if(!this.disposedValue)
+            if (!this.disposedValue)
             {
-                if(disposing)
+                if (disposing)
                 {
                     try
                     {
                         sslVpnFilterCount--;
-                        if(sslVpnFilterCount == 0)
+                        if (sslVpnFilterCount == 0)
                             await this.inner.SendRequestAsync(new HttpRequestMessage(HttpMethod.Get, logOffUri));
                     }
-                    catch(Exception) { }
+                    catch (Exception) { }
                     finally
                     {
                         this.inner.Dispose();

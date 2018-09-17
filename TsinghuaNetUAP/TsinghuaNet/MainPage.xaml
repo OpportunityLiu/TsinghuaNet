@@ -37,15 +37,15 @@
           </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
         <!--<Image Grid.RowSpan="9"
-                       Grid.Column="1"
-                       Width="60"
-                       Height="60"
-                       Margin="4,0,0,0"
-                       Source="{x:Bind DeviceFamily, Mode=OneWay, Converter={StaticResource DeviceImageConverter}}">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Content="{x:Bind DeviceFamily, Mode=OneWay}" />
-                    </ToolTipService.ToolTip>
-                </Image>-->
+               Grid.Column="1"
+               Width="60"
+               Height="60"
+               Margin="4,0,0,0"
+               Source="{x:Bind DeviceFamily, Mode=OneWay, Converter={StaticResource DeviceImageConverter}}">
+          <ToolTipService.ToolTip>
+            <ToolTip Content="{x:Bind DeviceFamily, Mode=OneWay}" />
+          </ToolTipService.ToolTip>
+        </Image>-->
         <TextBlock Text="{x:Bind Name, Mode=OneWay}"
                    TextTrimming="CharacterEllipsis" />
         <TextBlock Grid.Row="1"

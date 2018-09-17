@@ -49,7 +49,6 @@ namespace TsinghuaNet
             {
                 return Run(async token =>
                 {
-                    JYAnalyticsUniversal.JYAnalytics.TrackEvent("DownloadFile");
                     var d = new BackgroundDownloader { FailureToastNotification = failedToast };
                     var file = await DownloadsFolder.CreateFileAsync($"{fileUri.GetHashCode():X}.TsinghuaNet.temp", CreationCollisionOption.GenerateUniqueName);
                     var downloadOperation = d.CreateDownload(fileUri, file);
@@ -79,12 +78,12 @@ namespace TsinghuaNet
 
             private static string getFileNameFromUri(Uri uri)
             {
-                if (uri == null)
+                if (uri is null)
                     return null;
                 return uri.LocalPath.Split(@"/\?".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
             }
 
-            private static MethodInfo handler = typeof(downloader).GetMethod(nameof(OpenDownloadedFile));
+            private static readonly MethodInfo handler = typeof(downloader).GetMethod(nameof(OpenDownloadedFile));
 
             public static IAsyncAction OpenDownloadedFile(string fileToken)
             {
@@ -232,7 +231,6 @@ namespace TsinghuaNet
         protected void UpdateTitle()
         {
             Set(ref this.title, this.View.DocumentTitle, nameof(this.Title));
-            JYAnalyticsUniversal.JYAnalytics.TrackEvent("LoadWebPage");
         }
     }
 }

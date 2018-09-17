@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.ViewManagement;
-using System.Collections.ObjectModel;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -38,7 +38,6 @@ namespace TsinghuaNet
             var webView = this.NewWebContent(null);
             this.webViewCollection.Add(webView);
             this.listView.SelectedItem = webView;
-            JYAnalyticsUniversal.JYAnalytics.TrackEvent("OpenWebPage");
         }
 
         private void webView_NewWindowRequested(WebContent sender, WebViewNewWindowRequestedEventArgs args)
@@ -54,11 +53,11 @@ namespace TsinghuaNet
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if(this.isShown)
+            if (this.isShown)
             {
                 var height = availableSize.Height;
                 var width = availableSize.Width;
-                if(width >= 500)
+                if (width >= 500)
                 {
                     this.systemNavigationManager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     this.coreTitleBar.ExtendViewIntoTitleBar = true;
@@ -79,11 +78,11 @@ namespace TsinghuaNet
             var view = (WebContent)s.DataContext;
             var closingIndex = this.webViewCollection.IndexOf(view);
             this.webViewCollection.Remove(view);
-            if(selectingIndex == closingIndex)
+            if (selectingIndex == closingIndex)
             {
-                if(selectingIndex == 0)
+                if (selectingIndex == 0)
                 {
-                    if(this.webViewCollection.Count != 0)
+                    if (this.webViewCollection.Count != 0)
                         this.listView.SelectedIndex = 0;
                     else
                     {
@@ -108,13 +107,12 @@ namespace TsinghuaNet
 
             Window.Current.SetTitleBar(this.titleBar);
 
-            if(this.webViewCollection.Count == 0)
+            if (this.webViewCollection.Count == 0)
                 this.AddEmptyView();
 
             base.OnNavigatedTo(e);
-            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(nameof(WebPage));
 
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 await StatusBar.GetForCurrentView().HideAsync();
             }
@@ -137,7 +135,7 @@ namespace TsinghuaNet
 
             base.OnNavigatingFrom(e);
 
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 await StatusBar.GetForCurrentView().ShowAsync();
             }
@@ -146,7 +144,6 @@ namespace TsinghuaNet
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(nameof(WebPage));
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)

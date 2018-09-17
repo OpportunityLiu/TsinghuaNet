@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Microsoft.HockeyApp;
+using System;
 using Web;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
+using Windows.Storage;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.Storage;
-using Windows.UI;
-using Windows.ApplicationModel.Core;
-using Microsoft.HockeyApp;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
@@ -18,7 +18,7 @@ namespace TsinghuaNet
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -39,7 +39,7 @@ namespace TsinghuaNet
                     sb.AppendLine($"Message: {ex.Message}");
                     sb.AppendLine();
                     sb.AppendLine("Data:");
-                    foreach(var item in ex.Data.Keys)
+                    foreach (var item in ex.Data.Keys)
                     {
                         sb.AppendLine($"    {item}: {ex.Data[item]}");
                     }
@@ -47,7 +47,7 @@ namespace TsinghuaNet
                     sb.AppendLine(ex.StackTrace);
                     ex = ex.InnerException;
                     sb.AppendLine("_____________________");
-                } while(ex != null);
+                } while (ex != null);
                 return sb.ToString();
             });
             this.InitializeComponent();
@@ -57,15 +57,15 @@ namespace TsinghuaNet
 
             //注册后台任务
             IBackgroundTaskRegistration BackgroundLogOnTask = null;
-            foreach(var cur in BackgroundTaskRegistration.AllTasks)
+            foreach (var cur in BackgroundTaskRegistration.AllTasks)
             {
-                if(cur.Value.Name == "BackgroundLogOnTask")
+                if (cur.Value.Name == "BackgroundLogOnTask")
                 {
                     BackgroundLogOnTask = cur.Value;
                     continue;
                 }
             }
-            if(BackgroundLogOnTask == null)
+            if (BackgroundLogOnTask == null)
             {
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = "BackgroundLogOnTask";
@@ -74,7 +74,7 @@ namespace TsinghuaNet
                 BackgroundLogOnTask = builder.Register();
             }
 
-            switch((ElementTheme)Enum.Parse(typeof(ElementTheme), Settings.SettingsHelper.GetLocal("Theme", "Default")))
+            switch ((ElementTheme)Enum.Parse(typeof(ElementTheme), Settings.SettingsHelper.GetLocal("Theme", "Default")))
             {
             case ElementTheme.Light:
                 Current.RequestedTheme = ApplicationTheme.Light;
@@ -97,13 +97,13 @@ namespace TsinghuaNet
         {
 
 #if DEBUG
-            if(System.Diagnostics.Debugger.IsAttached)
+            if (System.Diagnostics.Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
-            if(!prelaunch && ApplicationData.Current.Version < 2)
+            if (!prelaunch && ApplicationData.Current.Version < 2)
             {
                 var ignore = ApplicationData.Current.SetVersionAsync(2, args =>
                 {
@@ -114,7 +114,7 @@ namespace TsinghuaNet
                 });
             }
 
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var sb = StatusBar.GetForCurrentView();
                 sb.BackgroundColor = (Color)this.Resources["SystemChromeMediumColor"];
@@ -131,7 +131,7 @@ namespace TsinghuaNet
             view.TitleBar.ButtonInactiveBackgroundColor = (Color)this.Resources["SystemChromeMediumLowColor"];
 
             var currentWindow = Window.Current;
-            if(currentWindow.Content == null)
+            if (currentWindow.Content == null)
             {
                 var f = new Frame();
                 f.Navigate(typeof(MainPage), prelaunch);
@@ -139,7 +139,6 @@ namespace TsinghuaNet
                 currentWindow.Content = f;
             }
             currentWindow.Activate();
-            JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("73b1e2713a63168b47cc5ae252d1337b");
         }
 
         /// <summary>
@@ -159,9 +158,8 @@ namespace TsinghuaNet
             this.launch(e, false);
         }
 
-        private async void OnResuming(object sender, object e)
+        private void OnResuming(object sender, object e)
         {
-            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("73b1e2713a63168b47cc5ae252d1337b");
         }
 
         /// <summary>
@@ -174,11 +172,10 @@ namespace TsinghuaNet
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var def = e.SuspendingOperation.GetDeferral();
-            if(WebConnect.Current != null)
+            if (WebConnect.Current != null)
             {
                 await WebConnect.Current.SaveCache();
             }
-            await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
             def.Complete();
         }
     }

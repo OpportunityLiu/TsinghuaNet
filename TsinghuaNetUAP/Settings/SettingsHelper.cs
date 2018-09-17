@@ -20,8 +20,7 @@ namespace Settings
 
         public static T GetLocal<T>(string key, T defaultValue)
         {
-            object value;
-            if(localSettings.TryGetValue(key, out value))
+            if (localSettings.TryGetValue(key, out var value))
             {
                 return (T)value;
             }
@@ -39,8 +38,7 @@ namespace Settings
 
         public static T GetRoaming<T>(string key, T defaultValue)
         {
-            object value;
-            if(roamingSettings.TryGetValue(key, out value))
+            if (roamingSettings.TryGetValue(key, out var value))
             {
                 return (T)value;
             }

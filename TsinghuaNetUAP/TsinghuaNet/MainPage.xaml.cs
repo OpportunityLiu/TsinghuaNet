@@ -44,7 +44,6 @@ namespace TsinghuaNet
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(nameof(MainPage));
             this.SettingsFlyout_SettingsChanged(null, "AutoLogOn");
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -90,7 +89,6 @@ namespace TsinghuaNet
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(nameof(MainPage));
             if (WebConnect.Current != null)
             {
                 await WebConnect.Current.SaveCache();

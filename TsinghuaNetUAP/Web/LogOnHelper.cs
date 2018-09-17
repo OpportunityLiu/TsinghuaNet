@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.Storage.Streams;
 using Windows.Networking;
 using Windows.Networking.Sockets;
-using System.Threading;
+using Windows.Storage.Streams;
+using Windows.Web.Http;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace Web
 {
@@ -29,9 +29,9 @@ namespace Web
             udpClient.MessageReceived += UdpClient_MessageReceived;
             await udpClient.ConnectAsync(new HostName("166.111.204.120"), "3335");
 
-            long type = -100L;
-            long user_id = -1L;
-            using(var dataWriter = new DataWriter(udpClient.OutputStream)
+            var type = -100L;
+            var user_id = -1L;
+            using (var dataWriter = new DataWriter(udpClient.OutputStream)
             {
                 ByteOrder = ByteOrder.LittleEndian
             })
@@ -46,13 +46,13 @@ namespace Web
 
         }
 
-        static long type;
-        static long userID;
-        static byte[] challenge;
+        private static long type;
+        private static long userID;
+        private static byte[] challenge;
 
         private static void UdpClient_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
         {
-            using(var reader = args.GetDataReader())
+            using (var reader = args.GetDataReader())
             {
                 reader.ByteOrder = ByteOrder.LittleEndian;
                 type = reader.ReadInt64();
@@ -83,8 +83,8 @@ namespace Web
                     var result = await action;
                     return "online" == result;
                 }
-                catch(OperationCanceledException) { throw; }
-                catch(Exception ex)
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
@@ -105,26 +105,26 @@ namespace Web
                 try
                 {
                     await sendUdpRequest(userName).ConfigureAwait(false);
-                    if(!waiter.WaitOne(1000))
+                    if (!waiter.WaitOne(1000))
                     {
                         throw new LogOnException(LogOnExceptionType.ConnectError);
                     }
-                    if(type != -101L)
+                    if (type != -101L)
                     {
                         throw new LogOnException(LogOnExceptionType.AuthError);
                     }
                     var pass = new byte[49];
                     pass[0] = ((byte)(int)(userID & 0xFF));
-                    for(int i = 0; i < 32; i++)
+                    for (var i = 0; i < 32; i++)
                     {
-                        pass[(i + 1)] = ((byte)passwordMd5[i]);
+                        pass[i + 1] = (byte)passwordMd5[i];
                     }
                     Array.Copy(challenge, 0, pass, 33, challenge.Length);
                     var sendPass = MD5Helper.GetMd5Hash(pass);
                     var action = http.PostStrAsync(srunUri, $"action=login&username={userName}&password={sendPass}&drop=0&type=11&n=120&ac_id=1&mac={MacAddress.Current}&chap=1");
                     token.Register(action.Cancel);
                     var res = await action;
-                    if(res.StartsWith("login_error"))
+                    if (res.StartsWith("login_error"))
                         throw LogOnException.GetByErrorString(res.Substring(res.IndexOf('#') + 1));
 
                     //模拟网页方式登陆相关代码
@@ -136,9 +136,9 @@ namespace Web
                     //else
                     //    throw LogOnException.GetByErrorString(res);
                 }
-                catch(OperationCanceledException) { throw; }
-                catch(LogOnException) { throw; }
-                catch(Exception ex)
+                catch (OperationCanceledException) { throw; }
+                catch (LogOnException) { throw; }
+                catch (Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }
@@ -158,7 +158,7 @@ namespace Web
                 var postAction = http.PostStrAsync(useregUri, $"action=login&user_login_name={userName}&user_password={passwordMd5}");
                 token.Register(postAction.Cancel);
                 var logOnRes = await postAction;
-                switch(logOnRes)
+                switch (logOnRes)
                 {
                 case "ok":
                     break;
@@ -182,15 +182,15 @@ namespace Web
                 {
                     await signInAction;
                 }
-                catch(LogOnException ex) when(ex.ExceptionType == LogOnExceptionType.UnknownError)
+                catch (LogOnException ex) when (ex.ExceptionType == LogOnExceptionType.UnknownError)
                 {
                     await Task.Delay(500);
                     signInAction = signIn(http, userName, passwordMd5);
                     await signInAction;//重试
                 }
-                catch(LogOnException) { throw; }
-                catch(OperationCanceledException) { throw; }
-                catch(Exception ex)
+                catch (LogOnException) { throw; }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex)
                 {
                     throw new LogOnException(LogOnExceptionType.ConnectError, ex);
                 }

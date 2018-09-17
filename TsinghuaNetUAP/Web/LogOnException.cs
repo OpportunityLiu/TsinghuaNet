@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Windows.ApplicationModel.Resources;
 using System.Text.RegularExpressions;
+using Windows.ApplicationModel.Resources;
 
 namespace Web
 {
@@ -69,7 +69,7 @@ namespace Web
 
         public static LogOnException GetByErrorString(string error, Exception inner)
         {
-            if(!error.StartsWith("E", StringComparison.OrdinalIgnoreCase))
+            if (!error.StartsWith("E", StringComparison.OrdinalIgnoreCase))
                 return new LogOnException(error, inner);
             else
             {
@@ -120,6 +120,6 @@ namespace Web
         /// <summary>
         /// 认证过程中的其他错误。
         /// </summary>
-        AuthError
+        AuthError,
     }
 }
