@@ -24,6 +24,24 @@ namespace Web
     /// </summary>
     public sealed class WebConnect : ObservableObject, IDisposable
     {
+        // M$ wants a test account, make them happy.
+        private const string testUserName = "Test";
+        private const string testPassword = "123456";
+
+        internal static readonly List<WebDevice> TestDeviceList = new List<WebDevice>
+        {
+            new WebDevice(new Ipv4Address(166,111,21,24), default, "Windows")
+            {
+                LogOnDateTime = new DateTime(2018,9,18,15,25,11),
+                WebTraffic = new Size(11234591),
+            },
+            new WebDevice(new Ipv4Address(59,66,99,177), new MacAddress(122,21,31,66,201,154), "Android")
+            {
+                LogOnDateTime = new DateTime(2018,9,19,15,25,11),
+                WebTraffic = new Size(383356321),
+            },
+        };
+
         /// <summary>
         /// 检查账户有效性。
         /// </summary>
@@ -34,6 +52,11 @@ namespace Web
         {
             return Run(async token =>
             {
+                if (userName == testUserName)
+                {
+                    await Task.Delay(1000);
+                    return password == testPassword;
+                }
                 using (var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()).WithHeaders())
                 {
                     var result = await http.GetStringAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"));
@@ -52,11 +75,24 @@ namespace Web
         {
             if (account == null)
                 throw new ArgumentNullException(nameof(account));
-            this.userName = account.UserName;
+            this.UserName = account.UserName;
             account.RetrievePassword();
             this.password = account.Password;
             this.passwordMd5 = MD5Helper.GetMd5Hash(this.password);
+            this.IsTestAccount = account.UserName == testUserName;
         }
+
+        internal readonly bool IsTestAccount;
+
+        public string UserName { get; }
+
+        private readonly string password, passwordMd5;
+
+        private readonly ObservableList<WebDevice> deviceList = new ObservableList<WebDevice>();
+        /// <summary>
+        /// 使用该账户的设备列表。
+        /// </summary>
+        public ObservableListView<WebDevice> DeviceList => this.deviceList.AsReadOnly();
 
         private static WebConnect current;
 
@@ -131,8 +167,6 @@ namespace Web
             });
         }
 
-        private readonly string userName, password, passwordMd5;
-
         public IAsyncAction LogOnAsync(string ip)
         {
             if (ip.IsNullOrWhiteSpace())
@@ -148,6 +182,18 @@ namespace Web
                         http = new HttpClient(new SslVpnFilter()).WithHeaders();
                     else
                         http = new HttpClient().WithHeaders();
+                    if (this.IsTestAccount)
+                    {
+                        await Task.Delay(1500);
+                        var ipadd = Ipv4Address.Parse(ip);
+                        if (TestDeviceList.Any(d => d.IPAddress == ipadd))
+                            return;
+                        TestDeviceList.Add(new WebDevice(ipadd, default, "Windows")
+                        {
+                            LogOnDateTime = DateTime.Now
+                        });
+                        return;
+                    }
                     IAsyncAction act = null;
                     IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> ope = null;
                     token.Register(() =>
@@ -155,7 +201,7 @@ namespace Web
                         act?.Cancel();
                         ope?.Cancel();
                     });
-                    act = LogOnHelper.SignInUsereg(http, this.userName, this.passwordMd5);
+                    act = LogOnHelper.SignInUsereg(http, this.UserName, this.passwordMd5);
                     await act;
                     //获取用户信息
                     ope = http.PostAsync(new Uri("http://usereg.tsinghua.edu.cn/ip_login.php"), new HttpFormUrlEncodedContent(new Dictionary<string, string>
@@ -211,7 +257,7 @@ namespace Web
                         boolFunc = LogOnHelper.CheckOnline(http);
                         if (await boolFunc)
                             return false;
-                        voidFunc = LogOnHelper.LogOn(http, this.userName, this.passwordMd5);
+                        voidFunc = LogOnHelper.LogOn(http, this.UserName, this.passwordMd5);
                         await voidFunc;
                         return true;
                     }
@@ -267,7 +313,13 @@ namespace Web
                         act?.Cancel();
                         ope?.Cancel();
                     });
-                    act = LogOnHelper.SignInUsereg(http, this.userName, this.passwordMd5);
+                    if (this.IsTestAccount)
+                    {
+                        this.deviceList.Update(TestDeviceList, new DeviceComparer(), updateDevice);
+                        this.UpdateTime = DateTime.Now;
+                        return;
+                    }
+                    act = LogOnHelper.SignInUsereg(http, this.UserName, this.passwordMd5);
                     await act;
                     //获取用户信息
                     ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
@@ -302,14 +354,7 @@ namespace Web
                                    }).ToArray();
                     this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
                     networkFin = true;
-                    this.deviceList.Update(devices, new DeviceComparer(), (o, n) =>
-                    {
-                        o.DeviceFamily = n.DeviceFamily;
-                        o.DropToken = n.DropToken;
-                        o.HttpClient = n.HttpClient;
-                        o.LogOnDateTime = n.LogOnDateTime;
-                        o.WebTraffic = n.WebTraffic;
-                    });
+                    this.deviceList.Update(devices, new DeviceComparer(), updateDevice);
                     //全部成功
                     this.UpdateTime = DateTime.Now;
                 }
@@ -325,22 +370,23 @@ namespace Web
                         http?.Dispose();
                 }
             });
+
+            void updateDevice(WebDevice o, WebDevice n)
+            {
+                o.DeviceFamily = n.DeviceFamily;
+                o.DropToken = n.DropToken;
+                o.HttpClient = n.HttpClient;
+                o.LogOnDateTime = n.LogOnDateTime;
+                o.WebTraffic = n.WebTraffic;
+            }
         }
-
-        public string UserName => this.userName;
-
-        private readonly ObservableList<WebDevice> deviceList = new ObservableList<WebDevice>();
-        /// <summary>
-        /// 使用该账户的设备列表。
-        /// </summary>
-        public ObservableListView<WebDevice> DeviceList => this.deviceList.AsReadOnly();
 
         /// <summary>
         /// 当前账户余额。
         /// </summary>
         public decimal Balance
         {
-            get => this.balance;
+            get => this.IsTestAccount ? (decimal)12.01 : this.balance;
             private set => Set(ref this.balance, value);
         }
 
@@ -351,7 +397,7 @@ namespace Web
         /// </summary>
         public Size WebTraffic
         {
-            get => this.webTraffic;
+            get => this.IsTestAccount ? new Size(2591263496) : this.webTraffic;
             private set => Set(ref this.webTraffic, value);
         }
 
@@ -365,9 +411,9 @@ namespace Web
             get
             {
                 if (this.deviceList.IsNullOrEmpty())
-                    return this.webTraffic;
+                    return this.WebTraffic;
                 else
-                    return this.deviceList.Aggregate(this.webTraffic, (sum, item) => sum + item.WebTraffic);
+                    return this.deviceList.Aggregate(this.WebTraffic, (sum, item) => sum + item.WebTraffic);
             }
         }
 

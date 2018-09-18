@@ -86,8 +86,7 @@ namespace Web
                             return false;
                         if(300 <= sc && sc < 400)
                         {
-                            string loc;
-                            if(!result.Headers.TryGetValue("location", out loc))
+                            if (!result.Headers.TryGetValue("location", out var loc))
                                 goto err;
                             var locUri = new Uri(loc);
                             if(locUri.Host == "info.tsinghua.edu.cn")

@@ -200,7 +200,7 @@ namespace Web
         /// <summary>
         /// 获取或设置当前设备的名称。
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">不能为未知设备设置名称。</exception>
+        /// <exception cref="InvalidOperationException">不能为未知设备设置名称。</exception>
         public string Name
         {
             get
@@ -252,7 +252,14 @@ namespace Web
         {
             return Run(async token =>
             {
-                if (this.HttpClient == null)
+                if (WebConnect.Current.IsTestAccount)
+                {
+                    await Task.Delay(800);
+                    WebConnect.TestDeviceList.RemoveAll(d => d.IPAddress == this.IPAddress);
+                    return true;
+                }
+
+                if (this.HttpClient is null)
                     return false;
                 try
                 {

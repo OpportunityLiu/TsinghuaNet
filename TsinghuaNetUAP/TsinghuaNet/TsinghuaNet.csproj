@@ -355,9 +355,6 @@
     <PackageReference Include="Microsoft.Services.Store.Engagement">
       <Version>10.1711.28001</Version>
     </PackageReference>
-    <PackageReference Include="PlatformSpecific.Analyzer">
-      <Version>2.0.3</Version>
-    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -9,11 +9,11 @@ namespace Settings
 {
     public static class AccountManager
     {
-        private static string resourceName = "TsinghuaAllInOne";
+        private const string resourceName = "TsinghuaAllInOne";
 
         public static PasswordCredential CreateAccount(string userName, string password)
         {
-            if(string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException(userName);
             password = password ?? "";
             return new PasswordCredential(resourceName, userName, password);
@@ -30,16 +30,16 @@ namespace Settings
                     return pass;
                 }
                 // 未找到储存的密码
-                catch(Exception ex) when(ex.HResult == -2147023728)
+                catch (Exception ex) when (ex.HResult == -2147023728)
                 {
                     return null;
                 }
             }
             set
             {
-                if(value == null)
+                if (value == null)
                     throw new ArgumentNullException(nameof(value));
-                if(string.IsNullOrEmpty(value.UserName))
+                if (string.IsNullOrEmpty(value.UserName))
                     throw new ArgumentException("no user name", nameof(value));
                 var passVault = new PasswordVault();
                 try
@@ -48,7 +48,7 @@ namespace Settings
                     passVault.Remove(oldPass);
                 }
                 // 未找到储存的密码
-                catch(Exception ex) when(ex.HResult == -2147023728)
+                catch (Exception ex) when (ex.HResult == -2147023728)
                 {
                 }
                 passVault.Add(value);
