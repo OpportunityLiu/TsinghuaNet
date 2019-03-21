@@ -29,14 +29,15 @@ namespace Web
 
         private static IHttpContent getLogOnRequest()
         {
-            if (string.IsNullOrEmpty(Settings.AccountManager.ID))
+            if (!(WebConnect.Current?.AccountInfo?.UserId is long id))
                 return null;
-            var pass = Settings.AccountManager.Account;
-            pass.RetrievePassword();
+            var pass = WebConnect.Current?.Password;
+            if (string.IsNullOrEmpty(pass))
+                return null;
             return new HttpFormUrlEncodedContent(new Dictionary<string, string>
             {
-                ["username"] = Settings.AccountManager.ID,
-                ["password"] = pass.Password,
+                ["username"] = id.ToString(),
+                ["password"] = pass,
                 ["realm"] = "ldap"
             });
         }

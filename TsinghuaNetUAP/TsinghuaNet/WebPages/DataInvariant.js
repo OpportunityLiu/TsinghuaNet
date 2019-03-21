@@ -17,7 +17,7 @@ var data = {
         {
             name: '网络学堂',
             id: "learn",
-            uri: "https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid=" + id + "&userpass=" + pw
+            uri: "https://learn.tsinghua.edu.cn/f/login"
         },
         {
             name: '信息门户',

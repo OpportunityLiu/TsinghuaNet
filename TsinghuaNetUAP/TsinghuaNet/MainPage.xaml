@@ -193,7 +193,7 @@
         </Grid.Transitions>
         <TextBlock Grid.ColumnSpan="3"
                    Margin="0,12"
-                   Text="{Binding UserName, Mode=OneWay}"
+                   Text="{Binding AccountInfo.UserName, Mode=OneWay}"
                    Style="{ThemeResource TitleTextBlockStyle}" />
         <TextBlock x:Uid="Usage"
                    Text="Usage"

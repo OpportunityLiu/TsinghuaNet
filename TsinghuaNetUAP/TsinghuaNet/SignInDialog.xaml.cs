@@ -41,7 +41,7 @@ namespace TsinghuaNet
         {
             this.textBlockHint.Text = "";
             var userName = this.textBoxUserName.Text;
-            if (string.IsNullOrEmpty(userName) || userName.All(c => char.IsDigit(c)))
+            if (string.IsNullOrEmpty(userName))
             {
                 this.textBoxUserName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
                 this.textBlockHint.Text = LocalizedStrings.Errors.EmptyUserName;
@@ -57,7 +57,7 @@ namespace TsinghuaNet
             this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
-                if (!await WebConnect.CheckAccount(userName, password))
+                if (!(await WebConnect.CheckAccount(userName, password) is AccountInfo accountInfo))
                 {
                     this.passwordBoxPassword.SelectAll();
                     this.passwordBoxPassword.Focus(Windows.UI.Xaml.FocusState.Programmatic);
@@ -65,6 +65,11 @@ namespace TsinghuaNet
                     this.textBlockHint.Text = LocalizedStrings.Errors.AuthError;
                     return false;
                 }
+                var connect = new WebConnect(accountInfo, password);
+                AccountManager.Save(accountInfo, password);
+                WebConnect.Current = connect;
+                WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
+                return true;
             }
             catch (Exception)
             {
@@ -72,12 +77,6 @@ namespace TsinghuaNet
                 this.progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 return false;
             }
-            var account = AccountManager.CreateAccount(userName, password);
-            var connect = new WebConnect(account);
-            AccountManager.Account = account;
-            WebConnect.Current = connect;
-            WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
-            return true;
         }
 
         private void textChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)

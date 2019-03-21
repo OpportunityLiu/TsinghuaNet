@@ -1,32 +1,35 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web;
 using Windows.Security.Credentials;
 
 namespace Settings
 {
     public static class AccountManager
     {
-        private const string resourceName = "TsinghuaAllInOne";
+        private const string RESOURCE_NAME = "TsinghuaAllInOne";
+        private const string ACCOUNT_NAME = "Account";
 
-        public static PasswordCredential CreateAccount(string userName, string password)
+        private static PasswordCredential _CreatePasswordStore(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName))
                 throw new ArgumentNullException(userName);
             password = password ?? "";
-            return new PasswordCredential(resourceName, userName, password);
+            return new PasswordCredential(RESOURCE_NAME, userName, password);
         }
 
-        public static PasswordCredential Account
+        private static PasswordCredential Password
         {
             get
             {
                 var passVault = new PasswordVault();
                 try
                 {
-                    var pass = passVault.FindAllByResource(resourceName).First();
+                    var pass = passVault.FindAllByResource(RESOURCE_NAME).First();
                     return pass;
                 }
                 // 未找到储存的密码
@@ -44,7 +47,7 @@ namespace Settings
                 var passVault = new PasswordVault();
                 try
                 {
-                    var oldPass = passVault.FindAllByResource(resourceName).First();
+                    var oldPass = passVault.FindAllByResource(RESOURCE_NAME).First();
                     passVault.Remove(oldPass);
                 }
                 // 未找到储存的密码
@@ -56,10 +59,46 @@ namespace Settings
             }
         }
 
-        public static string ID
+        private static AccountInfo Account
         {
-            get => SettingsHelper.GetRoaming("ID", "");
-            set => SettingsHelper.SetRoaming("ID", value ?? "");
+            get
+            {
+                var json = SettingsHelper.GetRoaming(ACCOUNT_NAME, "");
+                if (string.IsNullOrEmpty(json))
+                    return null;
+                try
+                {
+                    return JsonConvert.DeserializeObject<AccountInfo>(json);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (value is null)
+                    SettingsHelper.SetRoaming(ACCOUNT_NAME, "");
+                else
+                    SettingsHelper.SetRoaming(ACCOUNT_NAME, JsonConvert.SerializeObject(value));
+            }
+        }
+
+        public static void Save(AccountInfo account, string password)
+        {
+            Account = account;
+            if (!string.IsNullOrEmpty(password) && !(account is null))
+                Password = _CreatePasswordStore(account.UserName, password);
+        }
+
+        public static Tuple<AccountInfo, string> Load()
+        {
+            var acc = Account;
+            var pass = Password;
+            if (acc is null || pass is null || acc.UserName != pass.UserName)
+                return null;
+            pass.RetrievePassword();
+            return Tuple.Create(acc, pass.Password);
         }
     }
 }

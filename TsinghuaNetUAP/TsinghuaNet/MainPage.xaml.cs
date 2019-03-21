@@ -48,15 +48,15 @@ namespace TsinghuaNet
             if (e.NavigationMode == NavigationMode.New)
             {
                 var prelaunch = (bool)e.Parameter;
-                var account = Settings.AccountManager.Account;
-                if (account == null)
+                var account  = Settings.AccountManager.Load();
+                if (account is null)
                 {
                     // 未找到储存的密码
                     this.changeUser_Click(null, null);
                 }
                 else
                 {
-                    WebConnect.Current = new WebConnect(account);
+                    WebConnect.Current = new WebConnect(account.Item1, account.Item2);
                     //准备磁贴更新
                     WebConnect.Current.PropertyChanged += NotificationService.NotificationService.UpdateTile;
                 }

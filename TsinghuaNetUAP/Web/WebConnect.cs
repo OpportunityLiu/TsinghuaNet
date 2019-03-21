@@ -1,4 +1,5 @@
-﻿using Opportunity.MvvmUniverse;
+﻿using Newtonsoft.Json;
+using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,32 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace Web
 {
+    public class AccountInfo
+    {
+        [JsonConstructor]
+        internal AccountInfo(long userId, string userName, string realName, string department)
+        {
+            UserId = userId;
+            UserName = userName;
+            RealName = realName;
+            Department = department;
+        }
+
+        public long UserId { get; }
+        public string UserName { get; }
+        public string RealName { get; set; }
+        public string Department { get; set; }
+    }
+
+
     /// <summary>
     /// 表示当前认证状态，并提供相关方法的类。
     /// </summary>
     public sealed class WebConnect : ObservableObject, IDisposable
     {
         // M$ wants a test account, make them happy.
-        private const string testUserName = "Test";
-        private const string testPassword = "123456";
+        private const string TEST_USER_NAME = "Test";
+        private const string TEST_PASSWORD = "123456";
 
         internal static readonly List<WebDevice> TestDeviceList = new List<WebDevice>
         {
@@ -42,25 +61,54 @@ namespace Web
             },
         };
 
+        private class IdObject
+        {
+            public Ss ss { get; set; }
+
+            public class Ss
+            {
+                public Account account { get; set; }
+
+                public class Account
+                {
+                    public string userId { get; set; }
+                    public string username { get; set; }
+                    public string realName { get; set; }
+                    public string deptString { get; set; }
+                }
+            }
+        }
+
         /// <summary>
         /// 检查账户有效性。
         /// </summary>
-        /// <param name="userName">用户名</param>
+        /// <param name="userNameOrUserId">用户名或 ID</param>
         /// <param name="password">密码</param>
-        /// <returns>有效则返回 <c>true</c>，否则为 <c>false</c>。</returns>
-        public static IAsyncOperation<bool> CheckAccount(string userName, string password)
+        /// <returns>有效则返回用户信息，否则为 <see langword="null"/>。</returns>
+        public static IAsyncOperation<AccountInfo> CheckAccount(string userNameOrUserId, string password)
         {
             return Run(async token =>
             {
-                if (userName == testUserName)
+                if (userNameOrUserId == TEST_USER_NAME && password == TEST_PASSWORD)
                 {
                     await Task.Delay(1000);
-                    return password == testPassword;
+                    return new AccountInfo(0, userNameOrUserId, "测试", "测试");
                 }
                 using (var http = new HttpClient(new Windows.Web.Http.Filters.HttpBaseProtocolFilter()).WithHeaders())
                 {
-                    var result = await http.GetStringAsync(new Uri($"https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp?userid={userName}&userpass={password}"));
-                    return !result.Contains("window.alert");
+                    var result = await http.PostAsync(new Uri($"https://id.tsinghua.edu.cn/security_check"),
+                        new HttpFormUrlEncodedContent(new[]{
+                            new KeyValuePair<string,string>("username", userNameOrUserId),
+                            new KeyValuePair<string,string>("password", password),
+                        }));
+                    var response = await result.Content.ReadAsStringAsync();
+                    if (response.Contains("认证失败"))
+                        return null;
+                    var data = Regex.Match(response, @"\$\.extend\(\s*uidm\s*,\s*({.+?""ss"".+?})\s*\)");
+                    if (!data.Success)
+                        return null;
+                    var info = JsonConvert.DeserializeObject<IdObject>(data.Groups[1].Value).ss.account;
+                    return new AccountInfo(long.Parse(info.userId), info.username, info.realName, info.deptString);
                 }
             });
         }
@@ -68,38 +116,43 @@ namespace Web
         /// <summary>
         /// 使用凭据创建实例。
         /// </summary>
-        /// <param name="account">帐户凭据</param>
+        /// <param name="accountInfo">帐户信息</param>
+        /// <param name="password">密码</param>
         /// <exception cref="ArgumentNullException">参数为 <c>null</c>。</exception>
         /// <exception cref="ArgumentException">参数错误。</exception>
-        public WebConnect(PasswordCredential account)
+        public WebConnect(AccountInfo accountInfo, string password)
         {
-            if (account == null)
-                throw new ArgumentNullException(nameof(account));
-            this.UserName = account.UserName;
-            account.RetrievePassword();
-            this.password = account.Password;
-            this.passwordMd5 = MD5Helper.GetMd5Hash(this.password);
-            this.IsTestAccount = account.UserName == testUserName;
+            if (accountInfo is null)
+                throw new ArgumentNullException(nameof(accountInfo));
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentNullException(nameof(password));
+
+            AccountInfo = accountInfo;
+            _Password = password;
+            _PasswordMd5 = MD5Helper.GetMd5Hash(this._Password);
+            IsTestAccount = accountInfo.UserName == TEST_USER_NAME;
         }
 
         internal readonly bool IsTestAccount;
 
-        public string UserName { get; }
+        public AccountInfo AccountInfo { get; }
 
-        private readonly string password, passwordMd5;
+        internal string Password => _Password;
 
-        private readonly ObservableList<WebDevice> deviceList = new ObservableList<WebDevice>();
+        private readonly string _Password, _PasswordMd5;
+
+        private readonly ObservableList<WebDevice> _DeviceList = new ObservableList<WebDevice>();
         /// <summary>
         /// 使用该账户的设备列表。
         /// </summary>
-        public ObservableListView<WebDevice> DeviceList => this.deviceList.AsReadOnly();
+        public ObservableListView<WebDevice> DeviceList => _DeviceList.AsReadOnly();
 
-        private static WebConnect current;
+        private static WebConnect _Current;
 
         public static WebConnect Current
         {
-            set => current = value ?? throw new ArgumentNullException("value");
-            get => current;
+            set => _Current = value ?? throw new ArgumentNullException("value");
+            get => _Current;
         }
 
         public IAsyncAction LoadCache()
@@ -137,7 +190,7 @@ namespace Web
                               };
                 this.Dispose();
                 foreach (var item in devices)
-                    this.deviceList.Add(item);
+                    this._DeviceList.Add(item);
             });
         }
 
@@ -146,11 +199,11 @@ namespace Web
             return Run(async token =>
             {
                 var data = new JsonObject();
-                data[nameof(this.Balance)] = JsonValue.CreateNumberValue((double)this.balance);
-                data[nameof(this.UpdateTime)] = JsonValue.CreateNumberValue(this.updateTime.ToBinary());
-                data[nameof(this.WebTraffic)] = JsonValue.CreateNumberValue(this.webTraffic.Value);
+                data[nameof(this.Balance)] = JsonValue.CreateNumberValue((double)this._Balance);
+                data[nameof(this.UpdateTime)] = JsonValue.CreateNumberValue(this._UpdateTime.ToBinary());
+                data[nameof(this.WebTraffic)] = JsonValue.CreateNumberValue(this._WebTraffic.Value);
                 var devices = new JsonArray();
-                foreach (var item in this.deviceList)
+                foreach (var item in this._DeviceList)
                 {
                     var device = new JsonObject();
                     device[nameof(WebDevice.IPAddress)] = JsonValue.CreateStringValue(item.IPAddress.ToString());
@@ -201,7 +254,7 @@ namespace Web
                         act?.Cancel();
                         ope?.Cancel();
                     });
-                    act = LogOnHelper.SignInUsereg(http, this.UserName, this.passwordMd5);
+                    act = LogOnHelper.SignInUsereg(http, AccountInfo.UserName, _PasswordMd5);
                     await act;
                     //获取用户信息
                     ope = http.PostAsync(new Uri("http://usereg.tsinghua.edu.cn/ip_login.php"), new HttpFormUrlEncodedContent(new Dictionary<string, string>
@@ -257,7 +310,7 @@ namespace Web
                         boolFunc = LogOnHelper.CheckOnline(http);
                         if (await boolFunc)
                             return false;
-                        voidFunc = LogOnHelper.LogOn(http, this.UserName, this.passwordMd5);
+                        voidFunc = LogOnHelper.LogOn(http, AccountInfo.UserName, _PasswordMd5);
                         await voidFunc;
                         return true;
                     }
@@ -315,11 +368,11 @@ namespace Web
                     });
                     if (this.IsTestAccount)
                     {
-                        this.deviceList.Update(TestDeviceList, new DeviceComparer(), updateDevice);
+                        this._DeviceList.Update(TestDeviceList, new DeviceComparer(), updateDevice);
                         this.UpdateTime = DateTime.Now;
                         return;
                     }
-                    act = LogOnHelper.SignInUsereg(http, this.UserName, this.passwordMd5);
+                    act = LogOnHelper.SignInUsereg(http, AccountInfo.UserName, _PasswordMd5);
                     await act;
                     //获取用户信息
                     ope = http.GetStrAsync(new Uri("http://usereg.tsinghua.edu.cn/user_info.php"));
@@ -331,7 +384,6 @@ namespace Web
                         ex.Data.Add("HtmlResponse", res1);
                         throw ex;
                     }
-                    Settings.AccountManager.ID = info1[1].Value;
                     this.WebTraffic = new Size(ulong.Parse(info1[2].Value, CultureInfo.InvariantCulture));
                     this.Balance = decimal.Parse(info1[3].Value, CultureInfo.InvariantCulture);
                     //获取登录信息
@@ -352,9 +404,9 @@ namespace Web
                                        DropToken = devToken,
                                        HttpClient = http
                                    }).ToArray();
-                    this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
+                    this._DeviceList.FirstOrDefault()?.HttpClient?.Dispose();
                     networkFin = true;
-                    this.deviceList.Update(devices, new DeviceComparer(), updateDevice);
+                    this._DeviceList.Update(devices, new DeviceComparer(), updateDevice);
                     //全部成功
                     this.UpdateTime = DateTime.Now;
                 }
@@ -366,7 +418,7 @@ namespace Web
                 }
                 finally
                 {
-                    if (this.deviceList.Count == 0 || !networkFin)
+                    if (this._DeviceList.Count == 0 || !networkFin)
                         http?.Dispose();
                 }
             });
@@ -386,22 +438,22 @@ namespace Web
         /// </summary>
         public decimal Balance
         {
-            get => this.IsTestAccount ? (decimal)12.01 : this.balance;
-            private set => Set(ref this.balance, value);
+            get => this.IsTestAccount ? (decimal)12.01 : this._Balance;
+            private set => Set(ref this._Balance, value);
         }
 
-        private decimal balance;
+        private decimal _Balance;
 
         /// <summary>
         /// 之前累积的的网络流量（不包括当前在线设备产生的流量）。
         /// </summary>
         public Size WebTraffic
         {
-            get => this.IsTestAccount ? new Size(2591263496) : this.webTraffic;
-            private set => Set(ref this.webTraffic, value);
+            get => this.IsTestAccount ? new Size(2591263496) : this._WebTraffic;
+            private set => Set(ref this._WebTraffic, value);
         }
 
-        private Size webTraffic;
+        private Size _WebTraffic;
 
         /// <summary>
         /// 精确的网络流量（包括当前在线设备产生的流量）。
@@ -410,29 +462,29 @@ namespace Web
         {
             get
             {
-                if (this.deviceList.IsNullOrEmpty())
+                if (this._DeviceList.IsNullOrEmpty())
                     return this.WebTraffic;
                 else
-                    return this.deviceList.Aggregate(this.WebTraffic, (sum, item) => sum + item.WebTraffic);
+                    return this._DeviceList.Aggregate(this.WebTraffic, (sum, item) => sum + item.WebTraffic);
             }
         }
 
-        private DateTime updateTime;
+        private DateTime _UpdateTime;
         /// <summary>
         /// 信息更新的时间。
         /// </summary>
         public DateTime UpdateTime
         {
-            get => this.updateTime;
-            private set => this.Set(nameof(this.WebTrafficExact), ref this.updateTime, value);
+            get => this._UpdateTime;
+            private set => this.Set(nameof(this.WebTrafficExact), ref this._UpdateTime, value);
         }
 
         #region IDisposable Support
 
         public void Dispose()
         {
-            this.deviceList.FirstOrDefault()?.HttpClient?.Dispose();
-            this.deviceList.Clear();
+            this._DeviceList.FirstOrDefault()?.HttpClient?.Dispose();
+            this._DeviceList.Clear();
         }
 
         #endregion

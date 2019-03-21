@@ -29,23 +29,15 @@ namespace BackgroundLogOnTask
                 return;
             if (WebConnect.Current is null)
             {  //初始化信息存储区
-                PasswordCredential account;
-                try
-                {
-                    var passVault = new PasswordVault();
-                    account = passVault.FindAllByResource("TsinghuaAllInOne").First();
-                }
-                // 未找到储存的密码
-                catch (Exception ex) when (ex.HResult == -2147023728)
-                {
+                var acc = Settings.AccountManager.Load();
+                if (acc is null)
                     return;
-                }
                 var connection = NetworkInformation.GetInternetConnectionProfile();
-                if (connection == null)
+                if (connection is null)
                     return;
                 if (connection.IsWwanConnectionProfile)
                     return;
-                WebConnect.Current = new WebConnect(account);
+                WebConnect.Current = new WebConnect(acc.Item1, acc.Item2);
             }
 
             var d = taskInstance.GetDeferral();

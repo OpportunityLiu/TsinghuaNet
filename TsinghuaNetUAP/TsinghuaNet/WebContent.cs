@@ -105,11 +105,10 @@ namespace TsinghuaNet
 
         private static Uri getHomepage()
         {
-            var account = Settings.AccountManager.Account;
+            var account = Settings.AccountManager.Load();
             if (account == null)
                 return new Uri("about:blank");
-            account.RetrievePassword();
-            return new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.UserName}&pw={account.Password}");
+            return new Uri($"ms-appx-web:///WebPages/HomePage.html?id={account.Item1.UserName}&pw={account.Item2}");
         }
 
         public WebContent(Uri uri)
@@ -174,11 +173,9 @@ namespace TsinghuaNet
             if (!this.logged)
             {
                 this.logged = true;
-                var account = Settings.AccountManager.Account;
-                var id = account.UserName;
-                account.RetrievePassword();
-                var pass = account.Password;
-                account = null;
+                var account = Settings.AccountManager.Load();
+                var id = account.Item1.UserName;
+                var pass = account.Item2;
                 if (args.Uri == new Uri("http://its.tsinghua.edu.cn"))
                 {
                     var ignore = this.View.InvokeScriptAsync("eval", new string[]
@@ -198,7 +195,7 @@ namespace TsinghuaNet
                 {
                     var ignore = this.View.InvokeScriptAsync("eval", new string[]
                     {
-                        $@"username.value = '{Settings.AccountManager.ID}';
+                        $@"username.value = '{account.Item1.UserId}';
                         password.value = '{pass}';
                         frmLogin_4.submit();"
                     });
@@ -209,6 +206,16 @@ namespace TsinghuaNet
                     {
                         $@"j_username.value = '{id}';
                         j_password.value = '{pass}';"
+                    });
+                }
+                else if (args.Uri == new Uri("https://learn.tsinghua.edu.cn/f/login"))
+                {
+                    var ignore = this.View.InvokeScriptAsync("eval", new string[]
+                    {
+                        $@"
+                        loginForm.i_user.value = '{id}';
+                        loginForm.i_pass.value = '{pass}';
+                        loginForm.submit();"
                     });
                 }
                 else
