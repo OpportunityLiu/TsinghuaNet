@@ -25,7 +25,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>E9367E36CAB4B10D5D6EEA2109EF0F07966A2102</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>BED17D54F5AE25691484BF5196EED502AAE4A180</PackageCertificateThumbprint>
     <ApplicationInsightsResourceId>/subscriptions/929bc9d2-fb82-4b6d-8a03-2d697be3cfb8/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/TsinghuaNet</ApplicationInsightsResourceId>
     <HockeyAppResourceId>42bdf568c96e4ae1ab90a8835c48a88c</HockeyAppResourceId>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
